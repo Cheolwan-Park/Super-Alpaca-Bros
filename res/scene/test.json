@@ -1,0 +1,15 @@
+{
+    "Shaders": [
+        {"name": "default", "vert": "default_vert.glsl", "frag": "default_frag.glsl"}
+    ],
+    "Textures": [
+        "test.png"
+    ],
+    "ObjectStorages": [
+        {"name": "global", "order": 512, "size": 1024}
+    ],
+    "DrawableStorages": [
+        {"name": "unlit", "shader": "default", "order": 1024, "size": 512},
+        {"name": "transparent", "shader": "default", "order": 128, "size": 512}
+    ]
+}
