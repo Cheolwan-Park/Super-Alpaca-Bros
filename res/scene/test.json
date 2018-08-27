@@ -3,7 +3,7 @@
         {"name": "default", "vert": "default_vert.glsl", "frag": "default_frag.glsl"}
     ],
     "Textures": [
-        "test.png"
+        "alpacas.png"
     ],
     "ObjectStorages": [
         {"name": "global", "order": 512, "size": 1024}

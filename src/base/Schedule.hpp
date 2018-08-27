@@ -10,18 +10,12 @@ namespace Base
 {
     class GameObject;
     class Scheduler;
-
-    #define MAKE_TYPE_ID(__TYPENAME__)  \
-    static constexpr Uint32 ID = CompileTimeHash::fnv1a_32(#__TYPENAME__, sizeof(#__TYPENAME__)-1);
     
     typedef void (GameObject::*OBJECT_FUNCTION)();
     
     class Schedule
     {
     public:
-        // static constexpr Uint32 ID = "Schedule"_hash;
-        MAKE_TYPE_ID(Schedule);
-
         Schedule();
         
         explicit Schedule(OBJECT_FUNCTION function);
@@ -58,8 +52,6 @@ namespace Base
     class ScheduleOnce : public Schedule
     {
     public:
-        MAKE_TYPE_ID(ScheduleOnce);
-        
         ScheduleOnce();
         
         explicit ScheduleOnce(OBJECT_FUNCTION function, Uint32 wait_time);

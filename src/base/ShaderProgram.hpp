@@ -42,35 +42,8 @@ namespace Base
         GLuint m_frag;
         GLuint m_uniform_locs[2]; // 0 : vp, 1 : tex
     };
-    
-    class ShaderStorage
-    {
-    public:
-        typedef ShaderProgram* Type;
-        
-        ShaderStorage();
-        
-        ShaderStorage(const ShaderStorage &other) = delete;
-        
-        ~ShaderStorage();
-        
-        ShaderStorage &operator=(const ShaderStorage &other) = delete;
-        
-        // len : length of array (not memory size)
-        void AssignMemory(void *memory, Uint32 len);
-        
-        int32 Register(ShaderProgram *program, Uint32 hash);
-        
-        ShaderProgram *DeRegister(Uint32 hash);
-        
-        void Clear();
-        
-        const ShaderProgram *operator[](Uint32 hash)const;
-        
-    private:
-        Uint32 m_len;
-        ShaderProgram **m_shaders;
-    };
+
+    void FreeShader(ShaderProgram **prog);
 }
 
 #endif

@@ -109,65 +109,11 @@ namespace Base
     {
         return m_uniform_locs[1];
     }
-    
-    
-    // ShaderStorage class
-    ShaderStorage::ShaderStorage()
-    :m_len(0), m_shaders(nullptr)
+
+    void FreeShader(ShaderProgram **prog)
     {
-        ;
-    }
-    
-    ShaderStorage::~ShaderStorage()
-    {
-        Clear();
-    }
-    
-    void ShaderStorage::AssignMemory(void *memory, Uint32 len)
-    {
-        m_len = len;
-        m_shaders = (ShaderProgram**)memory;
-    }
-    
-    int32 ShaderStorage::Register(ShaderProgram *shader, Uint32 hash)
-    {
-        assert(m_shaders);
-        assert(shader);
-        assert(shader->GetProgram());
-        
-        Uint32 idx = hash%m_len;
-        
-        if(nullptr != m_shaders[idx])
-            return RET_FAILED;
-        
-        m_shaders[idx] = shader;
-        return RET_SUCC;
-    }
-    
-    ShaderProgram *ShaderStorage::DeRegister(Uint32 hash)
-    {
-        Uint32 idx = hash%m_len;
-        ShaderProgram *result = m_shaders[idx];
-        m_shaders[idx] = nullptr;
-        return result;
-    }
-    
-    void ShaderStorage::Clear()
-    {
-        for(Uint32 i=0; i<m_len; ++i)
-        {
-            if(nullptr != m_shaders[i])
-            {
-                m_shaders[i]->~ShaderProgram();
-                m_shaders[i] = nullptr;
-            }
-        }
-    }
-    
-    const ShaderProgram *ShaderStorage::operator[](Uint32 hash)const
-    {
-        Uint32 idx = hash%m_len;
-        return m_shaders[idx];
+        (*prog)->~ShaderProgram();
+        (*prog) = nullptr;
     }
 }
 

@@ -1,17 +1,17 @@
 cmake_minimum_required( VERSION 3.0 )
 
-project( buffalos )
+project( alpacas )
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 message(STATUS "module path: ${CMAKE_MODULE_PATH}")
 
 add_compile_options( -Os )
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17" )
-set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}" )
+set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG" )
 set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}" )
 
 add_executable(
-    buffalos 
+    alpacas 
     src/main.cpp
 )
 
@@ -35,10 +35,11 @@ add_library(
     src/base/Time.cpp 
     src/base/Vector.cpp 
     src/base/JsonScene.cpp
+    src/base/Json.cpp 
     # src/base/LuaPlayer.cpp
 )
 include_directories( src/base )
-target_link_libraries( buffalos Base )
+target_link_libraries( alpacas Base )
 
 # header only libraries
 include_directories("include")
@@ -52,7 +53,7 @@ include_directories( ${SDL2_INCLUDE_DIR}
                      ${SDL2_IMAGE_INCLUDE_DIR}
                      ${SDL2_TTF_INCLUDE_DIR}
                      ${SDL2_MIXER_INCLUDE_DIR} )
-target_link_libraries( buffalos ${SDL2_LIBRARY}
+target_link_libraries( alpacas ${SDL2_LIBRARY}
                                 ${SDL2_IMAGE_LIBRARIES}
                                 ${SDL2_TTF_LIBRARIES}
                                 ${SDL2_MIXER_LIBRARIES} )
@@ -60,8 +61,8 @@ target_link_libraries( buffalos ${SDL2_LIBRARY}
 # opengl
 find_package ( OpenGL REQUIRED )
 if (OPENGL_FOUND )
-    target_link_libraries ( buffalos ${OPENGL_gl_LIBRARY} )
-    target_link_libraries ( buffalos ${OPENGL_glu_LIBRARY} )
+    target_link_libraries ( alpacas ${OPENGL_gl_LIBRARY} )
+    target_link_libraries ( alpacas ${OPENGL_glu_LIBRARY} )
 endif()
 
 # glm
@@ -74,7 +75,7 @@ endif()
 find_package( GLEW REQUIRED )
 if( GLEW_FOUND )
     include_directories( ${GLEW_INCLUDE_DIRECTORIES} )
-    target_link_libraries( buffalos ${GLEW_LIBRARIES} )
+    target_link_libraries( alpacas ${GLEW_LIBRARIES} )
 endif()
 
 # rapidjson
@@ -88,5 +89,5 @@ endif()
 find_package( lua REQUIRED )
 if( LUA_FOUND )
     include_directories(${LUA_INCLUDE_DIR})
-    target_link_libraries( buffalos ${LUA_LIBRARIES} )
+    target_link_libraries( alpacas ${LUA_LIBRARIES} )
 endif()

@@ -22,6 +22,10 @@ namespace Base
         Scene &operator=(const Scene &other) = delete;
         
         virtual int32 Init();
+
+        virtual GameObject *GetObject(Uint32 hash) = 0;
+
+        virtual GameObject *GetObject(Uint32 storage, Uint32 hash) = 0;
         
         virtual void Update() = 0;
         
@@ -46,6 +50,10 @@ namespace Base
         ObjectScene &operator=(const ObjectScene &other) = delete;
         
         virtual int32 Init();
+
+        virtual GameObject *GetObject(Uint32 hash);
+
+        virtual GameObject *GetObject(Uint32 storage, Uint32 hash);
         
         virtual void Update();
         
@@ -69,6 +77,8 @@ namespace Base
         Array<ObjectStorage*> m_objstorages;
         Array<DrawableStorage*> m_drawablestorages;
     };
+
+    
 }
 
 #endif

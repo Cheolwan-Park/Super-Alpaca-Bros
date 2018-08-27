@@ -5,23 +5,26 @@
 #include "GameObject.hpp"
 #include "FileIO.hpp"
 #include "Math.hpp"
+#include "Storage.hpp"
 #include <functional>
 
 namespace Base
 {
-    using Texture = TextureStorage::Val;
-    
     class DrawableStorage;
     class ShaderProgram;
     
     class Drawable : public GameObject
     {
     public:
+        MAKE_TYPE_ID(Drawable);
+
         Drawable() = delete;
         
         Drawable(Uint32 id, int32 isStatic = false);
         
         Drawable(Uint32 id, const GameObject *parent, int32 isStatic = false);
+
+        Drawable(const rapidjson::GenericObject<true, rapidjson::Value> &obj);
         
         Drawable(const Drawable &other);
         
@@ -69,12 +72,17 @@ namespace Base
     private:
         static const glm::vec3 verts[4];
         static const glm::vec2 uvs[4];
+
     public:
+        MAKE_TYPE_ID(Sprite);
+
         Sprite() = delete;
         
         Sprite(Uint32 id, int32 isStatic = false);
         
         Sprite(Uint32 id, const GameObject *parent, int32 isStatic = false);
+
+        Sprite(const rapidjson::GenericObject<true, rapidjson::Value> &obj);
         
         Sprite(const Sprite &other);
         
@@ -91,15 +99,11 @@ namespace Base
         virtual void UpdateVBO();
         
         // get
-        float32 GetAlpha()const;
-        
         const Math::Rect &GetUV()const;
         
         const Texture *GetTexture()const;
         
         // set
-        void SetAlpha(float32 val);
-        
         void SetUV(const Math::Rect &rect);
         
         void SetUV(const Math::IRect &rect);
@@ -115,15 +119,22 @@ namespace Base
         void InitVAO();
         
         void ReleaseVAO();
+
+        int32 NeedUpdateUV()const;
+
+        void SetNeedUpdateUV(int32 val);
         
     private:
         VAO m_vao;
-        float32 m_alpha;
         Math::Rect m_uv;
         const Texture *m_tex;
+        /* flags
+         * GameObject's flags
+         * 9 : update uv
+         */
     };
     
-    class DrawableStorage
+    class DrawableStorage : public Storage<Drawable>
     {
     public:
         typedef Drawable* Type;
@@ -138,33 +149,27 @@ namespace Base
         
         DrawableStorage &operator=(const DrawableStorage &other) = delete;
         
-        void AssignMemory(void *memory, Uint32 len);
-        
         void SetShader(const ShaderProgram *shader);
         
         void SetRenderSettingFun(const ::std::function<void(void)> &fun);
         
-        int32 Register(Type sprite);
+        void DrawDrawables();
         
-        const Type operator[](Uint32 id)const;
-        
-        Type operator[](Uint32 id);
-        
-        void DrawSprites();
-        
-        void CheckDeletedSprite();
+        void CheckDeletedDrawables();
         
         // get
         Uint32 GetID()const;
         
         Uint32 GetOrder()const;
+
+    private:
+        static void DrawDrawable(Drawable **drawable);
+        static void CheckDeleteDrawable(Drawable **drawable);
         
     private:
         Uint32 m_id;
         Uint32 m_order;
         const ShaderProgram *m_shader;
-        Uint32 m_sprites_len;
-        Type *m_objects;
         std::function<void(void)> m_rendersetting;
     };
 }

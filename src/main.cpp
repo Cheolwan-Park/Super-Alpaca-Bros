@@ -7,7 +7,6 @@
 #include "ShaderProgram.hpp"
 #include "Camera.hpp"
 #include "JsonScene.hpp"
-#include "LuaPlayer.hpp"
 using namespace Base;
 
 GLint GLSetting();
@@ -46,11 +45,11 @@ int32 AppSetting()
 {
     Application &app = Application::Get();
     StackAllocator &allocator = app.GetAllocator();
-    ShaderStorage &shaders = app.GetShaderStorage();
-    TextureStorage &textures = app.GetTextureStorage();
+    auto &shaders = app.GetShaderStorage();
+    auto &textures = app.GetTextureStorage();
     allocator.ReAllocBuffer(1024*50);
-    shaders.AssignMemory(allocator.Alloc<ShaderStorage::Type>(8), 8);
-    textures.AssignMemory(allocator.Alloc<TextureStorage::Type>(16), 16);
+    shaders.AssignMemory(allocator.Alloc<ShaderProgram>(8), 8);
+    textures.AssignMemory(allocator.Alloc<Texture>(16), 16);
 
     // set camera
     GLint w=0, h=0;

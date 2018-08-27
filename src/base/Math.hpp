@@ -23,6 +23,18 @@ namespace Base
             int32 w;
             int32 h;
         };
+
+        struct Size
+        {
+            int32 w;
+            int32 h;
+        };
+
+        struct Point
+        {
+            int32 x;
+            int32 y;
+        };
         
         namespace Constant
         {

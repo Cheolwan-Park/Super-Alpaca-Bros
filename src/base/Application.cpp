@@ -16,7 +16,8 @@ namespace Base
     m_release_marker(0), m_quit(false),
     m_allocator(), m_texturestorage(), m_shaderstorage()
     {
-        ;
+        m_texturestorage.SetFreeFunc(FreeTexture);
+        m_shaderstorage.SetFreeFunc(FreeShader);
     }
     
     Application::~Application()
@@ -92,6 +93,8 @@ namespace Base
             delete m_scene;
             m_allocator.FreeWithMarker(m_release_marker);
         }
+        m_texturestorage.Clear();
+        m_shaderstorage.Clear();
         m_scene = scene;
         
         if(0 == mark)
@@ -116,12 +119,12 @@ namespace Base
         return m_allocator;
     }
 
-    TextureStorage &Application::GetTextureStorage()
+    Storage<Texture> &Application::GetTextureStorage()
     {
         return m_texturestorage;
     }
 
-    ShaderStorage &Application::GetShaderStorage()
+    Storage<ShaderProgram> &Application::GetShaderStorage()
     {
         return m_shaderstorage;
     }

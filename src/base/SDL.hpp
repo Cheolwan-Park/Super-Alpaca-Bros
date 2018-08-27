@@ -4,12 +4,11 @@
 #define GLFW_INCLUDE_GLCOREARB
 #ifdef __APPLE__
 #include <SDL2/SDL.h>
-#include <SDL2_image/SDL_image.h>
+#include <SDL2/SDL_image.h>
 #else
 #include <SDL.h>
 #endif
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 
 namespace SDL
 {

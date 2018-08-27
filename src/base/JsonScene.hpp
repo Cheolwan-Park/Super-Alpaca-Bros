@@ -2,7 +2,7 @@
 #define BaseJsonScene_hpp
 
 #include "Scene.hpp"
-#include <rapidjson/document.h>
+#include "Json.hpp"
 
 namespace Base
 {
@@ -30,6 +30,7 @@ namespace Base
     private:
         rapidjson::Document m_doc;
     };
+    
 }
 
 #endif

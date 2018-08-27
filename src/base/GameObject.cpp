@@ -1,4 +1,6 @@
 #include "GameObject.hpp"
+#include "Application.hpp"
+#include "Scene.hpp"
 
 namespace Base
 {
@@ -15,6 +17,47 @@ namespace Base
     {
         SetAvailable(true);
         m_flags.SetFlag(3, isStatic);
+    }
+
+    GameObject::GameObject(const rapidjson::GenericObject<true, rapidjson::Value> &obj)
+    :m_id(0), m_position(0.0f, 0.0f, 0.0f), m_parent(nullptr), m_flags()
+    {
+        assert(obj.HasMember("GameObject"));
+        assert(obj["GameObject"].IsObject());
+        auto gobj = obj["GameObject"].GetObject();
+
+        assert(gobj.HasMember("id"));
+        assert(gobj.HasMember("pos"));
+        assert(gobj["id"].IsString());
+        assert(gobj["pos"].IsObject());
+
+        const char *id = gobj["id"].GetString();
+        m_id = CompileTimeHash::runtime_hash(id, strlen(id));
+        JsonParseMethods::ReadVector(gobj["pos"].GetObject(), &m_position);
+
+        if(gobj.HasMember("parent"))
+        {
+            Application &app = Application::Get();
+            Scene *scene = app.GetScene();
+            assert(scene);
+            if(gobj["parent"].IsObject())
+            {
+                auto parentdata = gobj["parent"].GetObject();
+                assert(parentdata.HasMember("storage"));
+                assert(parentdata.HasMember("id"));
+                assert(parentdata["storage"].IsString());
+                assert(parentdata["id"].IsString());
+                const char *storage_id = parentdata["storage"].GetString();
+                const char *parent_id = parentdata["id"].GetString();
+                m_parent = scene->GetObject(CompileTimeHash::runtime_hash(storage_id, strlen(storage_id)),
+                                            CompileTimeHash::runtime_hash(parent_id, strlen(parent_id)));
+            }
+            else if(gobj["parent"].IsString())
+            {
+                const char *parent_id = gobj["parent"].GetString();
+                m_parent = scene->GetObject(CompileTimeHash::runtime_hash(parent_id, strlen(parent_id)));
+            }
+        }
     }
     
     GameObject::GameObject(const GameObject &other)
@@ -175,84 +218,24 @@ namespace Base
     
     // Object Storage
     ObjectStorage::ObjectStorage(Uint32 id, Uint32 order)
-    :m_id(id), m_order(order), m_objects(nullptr), m_objects_len(0)
+    :Storage<GameObject>(), m_id(id), m_order(order)
     {
-        ;
+        SetFreeFunc(FreeObject);
     }
     
     ObjectStorage::~ObjectStorage()
     {
-        if(nullptr != m_objects)
-        {
-            for(Uint32 i=0; i<m_objects_len; ++i)
-            {
-                if(nullptr != m_objects[i])
-                {
-                    m_objects[i]->~GameObject();
-                    m_objects[i] = nullptr;
-                }
-            }
-        }
-    }
-    
-    void ObjectStorage::AssignMemory(void *memory, Uint32 len)
-    {
-        m_objects = (GameObject**)memory;
-        m_objects_len = len;
-    }
-    
-    int32 ObjectStorage::Register(ObjectStorage::Type object)
-    {
-        assert(m_objects);
-        assert(object);
-        
-        Uint32 idx = (object->GetID())%m_objects_len;
-        if(nullptr != m_objects[idx])
-            return RET_FAILED;
-        
-        m_objects[idx] = object;
-        m_objects[idx]->Start();
-        
-        return RET_SUCC;
-    }
-    
-    const ObjectStorage::Type ObjectStorage::operator[](Uint32 id)const
-    {
-        Uint32 idx = id%m_objects_len;
-        return m_objects[idx];
-    }
-    
-    ObjectStorage::Type ObjectStorage::operator[](Uint32 id)
-    {
-        Uint32 idx = id%m_objects_len;
-        return m_objects[idx];
+        Clear();
     }
     
     void ObjectStorage::UpdateObjects()
     {
-        if(nullptr != m_objects)
-        {
-            for(Uint32 i=0; i<m_objects_len; ++i)
-            {
-                if(nullptr != m_objects[i] && m_objects[i]->isAvailable())
-                    m_objects[i]->Update();
-            }
-        }
+        ForDo(UpdateObject);
     }
     
     void ObjectStorage::CheckAndDeleteObjects()
     {
-        if(nullptr != m_objects)
-        {
-            for(Uint32 i=0; i<m_objects_len; ++i)
-            {
-                if(nullptr != m_objects[i] && m_objects[i]->isDeleted())
-                {
-                    m_objects[i]->~GameObject();
-                    m_objects[i] = nullptr;
-                }
-            }
-        }
+        ForDo(CheckAndDeleteObject);
     }
     
     Uint32 ObjectStorage::GetID()const
@@ -263,6 +246,26 @@ namespace Base
     Uint32 ObjectStorage::GetOrder()const
     {
         return m_order;
+    }
+
+    void ObjectStorage::UpdateObject(GameObject **gobj)
+    {
+        if((*gobj)->isAvailable())
+            (*gobj)->Update();
+    }
+
+    void ObjectStorage::CheckAndDeleteObject(GameObject **gobj)
+    {
+        if((*gobj)->isDeleted())
+        {
+            FreeObject(gobj);
+        }
+    }
+
+    void ObjectStorage::FreeObject(GameObject **gobj)
+    {
+        (*gobj)->~GameObject();
+        (*gobj) = nullptr;
     }
 }
 

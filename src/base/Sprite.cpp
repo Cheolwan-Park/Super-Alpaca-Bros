@@ -1,8 +1,10 @@
 #include "Sprite.hpp"
 #include "ShaderProgram.hpp"
 #include "Camera.hpp"
+#include "Time.hpp"
+#include "Application.hpp"
+#include "Scene.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
-#define GLM_STATIC
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/matrix_transform_2d.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -21,7 +23,24 @@ namespace Base
     {
         ;
     }
+
+    Drawable::Drawable(const rapidjson::GenericObject<true, rapidjson::Value> &obj)
+    :GameObject(obj), m_scale(0.0f, 0.0f), m_rotation(0.0f)
+    {
+        assert(obj.HasMember("Drawable"));
+        assert(obj["Drawable"].IsObject());
+        auto dobj = obj["Drawable"].GetObject();
+
+        assert(dobj.HasMember("scale"));
+        assert(dobj.HasMember("rotation"));
+        assert(dobj["scale"].IsObject());
+        assert(dobj["rotation"].IsFloat());
+
+        JsonParseMethods::ReadVector2(dobj["scale"].GetObject(), &m_scale);
+        m_rotation = dobj["rotation"].GetFloat();
+    }
     
+
     Drawable::Drawable(const Drawable &other)
     :GameObject(other), m_scale(other.m_scale), m_rotation(other.m_rotation)
     {
@@ -101,7 +120,7 @@ namespace Base
     
     void Drawable::SetDrawer(DrawableStorage *drawer)
     {
-        drawer->Register(this);
+        drawer->Register(this, GetID());
     }
     
     
@@ -124,21 +143,45 @@ namespace Base
     };
     
     Sprite::Sprite(Uint32 id, int32 isStatic)
-    :Drawable(id, isStatic), m_vao({0,0,0}), m_alpha(1.0f),
+    :Drawable(id, isStatic), m_vao({0,0,0}),
     m_uv({0.0f, 0.0f, 1.0f, 1.0f}), m_tex(nullptr)
     {
         InitVAO();
     }
     
     Sprite::Sprite(Uint32 id, const GameObject *parent, int32 isStatic)
-    :Drawable(id, parent, isStatic), m_vao({0,0,0}), m_alpha(1.0f),
+    :Drawable(id, parent, isStatic), m_vao({0,0,0}),
     m_uv({0.0f, 0.0f, 1.0f, 1.0f}), m_tex(nullptr)
     {
         InitVAO();
     }
     
+    Sprite::Sprite(const rapidjson::GenericObject<true, rapidjson::Value> &obj)
+    :Drawable(obj), m_vao({0,0,0}), m_uv({0.0f, 0.0f, 1.0f, 1.0f}), m_tex(nullptr)
+    {
+        InitVAO();
+        
+        assert(obj.HasMember("Sprite"));
+        assert(obj["Sprite"].IsObject());
+        auto sobj = obj["Sprite"].GetObject();
+
+        assert(sobj.HasMember("uv"));
+        assert(sobj.HasMember("texture"));
+        assert(sobj["uv"].IsObject());
+        assert(sobj["texture"].IsString());
+
+        Application &app = Application::Get();
+        auto &textures = app.GetTextureStorage();
+        const char *texture_id = sobj["texture"].GetString();
+        m_tex = textures[CompileTimeHash::runtime_hash(texture_id, strlen(texture_id))];
+
+        Math::IRect irect({0, 0, 0, 0});
+        JsonParseMethods::ReadIRect(sobj["uv"].GetObject(), &irect);
+        SetUV(irect);
+    }
+
     Sprite::Sprite(const Sprite &other)
-    :Drawable(other), m_vao({0,0,0}), m_alpha(other.m_alpha),
+    :Drawable(other), m_vao({0,0,0}),
     m_uv(other.m_uv), m_tex(other.m_tex)
     {
         InitVAO();
@@ -152,7 +195,6 @@ namespace Base
     Sprite &Sprite::operator=(const Sprite &other)
     {
         Drawable::operator=(other);
-        this->m_alpha = other.m_alpha;
         this->m_tex = other.m_tex;
         return (*this);
     }
@@ -192,7 +234,7 @@ namespace Base
     
     void Sprite::UpdateVBO()
     {
-        if(true == m_flags.GetFlag(8))
+        if(NeedUpdateUV())
         {
             glBindBuffer(GL_ARRAY_BUFFER, m_vao.vbo[1]);
             glm::vec2 *uv_buffer = (glm::vec2*)glMapBufferRange(GL_ARRAY_BUFFER,
@@ -208,7 +250,7 @@ namespace Base
             uv_buffer[3] = {right, m_uv.y};
             glFlushMappedBufferRange(GL_ARRAY_BUFFER, 0, sizeof(uvs));
             glUnmapBuffer(GL_ARRAY_BUFFER);
-            m_flags.SetFlag(8, false);
+            SetNeedUpdateUV(false);
         }
         
         glBindBuffer(GL_ARRAY_BUFFER, m_vao.vbo[0]);
@@ -269,11 +311,6 @@ namespace Base
         glDeleteVertexArrays(1, &m_vao.id);
     }
     
-    float32 Sprite::GetAlpha()const
-    {
-        return m_alpha;
-    }
-    
     const Math::Rect &Sprite::GetUV()const
     {
         return m_uv;
@@ -284,15 +321,10 @@ namespace Base
         return m_tex;
     }
     
-    void Sprite::SetAlpha(float32 val)
-    {
-        m_alpha = val;
-    }
-    
     void Sprite::SetUV(const Math::Rect &rect)
     {
         m_uv = rect;
-        m_flags.SetFlag(8, true);
+        SetNeedUpdateUV(true);
     }
     
     void Sprite::SetUV(const Math::IRect &rect)
@@ -301,14 +333,24 @@ namespace Base
         m_uv.w = (float32)rect.w/(m_tex->w);
         m_uv.y = (float32)rect.y/(m_tex->h);
         m_uv.h = (float32)rect.h/(m_tex->h);
-        m_flags.SetFlag(8, true);
+        SetNeedUpdateUV(true);
     }
     
     void Sprite::SetTexture(const Texture *val)
     {
         m_tex = val;
     }
-    
+
+    int32 Sprite::NeedUpdateUV()const
+    {
+        return m_flags.GetFlag(9);
+    }
+
+    void Sprite::SetNeedUpdateUV(int32 val)
+    {
+        m_flags.SetFlag(9, val);
+    }
+
     
     // SpriteDrawer class
     
@@ -319,22 +361,15 @@ namespace Base
     }
     
     DrawableStorage::DrawableStorage(Uint32 id, Uint32 order)
-    :m_id(id), m_order(order), m_shader(nullptr), m_sprites_len(0),
-    m_objects(nullptr), m_rendersetting(DefaultRenderSettingFun)
+    :Storage<Drawable>(),  m_id(id), m_order(order), 
+    m_shader(nullptr), m_rendersetting(DefaultRenderSettingFun)
     {
         ;
     }
     
     DrawableStorage::~DrawableStorage()
     {
-        ;
-    }
-    
-    void DrawableStorage::AssignMemory(void *memory, Uint32 len)
-    {
-        m_sprites_len = len;
-        m_objects = (Type*)memory;
-        memset(m_objects, 0, m_sprites_len*sizeof(Sprite*));
+        Clear();
     }
     
     void DrawableStorage::SetShader(const ShaderProgram *shader)
@@ -347,32 +382,7 @@ namespace Base
         m_rendersetting = fun;
     }
     
-    int32 DrawableStorage::Register(DrawableStorage::Type sprite)
-    {
-        assert(m_objects);
-        assert(sprite);
-        
-        Uint32 idx = (sprite->GetID())%m_sprites_len;
-        if(nullptr != m_objects[idx])
-            return RET_FAILED;
-        
-        m_objects[idx] = sprite;
-        return RET_SUCC;
-    }
-    
-    const DrawableStorage::Type DrawableStorage::operator[](Uint32 id)const
-    {
-        Uint32 idx = id%m_sprites_len;
-        return m_objects[idx];
-    }
-    
-    DrawableStorage::Type DrawableStorage::operator[](Uint32 id)
-    {
-        Uint32 idx = id%m_sprites_len;
-        return m_objects[idx];
-    }
-    
-    void DrawableStorage::DrawSprites()
+    void DrawableStorage::DrawDrawables()
     {
         if(nullptr != m_shader)
         {
@@ -389,25 +399,13 @@ namespace Base
                                glm::value_ptr(vp));
             glUniform1i(m_shader->GetTextureLocation(), 0);
             
-            for(Uint32 i=0; i<m_sprites_len; ++i)
-            {
-                if(nullptr != m_objects[i] && m_objects[i]->isAvailable())
-                {
-                    m_objects[i]->Draw();
-                }
-            }
+            ForDo(DrawDrawable);
         }
     }
     
-    void DrawableStorage::CheckDeletedSprite()
+    void DrawableStorage::CheckDeletedDrawables()
     {
-        for(Uint32 i=0; i<m_sprites_len; ++i)
-        {
-            if(nullptr != m_objects[i] && m_objects[i]->isDeleted())
-            {
-                m_objects[i] = nullptr;
-            }
-        }
+        ForDo(CheckDeleteDrawable);
     }
     
     Uint32 DrawableStorage::GetID()const
@@ -418,6 +416,18 @@ namespace Base
     Uint32 DrawableStorage::GetOrder()const
     {
         return m_order;
+    }
+
+    void DrawableStorage::DrawDrawable(Drawable **drawable)
+    {
+        if((*drawable)->isAvailable())
+            (*drawable)->Draw();
+    }
+
+    void DrawableStorage::CheckDeleteDrawable(Drawable **drawable)
+    {
+        if((*drawable)->isDeleted())
+            (*drawable) = nullptr;
     }
 }
 

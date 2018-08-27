@@ -7,21 +7,33 @@
 #include "String.hpp"
 #include "Schedule.hpp"
 #include "BitFlag.hpp"
+#include "Storage.hpp"
+#include "Json.hpp"
 #include <glm/glm.hpp>
+
+
+#define MAKE_TYPE_ID(__TYPENAME__)  \
+static constexpr Uint32 ID = ::Base::CompileTimeHash::fnv1a_32(#__TYPENAME__, sizeof(#__TYPENAME__)-1);
+    
 
 namespace Base
 {
     class Schedule;
+    class Component;
     
     class GameObject
     {
     public:
+        MAKE_TYPE_ID(GameObject);
+
         GameObject() = delete;
         
         GameObject(Uint32 id, int32 isStatic = false);
         
         GameObject(Uint32 id, const GameObject *parent, int32 isStatic = false);
         
+        GameObject(const rapidjson::GenericObject<true, rapidjson::Value> &obj);
+
         GameObject(const GameObject &other);
         
         virtual ~GameObject();
@@ -80,8 +92,9 @@ namespace Base
         Uint32 m_id;
         glm::vec3 m_position;
         const GameObject *m_parent;     // worldpos = m_position + m_parent.GetWorldPos()
+
     protected:
-        /*
+        /* flags
          * 0 : isDeleted
          * 1 : isAvailable (default : true)
          * 2 : isStarted
@@ -91,7 +104,7 @@ namespace Base
         BitFlag m_flags;
     };
     
-    class ObjectStorage
+    class ObjectStorage : public Storage<GameObject>
     {
     public:
         typedef GameObject* Type;
@@ -106,14 +119,6 @@ namespace Base
         
         ObjectStorage &operator=(const ObjectStorage &other) = delete;
         
-        void AssignMemory(void *memory, Uint32 len);
-        
-        int32 Register(Type object);
-        
-        const Type operator[](Uint32 id)const;
-        
-        Type operator[](Uint32 id);
-        
         void UpdateObjects();
         
         void CheckAndDeleteObjects();
@@ -122,12 +127,15 @@ namespace Base
         Uint32 GetID()const;
         
         Uint32 GetOrder()const;
+
+    private:
+        static void UpdateObject(GameObject **obj);
+        static void CheckAndDeleteObject(GameObject **obj);
+        static void FreeObject(GameObject **obj);
         
     private:
         Uint32 m_id;
         Uint32 m_order;
-        Type *m_objects;
-        Uint32 m_objects_len;
     };
 }
 

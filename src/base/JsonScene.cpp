@@ -50,7 +50,7 @@ namespace Base
     int32 JsonScene::LoadShaders()
     {
         Application &app = Application::Get();
-        ShaderStorage &shaders = app.GetShaderStorage();
+        auto &shaders = app.GetShaderStorage();
         StackAllocator &allocator = app.GetAllocator();
 
         String128 path;
@@ -67,7 +67,7 @@ namespace Base
         assert(m_doc["Shaders"].IsArray());
         auto loadlist = m_doc["Shaders"].GetArray();
 
-        for(rapidjson::Value::ConstValueIterator itr = loadlist.begin();
+        for(auto itr = loadlist.begin();
             loadlist.end() != itr; 
             ++itr)
             {
@@ -149,18 +149,18 @@ namespace Base
     int32 JsonScene::LoadTextures()
     {
         Application &app = Application::Get();
-        TextureStorage &textures = app.GetTextureStorage();
+        auto &textures = app.GetTextureStorage();
         StackAllocator &allocator = app.GetAllocator();
 
         String128 path;
         const char *filename = nullptr;
-        TextureStorage::Val *texture = nullptr;
+        Texture *texture = nullptr;
 
         assert(m_doc.HasMember("Textures"));
         assert(m_doc["Textures"].IsArray());
         auto loadlist = m_doc["Textures"].GetArray();
 
-        for(rapidjson::Value::ConstValueIterator itr = loadlist.begin();
+        for(auto itr = loadlist.begin();
             loadlist.end() != itr; 
             ++itr)
         {
@@ -168,7 +168,7 @@ namespace Base
             filename = itr->GetString();
             StringID texture_id(filename, strlen(filename));
 
-            texture = new (allocator.Alloc<TextureStorage::Val>()) TextureStorage::Val({0,0,0});
+            texture = new (allocator.Alloc<Texture>()) Texture({0,0,0});
             
             path.Clear();
             path = Directories::root;
@@ -198,7 +198,7 @@ namespace Base
         int32 order = 0, size = 0;
         ObjectStorage *new_storage = nullptr;
         
-        for(rapidjson::Value::ConstValueIterator itr = loadlist.begin();
+        for(auto itr = loadlist.begin();
             loadlist.end() != itr;
             ++itr)
             {
@@ -230,7 +230,7 @@ namespace Base
     {
         Application &app = Application::Get();
         StackAllocator &allocator = app.GetAllocator();
-        ShaderStorage &shaders = app.GetShaderStorage();
+        auto &shaders = app.GetShaderStorage();
 
         assert(m_doc.HasMember("DrawableStorages"));
         assert(m_doc["DrawableStorages"].IsArray());
@@ -241,7 +241,7 @@ namespace Base
         int32 order = 0, size = 0;
         DrawableStorage *new_storage = nullptr;
 
-        for(rapidjson::Value::ConstValueIterator itr = loadlist.begin();
+        for(auto itr = loadlist.begin();
             loadlist.end() != itr;
             ++itr)
             {

@@ -61,6 +61,28 @@ namespace Base
         
         return RET_SUCC;
     }
+
+    GameObject *ObjectScene::GetObject(Uint32 hash) 
+    {
+        GameObject *obj = nullptr;
+        for(size_t i=0; i<m_objstorages.GetCount(); ++i)
+        {
+            obj = m_objstorages[i]->Get(hash);
+            if(obj)
+                return obj;
+        }
+        return nullptr;
+    }
+
+    GameObject *ObjectScene::GetObject(Uint32 storage, Uint32 hash)
+    {
+        for(size_t i=0; i<m_objstorages.GetCount(); ++i)
+        {
+            if(m_objstorages[i]->GetID() == storage)
+                return m_objstorages[i]->Get(hash);
+        }
+        return nullptr;
+    }
     
     void ObjectScene::Update()
     {
@@ -74,7 +96,7 @@ namespace Base
     {
         for(size_t i=0; i<m_drawablestorages.GetCount(); ++i)
         {
-            m_drawablestorages[i]->DrawSprites();
+            m_drawablestorages[i]->DrawDrawables();
         }
     }
     
@@ -82,7 +104,7 @@ namespace Base
     {
         for(size_t i=0; i<m_drawablestorages.GetCount(); ++i)
         {
-            m_drawablestorages[i]->CheckDeletedSprite();
+            m_drawablestorages[i]->CheckDeletedDrawables();
         }
         for(size_t i=0; i<m_objstorages.GetCount(); ++i)
         {

@@ -8,6 +8,7 @@
 #include "TextureStorage.hpp"
 #include "ShaderProgram.hpp"
 #include "BitFlag.hpp"
+#include "Storage.hpp"
 #include <thread>
 
 namespace Base
@@ -51,9 +52,9 @@ namespace Base
 
         StackAllocator &GetAllocator();
 
-        TextureStorage &GetTextureStorage();
+        Storage<Texture> &GetTextureStorage();
 
-        ShaderStorage &GetShaderStorage();
+        Storage<ShaderProgram> &GetShaderStorage();
         
         int32 isQuit();
         
@@ -65,8 +66,8 @@ namespace Base
         StackAllocator::Marker m_release_marker;
         int32 m_quit;
         StackAllocator m_allocator;
-        TextureStorage m_texturestorage;
-        ShaderStorage m_shaderstorage;
+        Storage<Texture> m_texturestorage;
+        Storage<ShaderProgram> m_shaderstorage;
     };
 }
 
