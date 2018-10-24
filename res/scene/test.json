@@ -2,14 +2,146 @@
     "Shaders": [
         {"name": "default", "vert": "default_vert.glsl", "frag": "default_frag.glsl"}
     ],
+
     "Textures": [
         "alpacas.png"
     ],
-    "ObjectStorages": [
-        {"name": "global", "order": 512, "size": 1024}
+
+    "Animations": [
+        { 
+            "name": "walking", 
+            "texture": "alpacas.png",
+            "range": {"x": 0, "y": 768, "w": 1024, "h": 256},
+            "count": {"w": 4, "h": 1},
+            "eachtime": 0.1,
+            "loop": true
+        },
+        { 
+            "name": "idle", 
+            "texture": "alpacas.png",
+            "range": {"x": 384, "y": 512, "w": 512, "h": 256},
+            "count": {"w": 2, "h": 1},
+            "eachtime": 0.5,
+            "loop": true
+        }
     ],
+
+    "ObjectStorages": [
+        {"name": "global", "order": 512, "size": 2096}
+    ],
+
     "DrawableStorages": [
         {"name": "unlit", "shader": "default", "order": 1024, "size": 512},
         {"name": "transparent", "shader": "default", "order": 128, "size": 512}
+    ],
+
+    "GameObjects": [
+        {
+            "type": "ComponentObject",
+            "storage": "global",
+            "id": "alpaca0",
+            "GameObject": {
+                "available": true,
+                "static": false,
+                "pos": {"x": -3.5, "y": 0.0, "z": 1.0},
+                "scale": {"x": 1.1, "y": 1.1},
+                "rotation": 0.0
+            },
+            "ComponentObject": {
+                "count": 5,
+                "components": [
+                    {
+                        "type": "AnimatedSprite",
+                        "Drawable": { "storage": "unlit" },
+                        "Sprite": {
+                            "texture": "alpacas.png",
+                            "uv": {"x": 0, "y": 0, "w": 1024, "h": 1024}
+                        },
+                        "AnimatedSprite": { "default": "idle" }
+                    },
+                    {
+                        "type": "Alpaca",
+                        "Alpaca": {
+                            "head": {
+                                "type": "ComponentObject",
+                                "storage": "global",
+                                "id": "alpaca0head",
+                                "GameObject": {
+                                    "available": true,
+                                    "static": false,
+                                    "pos": {"x": 0.0, "y": 0.0, "z": 1.0},
+                                    "parent": {"storage": "global", "id": "alpaca0"},
+                                    "scale": {"x": 0.35, "y": 0.35},
+                                    "rotation": 0.0
+                                },
+                                "ComponentObbject": {
+                                    "count": 3,
+                                    "components": [
+                                        {
+                                            "type": "Sprite",
+                                            "Drawable": { "storage": "unlit" },
+                                            "Sprite": {
+                                                "texture": "alpacas.png",
+                                                "uv": {"x": 0, "y": 640, "w": 128, "h": 128}
+                                            }
+                                        },
+                                        {
+                                            "type": "Head",
+                                            "Head": {
+                                                "headpos": {"x":-0.35, "y":0.45, "z":1.0},
+                                                "neckpos": {"x":-0.33, "y":0.3, "z":1.0},
+                                                "neck": {
+                                                    "type": "ComponentObject",
+                                                    "storage": "none",
+                                                    "id": "alpaca0neck",
+                                                    "GameObject": {
+                                                        "available": true,
+                                                        "static": false,
+                                                        "pos": {"x": 0.0, "y": 0.0, "z": 1.0},
+                                                        "parent": {"storage": "global", "id": "alpaca0"},
+                                                        "scale": {"x": 0.35, "y": 0.35},
+                                                        "rotation": 0.0
+                                                    },
+                                                    "ComponentObject": {
+                                                        "count": 1,
+                                                        "components": [
+                                                            {
+                                                                "type": "Sprite",
+                                                                "Drawable": { "storage": "none" }, 
+                                                                "Sprite": {
+                                                                    "texture": "alpacas.png",
+                                                                    "uv": {"x": 128, "y": 640, "w": 128, "h": 128}
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "speed": 1.0,
+                            "keymap": 0,
+                            "action_manager": {
+                                "actions": [
+                                    {
+                                        "type": "Heading",
+                                        "Action": { "cooltime": 4.0 },
+                                        "Heading": { "time": 1.0, "length": 3.0 }
+                                    },
+                                    {
+                                        "type": "Dash",
+                                        "Action": { "cooltime": 4.0 },
+                                        "Dash": { "time": 0.06, "length":1.2 }
+                                    }
+                                ],
+                                "resettime": 1.0
+                            }
+                        }
+                    }
+                ]
+            }
+        }
     ]
 }

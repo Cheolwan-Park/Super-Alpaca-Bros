@@ -9,6 +9,7 @@
 #include "ShaderProgram.hpp"
 #include "BitFlag.hpp"
 #include "Storage.hpp"
+#include "Animation.hpp"
 #include <thread>
 
 namespace Base
@@ -19,7 +20,7 @@ namespace Base
     typedef int32(*AppSettingFun)(void);
     typedef void(*AppReleaseFun)(void);
     
-    class Scene;
+    class ObjectScene;
     
     class Application
     {
@@ -32,9 +33,7 @@ namespace Base
     public:
         ~Application();
         
-        int32 Create(SDL::Window window,
-                     GLSettingFun gl_setting,
-                     AppSettingFun app_setting);
+        int32 Create(SDL::Window window, GLSettingFun gl_setting);
         
         void Run();
         
@@ -44,17 +43,24 @@ namespace Base
         
         // allocator is pointer of that used by scene
         // mark is pointer to release scene
-        int32 SetScene(Scene *scene, StackAllocator::Marker mark = 0);
+        int32 SetScene(ObjectScene *scene);
+        int32 SetScene(ObjectScene *scene, StackAllocator::Marker mark);
+
+        // set scene with scene file name
+        // create JsonScene
+        int32 SetScene(const char *filename);
         
         SDL::Window GetWindow();
         
-        Scene *GetScene();
+        ObjectScene *GetScene();
 
         StackAllocator &GetAllocator();
 
         Storage<Texture> &GetTextureStorage();
 
         Storage<ShaderProgram> &GetShaderStorage();
+
+        Storage<Animation> &GetAnimationStorage();
         
         int32 isQuit();
         
@@ -62,12 +68,13 @@ namespace Base
         
     private:
         SDL::Window m_window;
-        Scene *m_scene;
+        ObjectScene *m_scene;
         StackAllocator::Marker m_release_marker;
         int32 m_quit;
         StackAllocator m_allocator;
         Storage<Texture> m_texturestorage;
         Storage<ShaderProgram> m_shaderstorage;
+        Storage<Animation> m_animationstorage;
     };
 }
 

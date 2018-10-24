@@ -23,7 +23,7 @@ namespace Base
             formated = surface;
         }
 
-        *w = formated->w;
+        *w = formated->w; 
         *h = formated->h;
         glGenTextures(1, &result);
         glBindTexture(GL_TEXTURE_2D, result);

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="safari">
+    <title>Json Informations</title>
+    <style>
+        #Title {
+            font-size: 3vw;
+        }
+        .class {
+            margin: 1vw;
+            padding: 2vw;
+            background-color: rgb(58, 58, 58);
+            color: white;
+            border-radius: 3vw;
+        }
+        .class h1 {
+            font-size: 3vw;
+        }
+        .class p {
+            font-size: 2vw;
+        }
+        .elements {
+            padding: 1.5vw;
+            background-color: rgb(97, 97, 97);
+            color: white;
+            border-radius: 2vw;
+            font-size: 2vw;
+            line-height: 3vw;
+        }
+        .elements a {
+            font-size: 3vw;
+            color:rgb(153, 204, 255)e;
+        }
+        .category {
+            font-size: 4vw;
+        }
+        .index {
+            display: table;
+
+        }
+        .index div {
+            display: table-cell;
+            width: 20vw;
+            height: auto;
+        }
+        .index div h3 {
+            font-size: 2.5vw;
+        }
+        .index div ul {
+            font-size: 1.7vw;
+        }
+    
+    </style>
+</head>
+<body>
+    <div id="Title">
+        <h1> Json Informations </h1>
+    </div>
+    <hr>
+    <h1 style="text-align: center; font-size: 5vw; height: 1.5vw;"> Index </h2>
+    <div id="index" class="index">
+        <div id="basic-types-index">
+            <h3> Basic types </h3>
+            <ul>
+                <li><a href="#vec3">vec3</a></li>
+                <li><a href="#vec2">vec2</a></li>
+                <li><a href="#rect">rect</a></li>
+                <li><a href="#irect">irect</a></li>
+                <li><a href="#size">size</a></li>
+                <li><a href="#point">point</a></li>
+                <li><a href="#Shader">Shader</a></li>
+                <li><a href="#Animation">Animation</a></li>
+                <li><a href="#ObjectStorage">ObjectStorage</a></li>
+                <li><a href="#DrawableStorage">DrawableStorage</a></li>
+            </ul>
+        </div>
+        <div id="file-formats-gameobjects-index">
+            <h3> File Formats </h3>
+            <ul>
+                <li><a href="#init-file">Initialize file</a></li>
+                <li><a href="#scene-file">Scene file</a></li>
+            </ul>
+            <h3> GameObjects </h3>
+            <ul>
+                <li><a href="#GameObject">GameObject</a></li>
+                <li><a href="#ComponentObject">ComponentObject</a></li>
+            </ul>
+        </div>
+        <div id="components-index">
+            <h3> Components </h3>
+            <ul>
+                <li><a href="#Component">Component</a></li>
+                <li><a href="#Drawable">Drawable</a></li>
+                <li><a href="#Sprite">Sprite</a></li>
+                <li><a href="#AnimatedSprite">AnimatedSprite</a></li>
+                <li><a href="#Alpaca">Alpaca</a></li>
+                <li><a href="#Head">Head</a></li>
+            </ul>
+        </div>
+        <div id="extras-index">
+            <h3> Extra types </h3>
+            <ul>
+                <li><a href="#ActionManager">ActionManager</a></li>
+                <li><a href="#Action">Action</a></li>
+                <li><a href="#Heading">Heading</a></li>
+                <li><a href="#Dash">Dash</a></li>
+            </ul>
+        </div>
+    </div>
+    <hr>
+
+    <h1 id="category-types" class="category"> Basic Types </h1>
+    <div id="vec3" class="class">
+        <h1> vec3 </h1>
+        <p class="description"> 3d vector </p>
+        <div class="elements">
+            <p>
+                x, y, z (float) : value of each element
+            </p>
+        </div>
+    </div>
+    <div id="vec2" class="class">
+        <h1> vec2 </h1>
+        <p class="description"> 2d vector </p>
+        <div class="elements">
+            <p>
+                x, y (float) : value of each element
+            </p>
+        </div>
+    </div>
+    <div id="rect" class="class">
+        <h1> rect </h1>
+        <p class="description"> float rectangle </p>
+        <div class="elements">
+            <p>
+                x, y (float) : bottom left point's x, y element value <br>
+                w, h (float) : width and height of the rect 
+            </p>
+        </div>
+    </div>
+    <div id="irect" class="class">
+        <h1> irect </h1>
+        <p class="description"> int rectangle </p>
+        <div class="elements">
+            <p>
+                x, y (int) : bottom left point's x, y element value <br>
+                w, h (int) : width and height of the rect 
+            </p>
+        </div>
+    </div>
+    <div id="size" class="class">
+        <h1> size </h1>
+        <p class="description"> size (width and height) </p>
+        <div class="elements">
+            <p>
+                w, h (int) : width and height
+            </p>
+        </div>
+    </div>
+    <div id="point" class="class">
+        <h1> point </h1>
+        <p class="description"> int 2d vector </p>
+        <div class="elements">
+            <p>
+                x, y (int) : value of each element
+            </p>
+        </div>
+    </div>
+    <div id="Shader" class="class">
+        <h1> Shader </h1>
+        <p class="description"> shader information </p>
+        <div class="elements">
+            <p>
+                name (string) : id of the shader <br>
+                vert (string) : vertex shader filename <br>
+                frag (string) : fragment shader filename <br>
+            </p>
+        </div>
+    </div>
+    <div id="Animation" class="class">
+        <h1> Animation </h1>
+        <p class="description"> animation information </p>
+        <div class="elements">
+            <p>
+                name (string) : id of the animation <br>
+                texture (string) : texture filename of the animation <br>
+                range (irect) : sprites rectangle used for animation <br>
+                count (size) : sprites slicing in range rect <br>
+                eachtime (float) : each sprite showing time <br>
+                loop (bool) : is animation looping 
+            </p>
+        </div>
+    </div>
+    <div id="ObjectStorage" class="class">
+        <h1> ObjectStorage </h1>
+        <p class="description"> storage for containing GameObjects </p>
+        <div class="elements">
+            <p>
+                name (string) : id of the storage <br>
+                order (int) : updating order (lower, earlier the storage updates) <br>
+                size (int) : storage hash size
+            </p>
+        </div>
+    </div>
+    <div id="DrawableStorage" class="class">
+        <h1> DrawableStorage </h1>
+        <p class="description"> storage for containing Drawables and drawing them </p>
+        <div class="elements">
+            <p>
+                name (string) : id of the storage <br>
+                shader (string) : shader id for drawing items storage contains <br>
+                order (int) : updating order (lower, earlier the storage drew) <br>
+                size (int) : storage hash size
+            </p>
+        </div>
+    </div>
+    <hr>
+
+    <h1 id="category-fileformat" class="category"> File Format </h1>
+    <div id="init-file" class="class">
+        <h1> Initialize file </h1>
+        <p class="description"> file for initialize game </p>
+        <div class="elements">
+            <p>
+                title (string) : title of the game <br>
+                windowsize (size) : size of the window <br>
+                camera_range (size) : camera view size <br>
+                allocator_size (int) : allocator memory size (unit: byte) <br>
+                shaderstorage_size (int) : shaderstorage hash size <br>
+                texturestorage_size (int) : texturestorage hash size <br>
+                animationstorage_size (int) : animationstorage hash size <br>
+                default_scene (string) : default scene file
+            </p>
+        </div>
+    </div>
+    <div id="scene-file" class="class">
+        <h1> Scene file </h1>
+        <p class="description"> file for initialize scene </p>
+        <div class="elements">
+            <p>
+                Shaders (array: Shader) : array of Shader <br>
+                Textures (array: string) : array of texture filename <br>
+                Animations (array: Animation) : array of Animation <br>
+                ObjectStorages (array: ObjectStorage) : array of ObjectStorage <br>
+                DrawableStorages (array: DrawableStorage) : array of DrawableStorage <br>
+                GameObjects (array: GameObject) : array of GameObject 
+            </p>
+        </div>
+    </div>
+    <hr>
+    
+
+    <h1 id="category-gameobjects" class="category"> GameObjects </h1>
+    <div id="GameObject" class="class">
+        <h1> GameObject </h1>
+        <p class="description"> Base class for all GameObject </p>
+        <div class="elements">
+            <p>
+                type (string) : type of gameobject (classname) <br>
+                storage (string) : name of the storage contains gameobject <br>
+                id (string) : id of gameobject <br>
+                available (bool) : is gameobject available (updated) <br>
+                static (bool) : is gameobject static (not movable) <br>
+                position (vec3) : location of gameobject <br>
+                scale (vec2) : scale of gameobject <br>
+                rotation (float) : rotation of gameobject
+            </p>
+            <p style="color: rgb(177, 254, 255)">
+                file (string) : init gameobject with file (file containing Object(GameObject))
+            </p>
+        </div>
+    </div>
+    <div id="ComponentObject" class="class">
+        <h1> ComponentObject </h1>
+        <p> GameObject that can contain Components </p>
+        <div class="elements">
+            <p>
+                type (string) : type of gameobject (classname) <br>
+                storage (string) : name of the objectstorage contains gameobject <br>
+                id (string) : id of gameobject <br>
+                available (bool) : is gameobject available (updated) <br>
+                static (bool) : is gameobject static (not movable) <br>
+                position (vec3) : location of gameobject <br>
+                scale (vec2) : scale of gameobject <br>
+                rotation (float) : rotation of gameobject <br>
+                components (array) : array of components gameobject contains
+            </p>
+        </div>
+    </div>
+    <hr>
+
+    <h1 id="category-components" class="category"> Components </h1>
+    <div id="Component" class="class">
+        <h1> Component </h1>
+        <p class="description"> Base class for all Component (cannot instantiate) </p>
+        <div class="elements">
+            <p>
+                type (string) : type of component (classname) <br>
+                available (bool) : is component available (updated)
+            </p>
+        </div>
+    </div>
+    <div id="Drawable" class="class">
+        <h1> Drawable </h1>
+        <p class="description"> Base class for drawing Component (cannot instantiate) </p>
+        <div class="elements">
+            <p>
+                type (string) : type of component (Drawable) <br>
+                available (bool) : is component available (updated) <br>
+                id (string) : id of drawable component <br>
+                storage (string) : name of the drawablestorage contains drawable (if none, not registering)
+            </p>
+        </div>
+    </div>
+    <div id="Sprite" class="class">
+        <h1> Sprite </h1>
+        <p class="description"> Component for drawing sprite </p>
+        <div class="elements">
+            <p>
+                type (string) : type of component (Sprite) <br>
+                available (bool) : is component available (updated) <br>
+                id (string) : id of drawable component <br>
+                storage (string) : name of the drawablestorage contains drawable (if none, not registering) <br>
+                uv (irect) : uv rect (unit: pixel) <br>
+                texture (string) : texture id
+            </p>
+        </div>
+    </div>
+    <div id="AnimatedSprite" class="class">
+        <h1> AnimatedSprite </h1>
+        <p class="description"> Component for sprite containing animation </p>
+        <div class="elements">
+            <p>
+                type (string) : type of component (AnimatedSprite) <br>
+                available (bool) : is component available (updated) <br>
+                id (string) : id of drawable component <br>
+                storage (string) : name of the drawablestorage contains drawable (if none, not registering) <br>
+                uv (irect) : uv rect (unit: pixel) <br>
+                texture (string) : texture id <br>
+                default_anim (string) : default animation id
+            </p>
+        </div>
+    </div>
+    <div id="Alpaca" class="class">
+        <h1> Alpaca </h1>
+        <p class="description"> Alpaca Player Component </p>
+        <div class="elements">
+            <p>
+                type (string) : type of component (Alpaca) <br>
+                available (bool) : is component available (updated) <br>
+                head (ComponentObject) : head object for alpaca <br>
+                speed (float) : alpaca moving speed <br>
+                keymap (int) : 0 -> 1P, 1 -> 2P <br>
+                action_manager (ActionManager) : ActionManager for alpaca 
+            </p>
+        </div>
+    </div>
+     <div id="Head" class="class">
+        <h1> Head </h1>
+        <p class="description"> Alpaca's Head Component </p>
+        <div class="elements">
+            <p>
+                type (string) : type of component (Head) <br>
+                available (bool) : is component available (updated) <br>
+                id (string) : id of drawable component <br>
+                storage (string) : name of the drawablestorage contains drawable (if none, not registering) <br>
+                uv (irect) : uv rect (unit: pixel) <br>
+                texture (string) : texture id
+                headpos (vec3) : default head position <br>
+                neckpos (vec3) : default neck position <br>
+                neck (ComponentObject) : neck object for alpaca
+            </p>
+        </div>
+    </div>
+    <hr>
+
+    <h1 id="category-extras" class="category"> Extra types </h1>
+    <div id="ActionManager" class="class">
+        <h1> ActionManager </h1>
+        <p class="description"> Alpaca's Actions Manager class </p>
+        <div class="elements">
+            <p>
+                actions (array: Action) : Actions alpaca contains <br>
+                resettime (float) : time to reset combo
+            </p>
+        </div>
+    </div>
+    <div id="Action" class="class">
+        <h1> Action </h1>
+        <p class="description"> Base class of Alpaca's Actions (Skill) class </p>
+        <div class="elements">
+            <p>
+                type (string) : type of action (classname) <br>
+                cooltime (float) : cooltime of action 
+            </p>
+        </div>
+    </div>
+    <div id="Heading" class="class">
+        <h1> Heading </h1>
+        <p class="description"> Heading action </p>
+        <div class="elements">
+            <p>
+                type (string) : type of action (classname) <br>
+                cooltime (float) : cooltime of action <br>
+                time (float) : taking time of heading action <br>
+                length (float) : head flying length
+            </p>
+        </div>
+    </div>
+    <div id="Dash" class="class">
+        <h1> Dash </h1>
+        <p class="description"> Dash action </p>
+        <div class="elements">
+            <p>
+                type (string) : type of action (classname) <br>
+                cooltime (float) : cooltime of action <br>
+                time (float) : taking time of dash action <br>
+                length (float) : dashing length
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>

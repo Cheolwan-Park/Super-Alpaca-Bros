@@ -36,6 +36,7 @@ namespace Base
     protected:
         virtual int32 LoadShaders() = 0;
         virtual int32 LoadTextures() = 0;
+        virtual int32 LoadAnimations() = 0;
     };
     
     class ObjectScene : public Scene
@@ -68,10 +69,15 @@ namespace Base
         ObjectStorage *GetObjectStorage(Uint32 hash);
         
         DrawableStorage *GetDrawableStorage(Uint32 hash);
+
+        GameObject *AddGameObject(Uint32 storagehash, GameObject *gameobject);
+
+        int32 RegisterDrawable(Uint32 storagehash, Drawable *drawable);
         
     protected:
         virtual int32 CreateObjectStorages() = 0;
         virtual int32 CreateDrawableStorages() = 0;
+        virtual int32 CreateObjects() = 0;
         
     private:
         Array<ObjectStorage*> m_objstorages;

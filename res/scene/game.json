@@ -1,0 +1,85 @@
+{
+    "Shaders": [
+        {"name": "default", "vert": "default_vert.glsl", "frag": "default_frag.glsl"}
+    ],
+
+    "Textures": [
+        "alpacas.png"
+    ],
+
+    "Animations": [
+        { 
+            "name": "walking", 
+            "texture": "alpacas.png",
+            "range": {"x": 0, "y": 768, "w": 1024, "h": 256},
+            "count": {"w": 4, "h": 1},
+            "eachtime": 0.1,
+            "loop": true
+        },
+        { 
+            "name": "idle", 
+            "texture": "alpacas.png",
+            "range": {"x": 384, "y": 512, "w": 512, "h": 256},
+            "count": {"w": 2, "h": 1},
+            "eachtime": 0.5,
+            "loop": true
+        }
+    ],
+
+    "ObjectStorages": [
+        {"name": "global", "order": 512, "size": 2096}
+    ],
+
+    "DrawableStorages": [
+        {"name": "unlit", "shader": "default", "order": 1024, "size": 512},
+        {"name": "transparent", "shader": "default", "order": 128, "size": 512}
+    ],
+
+    "GameObjects": [
+        {
+            "type": "ComponentObject",
+            "storage": "global",
+            "id": "alpaca0",
+            "available": true,
+            "static": false,
+            "position": {"x": -3.0, "y": 0.0, "z": 1.0},
+            "scale": {"x": 1.1, "y": 1.1},
+            "rotation": 0.0,
+            "components": [
+                {
+                    "type": "AnimatedSprite",
+                    "available": true,
+                    "id": "alpaca0",
+                    "storage": "unlit",
+                    "uv": {"x": 0, "y": 0, "w": 1024, "h": 1024},
+                    "texture": "alpacas.png",
+                    "default_anim": "idle"
+                },
+                {
+                    "type": "Alpaca",
+                    "available": true,
+                    "head": { "file": "alpacahead.json" },
+                    "speed": 1.0,
+                    "keymap": 0,
+                    "action_manager": {
+                        "actions": [
+                            {
+                                "type": "Heading",
+                                "cooltime": 4.0,
+                                "time": 1.0, 
+                                "length": 3.0
+                            },
+                            {
+                                "type": "Dash",
+                                "cooltime": 2.0,
+                                "time": 0.06, 
+                                "length":1.2
+                            }
+                        ],
+                        "resettime": 1.0
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -29,6 +29,7 @@ namespace Base
     
     Camera &Camera::operator=(const Camera &other)
     {
+        assert(this != &other);
         this->m_view = other.m_view;
         this->m_projection = other.m_projection;
         return (*this);
@@ -85,6 +86,7 @@ namespace Base
     OrthoCamera &OrthoCamera::operator=(const OrthoCamera &other)
     {
         Camera::operator=(other);
+        assert(this != &other);
         this->m_left_top_near = other.m_left_top_near;
         this->m_right_bottom_far = other.m_right_bottom_far;
         return (*this);

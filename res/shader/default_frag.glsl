@@ -9,5 +9,5 @@ void main()
 {
     vec4 color = texture(tex, texcoord);
     out_color = color;
-    // out_color = vec4(1.0, 0.0, 0.0, 1.0);
+    // out_color = vec4(texcoord.x, texcoord.y, 0.0, 1.0);
 }

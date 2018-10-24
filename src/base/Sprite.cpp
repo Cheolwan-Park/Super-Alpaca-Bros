@@ -12,37 +12,20 @@
 namespace Base
 {
     // Drawable class
-    Drawable::Drawable(Uint32 id, int32 isStatic)
-    :GameObject(id, isStatic), m_scale(0.0f, 0.0f), m_rotation(0.0f)
+    Component *Drawable::Factory(const rapidjson::Value::Object &obj, StackAllocator &allocator)
+    {
+        fprintf(stderr, "Drawable is abstract class\n");
+        return nullptr;
+    }
+
+    Drawable::Drawable()
+    :Component(), m_id(0)
     {
         ;
     }
-    
-    Drawable::Drawable(Uint32 id, const GameObject *parent, int32 isStatic)
-    :GameObject(id, parent, isStatic), m_scale(0.0f, 0.0f), m_rotation(0.0f)
-    {
-        ;
-    }
-
-    Drawable::Drawable(const rapidjson::GenericObject<true, rapidjson::Value> &obj)
-    :GameObject(obj), m_scale(0.0f, 0.0f), m_rotation(0.0f)
-    {
-        assert(obj.HasMember("Drawable"));
-        assert(obj["Drawable"].IsObject());
-        auto dobj = obj["Drawable"].GetObject();
-
-        assert(dobj.HasMember("scale"));
-        assert(dobj.HasMember("rotation"));
-        assert(dobj["scale"].IsObject());
-        assert(dobj["rotation"].IsFloat());
-
-        JsonParseMethods::ReadVector2(dobj["scale"].GetObject(), &m_scale);
-        m_rotation = dobj["rotation"].GetFloat();
-    }
-    
 
     Drawable::Drawable(const Drawable &other)
-    :GameObject(other), m_scale(other.m_scale), m_rotation(other.m_rotation)
+    :Component(other), m_id(0)
     {
         ;
     }
@@ -54,76 +37,60 @@ namespace Base
     
     Drawable &Drawable::operator=(const Drawable &other)
     {
-        GameObject::operator=(other);
-        this->m_scale = other.m_scale;
-        this->m_rotation = other.m_rotation;
+        assert(this != &other);
+        Component::operator=(other);
         return (*this);
+    }
+
+    void Drawable::InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator)
+    {
+        Component::InitWithJson(obj, allocator);
+
+        assert(obj.HasMember("id"));
+        assert(obj.HasMember("storage"));
+        assert(obj["id"].IsString());
+        assert(obj["storage"].IsString());
+
+        const char *idstr = obj["id"].GetString();
+        const char *storagename = obj["storage"].GetString();
+        m_id = CompileTimeHash::runtime_hash(idstr, strlen(idstr));
+        Uint32 storageid = CompileTimeHash::runtime_hash(storagename, strlen(storagename));
+
+        if("none"_hash != storageid)
+        {
+            ObjectScene *scene = Application::Get().GetScene();
+            assert(scene);
+            DrawableStorage *storage = scene->GetDrawableStorage(storageid);
+            assert(storage);
+            storage->Register(this, GetID());
+        }
     }
     
     void Drawable::Start()
     {
-        GameObject::Start();
+        Component::Start();
     }
     
     void Drawable::Update()
     {
-        GameObject::Update();
+        ;
     }
-    
-    const glm::vec2 &Drawable::GetScale()const
+
+    void Drawable::Release()
     {
-        return m_scale;
-    }
-    
-    float32 Drawable::GetRotation()const
-    {
-        return m_rotation;
-    }
-    
-    void Drawable::SetScale(const glm::vec2 &val)
-    {
-        m_scale = val;
-    }
-    
-    void Drawable::SetScale(float32 x, float32 y)
-    {
-        m_scale.x = x;
-        m_scale.y = y;
-    }
-    
-    void Drawable::Scale(const glm::vec2 &val)
-    {
-        m_scale.x *= val.x;
-        m_scale.y *= val.y;
-    }
-    
-    void Drawable::Scale(float32 x, float32 y)
-    {
-        m_scale.x *= x;
-        m_scale.y *= y;
-    }
-    
-    void Drawable::Scale(float32 x)
-    {
-        m_scale *= x;
-    }
-    
-    void Drawable::SetRotation(float32 val)
-    {
-        m_rotation = val;
-    }
-    
-    void Drawable::Rotate(float32 delta)
-    {
-        m_rotation += delta;
+        ;
     }
     
     void Drawable::SetDrawer(DrawableStorage *drawer)
     {
         drawer->Register(this, GetID());
     }
-    
-    
+
+    Uint32 Drawable::GetID()const
+    {
+        return m_id;
+    }
+
     
     // Sprite class
     const glm::vec3 Sprite::verts[4] =
@@ -136,71 +103,60 @@ namespace Base
     
     const glm::vec2 Sprite::uvs[4] =
     {
-        {0.0f, 0.0f},   // top left
-        {1.0f, 0.0f},   // top right
-        {0.0f, 1.0f},   // bottom left
-        {1.0f, 1.0f}    // bottom right
+        {0.0f, 1.0f},   // top left
+        {1.0f, 1.0f},   // top right
+        {0.0f, 0.0f},   // bottom left
+        {1.0f, 0.0f}    // bottom right
     };
-    
-    Sprite::Sprite(Uint32 id, int32 isStatic)
-    :Drawable(id, isStatic), m_vao({0,0,0}),
-    m_uv({0.0f, 0.0f, 1.0f, 1.0f}), m_tex(nullptr)
-    {
-        InitVAO();
+
+    Sprite::Sprite()
+    :Drawable(), m_vao(), m_uv(), m_tex(nullptr)
+    { 
+        ;
     }
     
-    Sprite::Sprite(Uint32 id, const GameObject *parent, int32 isStatic)
-    :Drawable(id, parent, isStatic), m_vao({0,0,0}),
-    m_uv({0.0f, 0.0f, 1.0f, 1.0f}), m_tex(nullptr)
-    {
-        InitVAO();
-    }
-    
-    Sprite::Sprite(const rapidjson::GenericObject<true, rapidjson::Value> &obj)
-    :Drawable(obj), m_vao({0,0,0}), m_uv({0.0f, 0.0f, 1.0f, 1.0f}), m_tex(nullptr)
-    {
-        InitVAO();
-        
-        assert(obj.HasMember("Sprite"));
-        assert(obj["Sprite"].IsObject());
-        auto sobj = obj["Sprite"].GetObject();
-
-        assert(sobj.HasMember("uv"));
-        assert(sobj.HasMember("texture"));
-        assert(sobj["uv"].IsObject());
-        assert(sobj["texture"].IsString());
-
-        Application &app = Application::Get();
-        auto &textures = app.GetTextureStorage();
-        const char *texture_id = sobj["texture"].GetString();
-        m_tex = textures[CompileTimeHash::runtime_hash(texture_id, strlen(texture_id))];
-
-        Math::IRect irect({0, 0, 0, 0});
-        JsonParseMethods::ReadIRect(sobj["uv"].GetObject(), &irect);
-        SetUV(irect);
-    }
-
     Sprite::Sprite(const Sprite &other)
-    :Drawable(other), m_vao({0,0,0}),
-    m_uv(other.m_uv), m_tex(other.m_tex)
+    :Drawable(other), m_vao(), m_uv(other.m_uv), m_tex(other.m_tex)
     {
-        InitVAO();
+        ;
     }
     
     Sprite::~Sprite()
     {
-        ReleaseVAO();
+        ;
     }
     
     Sprite &Sprite::operator=(const Sprite &other)
     {
+        assert(this != &other);
         Drawable::operator=(other);
+        this->m_uv = other.m_uv;
         this->m_tex = other.m_tex;
         return (*this);
+    }
+
+    void Sprite::InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator)
+    {
+        Drawable::InitWithJson(obj, allocator);
+        
+        assert(obj.HasMember("uv"));
+        assert(obj.HasMember("texture"));
+        assert(obj["uv"].IsObject());
+        assert(obj["texture"].IsString());
+
+        Application &app = Application::Get();
+        auto &textures = app.GetTextureStorage();
+        const char *texture_id = obj["texture"].GetString();
+        m_tex = textures[CompileTimeHash::runtime_hash(texture_id, strlen(texture_id))];
+
+        Math::IRect irect({0, 0, 0, 0});
+        JsonParseMethods::ReadIRect(obj["uv"].GetObject(), &irect);
+        SetUV(irect);
     }
     
     void Sprite::Start()
     {
+        InitVAO();
         glBindVertexArray(m_vao.id);
         UpdateVBO();
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -212,6 +168,12 @@ namespace Base
     {
         Drawable::Update();
     }
+
+    void Sprite::Release()
+    {
+        ReleaseVAO();
+        Drawable::Release();
+    }
     
     void Sprite::Draw()
     {
@@ -221,7 +183,7 @@ namespace Base
         {
             glBindVertexArray(m_vao.id);
             
-            if(false == isStatic())
+            if(false == GetGameObject()->isStatic())
                 UpdateVBO();
             
             glActiveTexture(GL_TEXTURE0);
@@ -259,14 +221,11 @@ namespace Base
                                                          GL_MAP_WRITE_BIT |
                                                          GL_MAP_FLUSH_EXPLICIT_BIT |
                                                          GL_MAP_UNSYNCHRONIZED_BIT);
-        glm::mat3x3 model = glm::mat3x3(1.0f);
-        glm::vec2 worldpos = GetWorldPosition();
-        model = glm::translate(model, worldpos);
-        model = glm::rotate(model, GetRotation());
-        model = glm::scale(model, GetScale());
+        glm::mat3x3 model(1.0f);
+        GetGameObject()->GetModel(&model);
         for(Uint32 i=0; i<4; ++i)
         {
-            vert_buffer[i] = model*verts[i];
+            vert_buffer[i] = model * verts[i];
         }
         glFlushMappedBufferRange(GL_ARRAY_BUFFER, 0, sizeof(verts));
         glUnmapBuffer(GL_ARRAY_BUFFER);
@@ -276,14 +235,13 @@ namespace Base
     {
         if(0 != m_vao.id)
             return;
-        
         glGenVertexArrays(1, &m_vao.id);
         glBindVertexArray(m_vao.id);
         glGenBuffers(2, m_vao.vbo);
         
         // check static
         GLenum usage = GL_DYNAMIC_DRAW;
-        if(isStatic())
+        if(GetGameObject()->isStatic())
             usage = GL_STATIC_DRAW;
             
         
@@ -426,7 +384,7 @@ namespace Base
 
     void DrawableStorage::CheckDeleteDrawable(Drawable **drawable)
     {
-        if((*drawable)->isDeleted())
+        if((*drawable)->GetGameObject()->isDeleted())
             (*drawable) = nullptr;
     }
 }

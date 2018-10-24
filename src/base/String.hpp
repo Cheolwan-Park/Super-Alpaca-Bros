@@ -29,16 +29,6 @@ namespace Base
             }
         }
         
-        String(const char *format, ...)
-        :m_str(), m_size(0)
-        {
-            memset(m_str, 0, MaxSize);
-            va_list ap;
-            va_start(ap, format);
-            m_size = vsnprintf(m_str, MaxSize, format, ap);
-            va_end(ap);
-        }
-        
         String(const char *format, va_list ap)
         :m_str(), m_size(0)
         {

@@ -4,6 +4,7 @@
 #include "SDLInput.hpp"
 #include "Sprite.hpp"
 #include "Scene.hpp"
+#include "JsonScene.hpp"
 
 
 namespace Base
@@ -12,12 +13,12 @@ namespace Base
     // Application class
     
     Application::Application()
-    :m_window(), m_scene(nullptr), 
-    m_release_marker(0), m_quit(false),
-    m_allocator(), m_texturestorage(), m_shaderstorage()
+    :m_window(), m_scene(nullptr), m_release_marker(0), m_quit(false), 
+    m_allocator(), m_texturestorage(), m_shaderstorage(), m_animationstorage()
     {
         m_texturestorage.SetFreeFunc(FreeTexture);
         m_shaderstorage.SetFreeFunc(FreeShader);
+        m_animationstorage.SetFreeFunc(FreeAnimation);
     }
     
     Application::~Application()
@@ -25,17 +26,15 @@ namespace Base
         ;
     }
     
-    int32 Application::Create(SDL::Window window,
-                              GLSettingFun gl_setting,
-                              AppSettingFun app_setting)
+    int32 Application::Create(SDL::Window window, GLSettingFun gl_setting)
     {
         if(false == window.isAvailable())
             return RET_FAILED;
-        
         m_window = window;
         m_window.SetCurrentContext();
         
-        SDL::InitGL(gl_setting);
+        if(SDL_FALSE == SDL::InitGL(gl_setting))
+            return RET_FAILED;
         
         printf("==== OpenGL Info ====\n");
         printf("OpenGL version : %s\n",   glGetString(GL_VERSION));
@@ -43,10 +42,7 @@ namespace Base
         printf("Vendor         : %s\n",   glGetString(GL_VENDOR));
         printf("Renderer       : %s\n", glGetString(GL_RENDERER));
         
-        if(app_setting)
-            return app_setting();
-        else
-            return RET_SUCC;
+        return RET_SUCC;
     }
     
     void Application::Run()
@@ -83,25 +79,49 @@ namespace Base
             fun();
         SDL::Quit();
     }
-    
-    int32 Application::SetScene(Scene *scene, StackAllocator::Marker mark)
+
+    int32 Application::SetScene(ObjectScene *scene)
     {
         assert(scene);
-        
         if(nullptr != m_scene)
         {
-            delete m_scene;
+            m_scene->~ObjectScene();
             m_allocator.FreeWithMarker(m_release_marker);
         }
         m_texturestorage.Clear();
         m_shaderstorage.Clear();
         m_scene = scene;
-        
-        if(0 == mark)
-            m_release_marker = m_allocator.GetTopMarker();
-        else
-            m_release_marker = mark;
+        m_release_marker = m_allocator.GetTopMarker();
         return m_scene->Init();
+    }
+    
+    int32 Application::SetScene(ObjectScene *scene, StackAllocator::Marker mark)
+    {
+        assert(scene);
+        
+        if(nullptr != m_scene)
+        {
+            m_scene->~ObjectScene();
+            m_allocator.FreeWithMarker(m_release_marker);
+        }
+        m_texturestorage.Clear();
+        m_shaderstorage.Clear();
+        m_scene = scene;
+        m_release_marker = mark;
+        return m_scene->Init();
+    }
+
+    int32 Application::SetScene(const char *filename)
+    {
+        StackAllocator::Marker mark = m_allocator.GetTopMarker();
+        JsonScene *scene = new (m_allocator.Alloc<JsonScene>()) JsonScene();
+        assert(scene);
+
+        String128 path = Directories::Scene;
+        path += filename;
+        scene->SetJsonFile(path.C_Str());
+
+        return SetScene(scene, mark);
     }
     
     SDL::Window Application::GetWindow()
@@ -109,7 +129,7 @@ namespace Base
         return m_window;
     }
     
-    Scene *Application::GetScene()
+    ObjectScene *Application::GetScene()
     {
         return m_scene;
     }
@@ -127,6 +147,11 @@ namespace Base
     Storage<ShaderProgram> &Application::GetShaderStorage()
     {
         return m_shaderstorage;
+    }
+
+    Storage<Animation> &Application::GetAnimationStorage()
+    {
+        return m_animationstorage;
     }
     
     int32 Application::isQuit()

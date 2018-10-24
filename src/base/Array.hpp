@@ -56,6 +56,7 @@ namespace Base
         
         Array &operator=(const Array &other)
         {
+            assert(this != &other);
             if(this->m_maxsize == other.m_maxsize)
             {
                 memcpy(this->m_arr, other.m_arr, sizeof(ValueType)*m_maxsize);
@@ -197,6 +198,7 @@ namespace Base
         
         FixedArray &operator=(const FixedArray &other)
         {
+            assert(this != &other);
             memcpy((void*)this->m_array, (void*)other.m_array, sizeof(ValueType) * MaxSize);
             return (*this);
         }

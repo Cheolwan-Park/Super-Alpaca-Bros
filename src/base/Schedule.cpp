@@ -39,7 +39,7 @@ namespace Base {
     {
         if(false == IsPaused())
         {
-            assert(nullptr != object);
+            assert(object);
             (object->*m_function)();
         }
     }
@@ -245,7 +245,7 @@ namespace Base {
     
     class Schedule *Scheduler::Schedule(OBJECT_FUNCTION function)
     {
-        assert(nullptr != function);
+        assert(function);
         assert(m_schedulecount <= m_schedules.GetMaxSize());
         
         class Schedule *schedule = &(GetNewSchedulePos()->schedule);
@@ -258,7 +258,7 @@ namespace Base {
     
     class ScheduleOnce *Scheduler::ScheduleOnce(OBJECT_FUNCTION function, Uint32 wait_time)
     {
-        assert(nullptr != function);
+        assert(function);
         assert(m_schedulecount <= m_schedules.GetMaxSize());
         
         class ScheduleOnce *schedule = &(GetNewSchedulePos()->schedule_once);
@@ -272,7 +272,7 @@ namespace Base {
     class ScheduleInterval *Scheduler::ScheduleInterval(OBJECT_FUNCTION function,
                                                         Uint32 interval, Uint32 wait_time)
     {
-        assert(nullptr != function);
+        assert(function);
         assert(m_schedulecount <= m_schedules.GetMaxSize());
         
         class ScheduleInterval *schedule = &(GetNewSchedulePos()->schedule_interval);

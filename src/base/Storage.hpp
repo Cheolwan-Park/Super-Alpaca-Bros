@@ -41,8 +41,7 @@ namespace Base
             
             Uint32 idx = hash%m_len;
             // already exist same hash
-            if(nullptr != m_datas[idx])     
-                return nullptr;         
+            assert(!m_datas[idx]);  
             m_datas[idx] = data;
             return data;
         }

@@ -22,6 +22,7 @@ namespace SDL
     
     Window &Window::operator=(const Window &other)
     {
+        assert(this != &other);
         this->m_window = other.m_window;
         return (*this);
     }

@@ -4,7 +4,7 @@ namespace Base
 {
     namespace JsonParseMethods
     {
-        void ReadVector(const rapidjson::GenericObject<true, rapidjson::Value> &obj, glm::vec3 *vec)
+        void ReadVector(const rapidjson::Value::Object &obj, glm::vec3 *vec)
         {
             assert(vec);
 
@@ -20,7 +20,7 @@ namespace Base
             vec->z = obj["z"].GetFloat();
         }
 
-        void ReadVector2(const rapidjson::GenericObject<true, rapidjson::Value> &obj, glm::vec2 *vec)
+        void ReadVector2(const rapidjson::Value::Object &obj, glm::vec2 *vec)
         {
             assert(vec);
 
@@ -33,7 +33,7 @@ namespace Base
             vec->y = obj["y"].GetFloat();
         }
 
-        void ReadRect(const rapidjson::GenericObject<true, rapidjson::Value> &obj, Math::Rect *rect)
+        void ReadRect(const rapidjson::Value::Object &obj, Math::Rect *rect)
         {
             assert(rect);
 
@@ -52,7 +52,7 @@ namespace Base
             rect->h = obj["h"].GetFloat();
         }
 
-        void ReadIRect(const rapidjson::GenericObject<true, rapidjson::Value> &obj, Math::IRect *irect)
+        void ReadIRect(const rapidjson::Value::Object &obj, Math::IRect *irect)
         {
             assert(irect);
 
@@ -71,7 +71,7 @@ namespace Base
             irect->h = obj["h"].GetInt();
         }
 
-        void ReadSize(const rapidjson::GenericObject<true, rapidjson::Value> &obj, Math::Size *size)
+        void ReadSize(const rapidjson::Value::Object &obj, Math::Size *size)
         {
             assert(size);
 
@@ -84,7 +84,7 @@ namespace Base
             size->h = obj["h"].GetInt();
         }
 
-        void ReadPoint(const rapidjson::GenericObject<true, rapidjson::Value> &obj, Math::Point *point)
+        void ReadPoint(const rapidjson::Value::Object &obj, Math::Point *point)
         {
             assert(point);
 

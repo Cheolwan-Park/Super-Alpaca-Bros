@@ -60,6 +60,7 @@ namespace Base
         
         Vector2 &Vector2::operator=(const Vector2 &other)
         {
+            assert(this != &other);
             this->x = other.x;
             this->y = other.y;
             return (*this);
@@ -67,6 +68,7 @@ namespace Base
         
         Vector2 &Vector2::operator+=(const Vector2 &other)
         {
+            assert(this != &other);
             this->x += other.x;
             this->y += other.y;
             return (*this);
@@ -74,6 +76,7 @@ namespace Base
         
         Vector2 &Vector2::operator-=(const Vector2 &other)
         {
+            assert(this != &other);
             this->x -= other.x;
             this->y -= other.y;
             return (*this);

@@ -34,7 +34,7 @@ namespace Base
         
         Open(memory, size);
         
-        if(m_size != fread(m_buffer, sizeof(char), m_size, file))
+        if(m_size != fread(m_buffer, 1, m_size, file))
             return RET_FAILED;
 
         return RET_SUCC;
@@ -82,6 +82,8 @@ namespace Base
     {
         FILE *result = nullptr;
         result = fopen(filename, mode);
+        if(!result)
+            printf("failed open %s\n", filename);
         assert(result);
         return result;
     }

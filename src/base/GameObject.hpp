@@ -14,35 +14,48 @@
 
 #define MAKE_TYPE_ID(__TYPENAME__)  \
 static constexpr Uint32 ID = ::Base::CompileTimeHash::fnv1a_32(#__TYPENAME__, sizeof(#__TYPENAME__)-1);
+
+#define GAMEOBJECT(__TYPENAME__)    \
+MAKE_TYPE_ID(__TYPENAME__);         \
+static GameObject *Factory(const ::rapidjson::Value::Object &obj, ::Base::StackAllocator &allocator, ::Base::ObjectStorage *storage, ::Base::Uint32 id);    \
+virtual Uint32 GetTypeID()const  { return ID; }
     
 
 namespace Base
 {
     class Schedule;
+    class ObjectStorage;
     class Component;
     
     class GameObject
     {
     public:
-        MAKE_TYPE_ID(GameObject);
+        typedef GameObject* (FactoryFunc)(const ::rapidjson::Value::Object&, ::Base::StackAllocator&, ::Base::ObjectStorage*, ::Base::Uint32);
+    
+    public:
+        GAMEOBJECT(GameObject);
 
-        GameObject() = delete;
+        GameObject();
         
         GameObject(Uint32 id, int32 isStatic = false);
         
         GameObject(Uint32 id, const GameObject *parent, int32 isStatic = false);
-        
-        GameObject(const rapidjson::GenericObject<true, rapidjson::Value> &obj);
 
+        // not copying parent, id, isDeleted, isIdSet, isStarted
         GameObject(const GameObject &other);
         
         virtual ~GameObject();
         
+        // not copying parent, id, isDeleted, isIdSet, isStarted
         GameObject &operator=(const GameObject &other);
+
+        virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
         
         virtual void Start();
         
         virtual void Update();
+
+        virtual void Release();
         
         GameObject *AddChild(GameObject *child)const;
         
@@ -51,7 +64,7 @@ namespace Base
         
         const glm::vec3 &GetLocalPosition()const;
         
-        const glm::vec3 GetWorldPosition()const;
+        void GetWorldPosition(glm::vec3 *vec)const;
         
         const GameObject *GetParent()const;
         
@@ -62,6 +75,14 @@ namespace Base
         int32 isStarted()const;
         
         int32 isStatic()const;
+
+        const glm::vec2 &GetScale()const;
+        
+        float32 GetRotation()const;
+
+        const glm::mat3x3 &GetLocalModel()const;
+
+        void GetModel(glm::mat3x3 *mat)const;
         
         // set
         void SetID(Uint32 id);
@@ -81,6 +102,20 @@ namespace Base
         void Move(const glm::vec3 &delta);
         
         void Move(float32 x, float32 y);
+
+        void SetScale(const glm::vec2 &val);
+        
+        void SetScale(float32 x, float32 y);
+        
+        void Scale(const glm::vec2 &val);
+        
+        void Scale(float32 x, float32 y);
+        
+        void Scale(float32 x);
+        
+        void SetRotation(float32 val);
+        
+        void Rotate(float32 delta);
         
         void SetParent(const GameObject *parent);
         
@@ -88,10 +123,14 @@ namespace Base
         
         void SetAvailable(int32 value);
         
+        
     private:
         Uint32 m_id;
         glm::vec3 m_position;
         const GameObject *m_parent;     // worldpos = m_position + m_parent.GetWorldPos()
+        glm::vec2 m_scale;
+        float32 m_rotation;
+        glm::mat3x3 m_model;
 
     protected:
         /* flags
@@ -136,6 +175,41 @@ namespace Base
     private:
         Uint32 m_id;
         Uint32 m_order;
+    };
+
+    class GameObjectFactory : public Storage<GameObject::FactoryFunc>
+    {
+    public:
+        GameObjectFactory() : Storage<GameObject::FactoryFunc>() { ; }
+
+        GameObjectFactory(const GameObjectFactory &other) = delete;
+
+        ~GameObjectFactory() { Clear(); }
+
+        GameObjectFactory &operator=(const GameObjectFactory) = delete;
+
+        template <typename T>
+        void AddFunction()
+        {
+            Register(&T::Factory, T::ID);
+        }
+
+        template <typename T>
+        GameObject::FactoryFunc *GetFunction()
+        {
+            return (Get(T::ID));
+        }
+
+        GameObject::FactoryFunc *GetFunction(Uint32 id)
+        {
+            return (Get(id));
+        }
+
+        static GameObjectFactory &GetGlobal()
+        {
+            static GameObjectFactory instance;
+            return instance;
+        }
     };
 }
 

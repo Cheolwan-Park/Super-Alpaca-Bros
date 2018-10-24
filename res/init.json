@@ -1,0 +1,12 @@
+{
+    "title": "Alpaca's Head",
+    "windowsize": {"w": 1280, "h": 960},
+    "camera_range":  {"x": 12.0, "y": 9.0},
+
+    "allocator_size" : 16777216,
+    "shaderstorage_size": 8,
+    "texturestorage_size": 16,
+    "animationstorage_size": 16,
+
+    "default_scene" : "game.json"
+}

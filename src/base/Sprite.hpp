@@ -2,9 +2,9 @@
 #define BaseSprite_hpp
 
 #include "TextureStorage.hpp"
-#include "GameObject.hpp"
 #include "FileIO.hpp"
 #include "Math.hpp"
+#include "Component.hpp"
 #include "Storage.hpp"
 #include <functional>
 
@@ -13,58 +13,42 @@ namespace Base
     class DrawableStorage;
     class ShaderProgram;
     
-    class Drawable : public GameObject
+    class Drawable : public Component
     {
     public:
-        MAKE_TYPE_ID(Drawable);
+        static Component *Factory(const rapidjson::Value::Object &obj, StackAllocator &allocator);
 
-        Drawable() = delete;
-        
-        Drawable(Uint32 id, int32 isStatic = false);
-        
-        Drawable(Uint32 id, const GameObject *parent, int32 isStatic = false);
+    public:
+        COMPONENT(Drawable);
 
-        Drawable(const rapidjson::GenericObject<true, rapidjson::Value> &obj);
+        Drawable();
         
+        // not copying id
         Drawable(const Drawable &other);
         
         virtual ~Drawable();
         
+        // not copying id
         Drawable &operator=(const Drawable &other);
+
+        virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
         
         virtual void Start();
         
         virtual void Update();
+
+        virtual void Release();
         
         virtual void Draw() = 0;
         
         virtual void UpdateVBO() = 0;
         
-        // get
-        const glm::vec2 &GetScale()const;
-        
-        float32 GetRotation()const;
-        
-        // set
-        void SetScale(const glm::vec2 &val);
-        
-        void SetScale(float32 x, float32 y);
-        
-        void Scale(const glm::vec2 &val);
-        
-        void Scale(float32 x, float32 y);
-        
-        void Scale(float32 x);
-        
-        void SetRotation(float32 val);
-        
-        void Rotate(float32 delta);
-        
         void SetDrawer(DrawableStorage *drawer);
+
+        Uint32 GetID()const;
         
     private:
-        glm::vec2 m_scale;
-        float32 m_rotation;
+        Uint32 m_id;
     };
     
     class Sprite : public Drawable
@@ -74,25 +58,23 @@ namespace Base
         static const glm::vec2 uvs[4];
 
     public:
-        MAKE_TYPE_ID(Sprite);
+        COMPONENT(Sprite);
 
-        Sprite() = delete;
-        
-        Sprite(Uint32 id, int32 isStatic = false);
-        
-        Sprite(Uint32 id, const GameObject *parent, int32 isStatic = false);
-
-        Sprite(const rapidjson::GenericObject<true, rapidjson::Value> &obj);
+        Sprite();
         
         Sprite(const Sprite &other);
         
         virtual ~Sprite();
         
         Sprite &operator=(const Sprite &other);
+
+        virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
         
         virtual void Start();
         
         virtual void Update();
+
+        virtual void Release();
         
         virtual void Draw();
         
@@ -114,7 +96,7 @@ namespace Base
         struct VAO
         {
             GLuint id;
-            GLuint vbo[2];
+            GLuint vbo[4];
         };
         void InitVAO();
         
@@ -129,7 +111,7 @@ namespace Base
         Math::Rect m_uv;
         const Texture *m_tex;
         /* flags
-         * GameObject's flags
+         * Drawable's flags
          * 9 : update uv
          */
     };

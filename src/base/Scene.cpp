@@ -23,6 +23,8 @@ namespace Base
             return RET_FAILED;
         if(RET_SUCC != LoadTextures())
             return RET_FAILED;
+        if(RET_SUCC != LoadAnimations())
+            return RET_FAILED;
         return RET_SUCC;
     }
     
@@ -58,6 +60,9 @@ namespace Base
         
         if(RET_SUCC != CreateDrawableStorages())
             return RET_FAILED;
+
+        if(RET_SUCC != CreateObjects())
+            return RET_FAILED;
         
         return RET_SUCC;
     }
@@ -79,7 +84,9 @@ namespace Base
         for(size_t i=0; i<m_objstorages.GetCount(); ++i)
         {
             if(m_objstorages[i]->GetID() == storage)
+            {
                 return m_objstorages[i]->Get(hash);
+            }
         }
         return nullptr;
     }
@@ -154,6 +161,34 @@ namespace Base
                 return m_drawablestorages[i];
         }
         return nullptr;
+    }
+
+    GameObject *ObjectScene::AddGameObject(Uint32 storagehash, GameObject *gameobject)
+    {
+        assert(gameobject);
+        for(size_t i=0; i<m_objstorages.GetCount(); ++i)
+        {
+            if(storagehash == m_objstorages[i]->GetID())
+            {
+                m_objstorages[i]->Register(gameobject, gameobject->GetID());
+                return gameobject;
+            }
+        }
+        return nullptr;
+    }
+
+    int32 ObjectScene::RegisterDrawable(Uint32 storagehash, Drawable *drawable)
+    {
+        assert(drawable);
+        for(size_t i=0; i<m_drawablestorages.GetCount(); ++i)
+        {
+            if(storagehash == m_drawablestorages[i]->GetID())
+            {
+                m_drawablestorages[i]->Register(drawable, drawable->GetID());
+                return RET_SUCC;
+            }
+        }
+        return RET_FAILED;
     }
 }
 

@@ -8,12 +8,21 @@ message(STATUS "module path: ${CMAKE_MODULE_PATH}")
 add_compile_options( -Os )
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17" )
 set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG" )
-set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}" )
+set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g" )
 
 add_executable(
     alpacas 
     src/main.cpp
 )
+
+add_library(
+    Game STATIC
+    src/game/Alpaca.cpp
+    src/game/AlpacaHead.cpp
+    src/game/AlpacaAction.cpp
+)
+include_directories( src/game )
+target_link_libraries( alpacas Game )
 
 add_library(
     Base STATIC 
@@ -36,6 +45,9 @@ add_library(
     src/base/Vector.cpp 
     src/base/JsonScene.cpp
     src/base/Json.cpp 
+    src/base/Animation.cpp 
+    src/base/AnimatedSprite.cpp 
+    src/base/Component.cpp
     # src/base/LuaPlayer.cpp
 )
 include_directories( src/base )

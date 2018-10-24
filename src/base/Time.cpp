@@ -170,11 +170,7 @@ namespace Base
     
     StopWatch &StopWatch::operator=(const StopWatch &other)
     {
-        if(this == &other)
-        {
-            // handle error
-            return (*this);
-        }
+        assert(this != &other);
         this->m_elapsedtime = other.m_elapsedtime;
         this->m_speed = other.m_speed;
         return (*this);
