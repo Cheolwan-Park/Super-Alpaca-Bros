@@ -1,9 +1,10 @@
 #include "Component.hpp"
+#include "GameObject.hpp"
 
 namespace Base
 {
     // Component class
-    Component *Component::Factory(const ::rapidjson::Value::Object &obj, ::Base::StackAllocator &allocator)
+    Component* Component::Factory(const ::rapidjson::Value::Object &obj, ::Base::StackAllocator &allocator, GameObject *gameobject)
     {
         fprintf(stderr, "Component is abstract class\n");
         return nullptr;
@@ -45,12 +46,27 @@ namespace Base
         m_flags.SetFlag(1, true);
     }
 
-    ComponentObject *Component::GetGameObject()
+    void Component::OnColliderEnter(const Collider *other)
+    {
+        ;
+    }
+
+    void Component::OnColliderStay(const Collider *other)
+    {
+        ;
+    }
+
+    void Component::OnColliderExit(const Collider *other)
+    {
+        ;
+    }
+
+    GameObject *Component::GetGameObject()
     {
         return m_gameobject;
     }
 
-    const ComponentObject *Component::GetGameObject()const
+    const GameObject *Component::GetGameObject()const
     {
         return m_gameobject;
     }
@@ -65,7 +81,7 @@ namespace Base
         return m_flags.GetFlag(1);
     }
 
-    void Component::SetGameObject(ComponentObject *gameobject)
+    void Component::SetGameObject(GameObject *gameobject)
     {
         m_gameobject = gameobject;
     }
@@ -75,123 +91,153 @@ namespace Base
         m_flags.SetFlag(0, val);
     }
 
-    
-    // ComponentObject class
-
-    GameObject *ComponentObject::Factory(const rapidjson::Value::Object &obj, StackAllocator &allocator, ObjectStorage *storage, Uint32 id)
+    Uint32 Component::GetTag()const
     {
-        assert(storage);
-        GameObject *result = new (allocator.Alloc<ComponentObject>()) ComponentObject();
-        assert(result);
-        result->SetID(id);
-        storage->Register(result, result->GetID());
-        result->InitWithJson(obj, allocator);
-        return result;
+        assert(m_gameobject);
+        return m_gameobject->GetTag();
     }
 
-    ComponentObject::ComponentObject()
-    :GameObject(), m_componentcount(0), m_components(nullptr)
+    const glm::vec3 &Component::GetLocalPosition()const
     {
-        ;
+        assert(m_gameobject);
+        return m_gameobject->GetLocalPosition();
+    }
+        
+    void Component::GetWorldPosition(glm::vec3 *vec)const
+    {
+        assert(m_gameobject);
+        m_gameobject->GetWorldPosition(vec);
+    }
+        
+    const GameObject *Component::GetParent()const
+    {
+        assert(m_gameobject);
+        return m_gameobject->GetParent();
     }
 
-    ComponentObject::ComponentObject(Uint32 id, int32 isStatic)
-    :GameObject(id, isStatic), m_componentcount(0), m_components(nullptr)
+    const glm::vec2 &Component::GetScale()const
     {
-        ;
+        assert(m_gameobject);
+        return m_gameobject->GetScale();
+    }
+        
+    float32 Component::GetRotation()const
+    {
+        assert(m_gameobject);
+        return m_gameobject->GetRotation();
     }
 
-    ComponentObject::ComponentObject(Uint32 id, const GameObject *parent, int32 isStatic)
-    :GameObject(id, parent, isStatic), m_componentcount(0), m_components(nullptr)
+    const glm::mat3x3 &Component::GetLocalModel()const
     {
-        ;
+        assert(m_gameobject);
+        return m_gameobject->GetLocalModel();
     }
 
-    ComponentObject::ComponentObject(const ComponentObject &other)
-    :GameObject(other), m_componentcount(0), m_components(nullptr)
+    void Component::GetModel(glm::mat3x3 *mat)const
     {
-        ;
+        assert(m_gameobject);
+        m_gameobject->GetModel(mat);
     }
 
-    ComponentObject::~ComponentObject()
+    void Component::SetTag(Uint32 tag)
     {
-        ;
+        assert(m_gameobject);
+        m_gameobject->SetTag(tag);
+    }
+        
+    void Component::SetLocalPosition(const glm::vec3 &position)
+    {
+        assert(m_gameobject);
+        m_gameobject->SetLocalPosition(position);
+    }
+        
+    void Component::SetLocalPosition(float32 x, float32 y)
+    {
+        assert(m_gameobject);
+        m_gameobject->SetLocalPosition(x, y);
+    }
+        
+    void Component::SetLocalPosition(float32 x, float32 y, float32 z)
+    {
+        assert(m_gameobject);
+        m_gameobject->SetLocalPosition(x, y, z);
+    }
+        
+    void Component::SetWorldPosition(const glm::vec3 &position)
+    {
+        assert(m_gameobject);
+        m_gameobject->SetWorldPosition(position);
+    }
+        
+    void Component::SetWorldPosition(float32 x, float32 y)
+    {
+        assert(m_gameobject);
+        m_gameobject->SetWorldPosition(x, y);
+    }
+        
+    void Component::SetWorldPosition(float32 x, float32 y, float32 z)
+    {
+        assert(m_gameobject);
+        m_gameobject->SetWorldPosition(x, y, z);
+    }
+        
+    void Component::Move(const glm::vec3 &delta)
+    {
+        assert(m_gameobject);
+        m_gameobject->Move(delta);
+    }
+        
+    void Component::Move(float32 x, float32 y)
+    {
+        assert(m_gameobject);
+        m_gameobject->Move(x, y);
     }
 
-    ComponentObject &ComponentObject::operator=(const ComponentObject &other)
+    void Component::SetScale(const glm::vec2 &val)
     {
-        assert(this != &other);
-        GameObject::operator=(other);
-        return (*this);
+        assert(m_gameobject);
+        m_gameobject->SetScale(val);
     }
-
-    void ComponentObject::InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator)
+        
+    void Component::SetScale(float32 x, float32 y)
     {
-        GameObject::InitWithJson(obj, allocator);
-
-        assert(obj.HasMember("components"));
-        assert(obj["components"].IsArray());
-
-        auto compolist = obj["components"].GetArray();
-        m_componentcount = compolist.Size();
-
-        auto &factory = ComponentFactory::GetGlobal();
-        m_components = allocator.Alloc<Component*>(m_componentcount);
-        Component::FactoryFunc *factoryfunc = nullptr;
-        Component *newcompo = nullptr;
-        const char *type = nullptr;
-
-        for(int i=0; i<m_componentcount; ++i)
-        {
-            assert(compolist[i].IsObject());
-            auto componentobj = compolist[i].GetObject();
-
-            assert(componentobj.HasMember("type"));
-            assert(componentobj["type"].IsString());
-
-            type = componentobj["type"].GetString();
-            factoryfunc = factory.GetFunction(CompileTimeHash::runtime_hash(type, strlen(type)));
-            assert(factoryfunc);
-            newcompo = factoryfunc(componentobj, allocator);
-            assert(newcompo);
-
-            newcompo->SetGameObject(this);
-            m_components[i] = newcompo;
-        }
+        assert(m_gameobject);
+        m_gameobject->SetScale(x, y);
     }
-
-    void ComponentObject::Start()
+        
+    void Component::Scale(const glm::vec2 &val)
     {
-        for(int i=0; i<m_componentcount; ++i)
-        {
-            m_components[i]->Start();
-        }
-        GameObject::Start();
+        assert(m_gameobject);
+        m_gameobject->Scale(val);
     }
-
-    void ComponentObject::Update()
+        
+    void Component::Scale(float32 x, float32 y)
     {
-        GameObject::Update();
-        for(int i=0; i<m_componentcount; ++i)
-        {
-            m_components[i]->Update();
-        }
+        assert(m_gameobject);
+        m_gameobject->Scale(x, y);
     }
-
-    void ComponentObject::Release()
+        
+    void Component::Scale(float32 x)
     {
-        for(int i=0; i<m_componentcount; ++i)
-        {
-            m_components[i]->Release();
-            m_components[i]->~Component();
-            m_components[i] = nullptr;
-        }
-        GameObject::Release();
+        assert(m_gameobject);
+        m_gameobject->Scale(x);
     }
-
-    Uint32 ComponentObject::GetComponentCount()const 
+        
+    void Component::SetRotation(float32 val)
     {
-        return m_componentcount;
+        assert(m_gameobject);
+        m_gameobject->SetRotation(val);
     }
-    
+        
+    void Component::Rotate(float32 delta)
+    {
+        assert(m_gameobject);
+        m_gameobject->Rotate(delta);
+    }
+        
+    void Component::SetParent(const GameObject *parent)
+    {
+        assert(m_gameobject);
+        m_gameobject->SetParent(parent);
+    }
 }

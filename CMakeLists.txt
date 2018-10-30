@@ -43,11 +43,12 @@ add_library(
     src/base/TextureStorage.cpp 
     src/base/Time.cpp 
     src/base/Vector.cpp 
-    src/base/JsonScene.cpp
+    src/base/SceneLoadFunctions.cpp
     src/base/Json.cpp 
     src/base/Animation.cpp 
     src/base/AnimatedSprite.cpp 
     src/base/Component.cpp
+    src/base/Collider.cpp
     # src/base/LuaPlayer.cpp
 )
 include_directories( src/base )

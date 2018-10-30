@@ -66,7 +66,7 @@ namespace Game
             for(int i=0; i<m_necks.GetMaxSize(); ++i)
             {
                 m_necks[i].Release();
-                m_necks[i].~ComponentObject();
+                m_necks[i].~GameObject();
             }
             Sprite::Release();
         }
@@ -82,9 +82,8 @@ namespace Game
 
         void Head::ResetPosition()
         {
-            GameObject *gameobject = GetGameObject();
-            gameobject->SetLocalPosition(m_headpos);
-            gameobject->SetRotation(0.0f);
+            SetLocalPosition(m_headpos);
+            SetRotation(0.0f);
             for(int i=0; i<m_necks.GetMaxSize(); ++i)
                 m_necks[i].SetLocalPosition(m_neckpos);
         }
@@ -93,6 +92,15 @@ namespace Game
         {
             assert(alpaca);
             m_alpaca = alpaca;
+            
+            SetParent(alpaca->GetGameObject());
+            for(int i=0; i<m_necks.GetMaxSize(); ++i)
+            {
+                m_necks[i].SetParent(alpaca->GetGameObject());
+            }
+
+            SetTag((alpaca->GetTag()) + "head"_hash);
+            SetTag((alpaca->GetTag()) + "neck"_hash);
         }
 
         void Head::SetHeadPos(const glm::vec3 &pos)
@@ -101,7 +109,7 @@ namespace Game
             {
                 m_necks[i].SetLocalPosition(glm::mix(m_neckpos, pos, (float32)i/(float32)(m_necks.GetMaxSize())));
             }
-            GetGameObject()->SetLocalPosition(pos);
+            SetLocalPosition(pos);
         }
 
         GameObject &Head::GetNeck(int32 i)

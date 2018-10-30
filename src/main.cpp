@@ -17,7 +17,9 @@ int main()
     Application &app = Application::Get();
     app.Run();
 
-    printf("\n\n%llubyte\n", app.GetAllocator().GetTopMarker());
+    #ifndef NDEBUG 
+    printf("%llubyte used\n", app.GetAllocator().GetTopMarker());
+    #endif
 
     app.Release(nullptr);
     
@@ -106,17 +108,14 @@ int32 JsonAppInit(const char *filename)
 
 void AddFactoryFuncs()
 {
-    auto &allocator = Application::Get().GetAllocator();
-
-    // gameobject factory
-    auto &gfactory = GameObjectFactory::GetGlobal();
-    gfactory.AssignMemory(allocator.Alloc<GameObjectFactory::Type>(32), 32);
-    gfactory.AddFunction<GameObject>();
-    gfactory.AddFunction<ComponentObject>();
+    auto &allocator = Application::Get().GetAllocator();;
 
     // component factory
     auto &cfactory = ComponentFactory::GetGlobal();
-    cfactory.AssignMemory(allocator.Alloc<ComponentFactory::Type>(128), 128);
+    cfactory.AssignMemory(allocator.Alloc<ComponentFactory::Type>(4096), 4096);
+    // cfactory.AddFunction<Collider>(Collider::Factory);
+    // cfactory.AddFunction<CircleCollider>();
+    // cfactory.AddFunction<BoxCollider>();
     cfactory.AddFunction<Component>(Component::Factory);
     cfactory.AddFunction<Drawable>(Drawable::Factory);
     cfactory.AddFunction<Sprite>();
@@ -126,7 +125,7 @@ void AddFactoryFuncs()
 
     // action factory
     auto &afactory = Game::Alpaca::ActionFactory::GetGlobal();
-    afactory.AssignMemory(allocator.Alloc<Game::Alpaca::ActionFactory::Type>(64), 64);
+    afactory.AssignMemory(allocator.Alloc<Game::Alpaca::ActionFactory::Type>(128), 128);
     afactory.AddFunction<Game::Alpaca::Heading>();
     afactory.AddFunction<Game::Alpaca::Dash>();
 }

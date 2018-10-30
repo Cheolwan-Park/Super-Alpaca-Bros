@@ -20,7 +20,7 @@ namespace Base
     typedef int32(*AppSettingFun)(void);
     typedef void(*AppReleaseFun)(void);
     
-    class ObjectScene;
+    class Scene;
     
     class Application
     {
@@ -41,18 +41,12 @@ namespace Base
         
         void Release(AppReleaseFun fun);
         
-        // allocator is pointer of that used by scene
-        // mark is pointer to release scene
-        int32 SetScene(ObjectScene *scene);
-        int32 SetScene(ObjectScene *scene, StackAllocator::Marker mark);
-
-        // set scene with scene file name
-        // create JsonScene
+        int32 SetScene(const FileIO &f);
         int32 SetScene(const char *filename);
         
         SDL::Window GetWindow();
         
-        ObjectScene *GetScene();
+        Scene *GetScene();
 
         StackAllocator &GetAllocator();
 
@@ -68,7 +62,7 @@ namespace Base
         
     private:
         SDL::Window m_window;
-        ObjectScene *m_scene;
+        Scene *m_scene;
         StackAllocator::Marker m_release_marker;
         int32 m_quit;
         StackAllocator m_allocator;

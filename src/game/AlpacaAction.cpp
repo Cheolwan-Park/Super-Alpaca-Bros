@@ -118,7 +118,7 @@ namespace Game
                 if(isHeadHooking())
                 {
                     glm::vec3 nowalpaca = glm::mix(m_hookingtargetpos, m_hookingstartpos, a);
-                    alpaca->GetGameObject()->SetWorldPosition(nowalpaca);
+                    alpaca->SetWorldPosition(nowalpaca);
                 }
 
                 // end heading
@@ -141,7 +141,7 @@ namespace Game
             Head *head = GetAlpaca()->GetHeadObject();
             m_headingtargetpos = head->GetNeckPos();
             m_headingtargetpos.x -= m_length;
-            head->GetGameObject()->SetRotation(Math::Constant::PIf/2.0f);
+            head->SetRotation(Math::Constant::PIf/2.0f);
             m_elapsedtime = 0.0f;
             SetHeading(true);
         }
@@ -170,12 +170,11 @@ namespace Game
             {
                 Alpaca *alpaca = GetAlpaca();
                 Head *head = alpaca->GetHeadObject();
-                GameObject *alpacaobject = alpaca->GetGameObject();
 
                 glm::mat3x3 model(1.0f);
-                model = glm::rotate(model, alpacaobject->GetRotation());
-                model = glm::scale(model, alpacaobject->GetScale());
-                head->GetGameObject()->GetWorldPosition(&m_hookingtargetpos);
+                model = glm::rotate(model, alpaca->GetRotation());
+                model = glm::scale(model, alpaca->GetScale());
+                head->GetWorldPosition(&m_hookingtargetpos);
                 m_hookingtargetpos -= model * (head->GetNeckPos());
 
                 m_hookingstartpos = m_hookingtargetpos;
@@ -259,7 +258,7 @@ namespace Game
                 
                 float32 a = m_elapsedtime/m_time;
                 Alpaca *alpaca = GetAlpaca();
-                alpaca->GetGameObject()->SetLocalPosition(glm::mix(m_startpos, m_taragetpos, a));
+                alpaca->SetLocalPosition(glm::mix(m_startpos, m_taragetpos, a));
 
                 if(m_elapsedtime > m_time)
                 {
@@ -282,10 +281,9 @@ namespace Game
             }
             else
             {
-                GameObject *alpacaobject = alpaca->GetGameObject();
-                m_startpos = alpacaobject->GetLocalPosition();
+                m_startpos = alpaca->GetLocalPosition();
                 m_taragetpos = m_startpos;
-                if((alpacaobject->GetScale().x) < 0.0f)
+                if((alpaca->GetScale().x) < 0.0f)
                 {
                     m_taragetpos.x += m_length;
                 }

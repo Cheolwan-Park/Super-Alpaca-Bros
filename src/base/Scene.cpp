@@ -7,36 +7,12 @@ namespace Base
 {
     // Scene class
     Scene::Scene()
+    :m_objstorages(4), m_drawablestorages(4), m_doc()
     {
         ;
     }
     
     Scene::~Scene()
-    {
-        ;
-    }
-    
-    int32 Scene::Init()
-    {
-        printf("==== loading scene ====\n");
-        if(RET_SUCC != LoadShaders())
-            return RET_FAILED;
-        if(RET_SUCC != LoadTextures())
-            return RET_FAILED;
-        if(RET_SUCC != LoadAnimations())
-            return RET_FAILED;
-        return RET_SUCC;
-    }
-    
-    
-    // ObjectScene class
-    ObjectScene::ObjectScene()
-    :Scene(), m_objstorages(4,2), m_drawablestorages(4,2)
-    {
-        ;
-    }
-    
-    ObjectScene::~ObjectScene()
     {
         for(size_t i=0; i<m_objstorages.GetCount(); ++i)
         {
@@ -50,9 +26,19 @@ namespace Base
         }
     }
     
-    int32 ObjectScene::Init()
+    int32 Scene::Init()
     {
-        if(RET_SUCC != Scene::Init())
+        #ifndef NDEBUG
+        printf("==== loading scene ====\n");
+        #endif
+        
+        if(RET_SUCC != LoadShaders())
+            return RET_FAILED;
+
+        if(RET_SUCC != LoadTextures())
+            return RET_FAILED;
+
+        if(RET_SUCC != LoadAnimations())
             return RET_FAILED;
 
         if(RET_SUCC != CreateObjectStorages())
@@ -63,11 +49,13 @@ namespace Base
 
         if(RET_SUCC != CreateObjects())
             return RET_FAILED;
-        
+
+        // m_doc.Clear();
+
         return RET_SUCC;
     }
 
-    GameObject *ObjectScene::GetObject(Uint32 hash) 
+    GameObject *Scene::GetObject(Uint32 hash)
     {
         GameObject *obj = nullptr;
         for(size_t i=0; i<m_objstorages.GetCount(); ++i)
@@ -79,7 +67,7 @@ namespace Base
         return nullptr;
     }
 
-    GameObject *ObjectScene::GetObject(Uint32 storage, Uint32 hash)
+    GameObject *Scene::GetObject(Uint32 storage, Uint32 hash)
     {
         for(size_t i=0; i<m_objstorages.GetCount(); ++i)
         {
@@ -90,24 +78,24 @@ namespace Base
         }
         return nullptr;
     }
-    
-    void ObjectScene::Update()
+
+    void Scene::Update()
     {
         for(size_t i=0; i<m_objstorages.GetCount(); ++i)
         {
             m_objstorages[i]->UpdateObjects();
         }
     }
-    
-    void ObjectScene::Render()
+
+    void Scene::Render()
     {
         for(size_t i=0; i<m_drawablestorages.GetCount(); ++i)
         {
             m_drawablestorages[i]->DrawDrawables();
         }
     }
-    
-    void ObjectScene::CheckDeletedObjects()
+
+    void Scene::CheckDeletedObjects()
     {
         for(size_t i=0; i<m_drawablestorages.GetCount(); ++i)
         {
@@ -118,8 +106,8 @@ namespace Base
             m_objstorages[i]->CheckAndDeleteObjects();
         }
     }
-    
-    void ObjectScene::AddObjectStorage(ObjectStorage *storage)
+
+    void Scene::AddObjectStorage(ObjectStorage *storage)
     {
         assert(storage);
         m_objstorages.Append(storage);
@@ -130,8 +118,8 @@ namespace Base
                       return (a->GetOrder() > b->GetOrder());
                   });
     }
-    
-    void ObjectScene::AddDrawableStorage(DrawableStorage *storage)
+
+    void Scene::AddDrawableStorage(DrawableStorage *storage)
     {
         assert(storage);
         m_drawablestorages.Append(storage);
@@ -142,8 +130,8 @@ namespace Base
                       return (a->GetOrder()) > (b->GetOrder());
                   });
     }
-    
-    ObjectStorage *ObjectScene::GetObjectStorage(Uint32 hash)
+
+    ObjectStorage *Scene::GetObjectStorage(Uint32 hash)
     {
         for(size_t i=0; i<m_objstorages.GetCount(); ++i)
         {
@@ -152,8 +140,8 @@ namespace Base
         }
         return nullptr;
     }
-    
-    DrawableStorage *ObjectScene::GetDrawableStorage(Uint32 hash)
+
+    DrawableStorage *Scene::GetDrawableStorage(Uint32 hash)
     {
         for(size_t i=0; i<m_drawablestorages.GetCount(); ++i)
         {
@@ -163,28 +151,28 @@ namespace Base
         return nullptr;
     }
 
-    GameObject *ObjectScene::AddGameObject(Uint32 storagehash, GameObject *gameobject)
+    GameObject *Scene::AddGameObject(Uint32 storage, GameObject *gameobject)
     {
         assert(gameobject);
         for(size_t i=0; i<m_objstorages.GetCount(); ++i)
         {
-            if(storagehash == m_objstorages[i]->GetID())
+            if(storage == m_objstorages[i]->GetID())
             {
-                m_objstorages[i]->Register(gameobject, gameobject->GetID());
+                m_objstorages[i]->Register(gameobject);
                 return gameobject;
             }
         }
         return nullptr;
     }
 
-    int32 ObjectScene::RegisterDrawable(Uint32 storagehash, Drawable *drawable)
+    int32 Scene::RegisterDrawable(Uint32 storage, Drawable *drawable)
     {
         assert(drawable);
         for(size_t i=0; i<m_drawablestorages.GetCount(); ++i)
         {
-            if(storagehash == m_drawablestorages[i]->GetID())
+            if(storage == m_drawablestorages[i]->GetID())
             {
-                m_drawablestorages[i]->Register(drawable, drawable->GetID());
+                m_drawablestorages[i]->Register(drawable);
                 return RET_SUCC;
             }
         }

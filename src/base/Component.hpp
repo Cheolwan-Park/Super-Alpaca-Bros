@@ -1,22 +1,35 @@
 #ifndef BaseComponent_hpp
 #define BaseComponent_hpp
 
-#include "GameObject.hpp"
+#include "Json.hpp"
+#include "BitFlag.hpp"
+#include "Storage.hpp"
+#include "Allocator.hpp"
+#include "String.hpp"
+#include <glm/glm.hpp>
 
+#ifndef MAKE_TYPE_ID
+#define MAKE_TYPE_ID(__TYPENAME__)  \
+static constexpr Uint32 ID = ::Base::CompileTimeHash::fnv1a_32(#__TYPENAME__, sizeof(#__TYPENAME__)-1);
+#endif
+
+#ifndef COMPONENT
 #define COMPONENT(__TYPENAME__)     \
 MAKE_TYPE_ID(__TYPENAME__);         \
 virtual Uint32 GetTypeID()const  { return ID; }
+#endif
 
 namespace Base
 {
-    class ComponentObject;
+    class GameObject;
+    class Collider;
 
     class Component 
     {
     public:
-        typedef Component* (FactoryFunc)(const ::rapidjson::Value::Object &obj, ::Base::StackAllocator &allocator);
+        typedef Component* (FactoryFunc)(const ::rapidjson::Value::Object &obj, ::Base::StackAllocator &allocator, GameObject *gameobject);
 
-        static Component *Factory(const ::rapidjson::Value::Object &obj, ::Base::StackAllocator &allocator);
+        static Component* Factory(const ::rapidjson::Value::Object &obj, ::Base::StackAllocator &allocator, GameObject *gameobject);
 
     public:
         COMPONENT(Component);
@@ -39,20 +52,78 @@ namespace Base
 
         virtual void Release() = 0;
 
-        ComponentObject *GetGameObject();
+        // collide callback
+        virtual void OnColliderEnter(const Collider *other);
+        virtual void OnColliderStay(const Collider *other);
+        virtual void OnColliderExit(const Collider *other);
 
-        const ComponentObject *GetGameObject()const;
+        // get
+        GameObject *GetGameObject();
+
+        const GameObject *GetGameObject()const;
 
         int32 isAvailable()const;
 
         int32 isStarted()const;
 
-        void SetGameObject(ComponentObject *gameobject);
+        // set 
+        void SetGameObject(GameObject *gameobject);
 
         void SetAvailable(int32 val);
 
+        // gameobject functions wrapping
+        Uint32 GetTag()const;
+
+        const glm::vec3 &GetLocalPosition()const;
+        
+        void GetWorldPosition(glm::vec3 *vec)const;
+        
+        const GameObject *GetParent()const;
+
+        const glm::vec2 &GetScale()const;
+        
+        float32 GetRotation()const;
+
+        const glm::mat3x3 &GetLocalModel()const;
+
+        void GetModel(glm::mat3x3 *mat)const;
+
+        void SetTag(Uint32 tag);
+        
+        void SetLocalPosition(const glm::vec3 &position);
+        
+        void SetLocalPosition(float32 x, float32 y);
+        
+        void SetLocalPosition(float32 x, float32 y, float32 z);
+        
+        void SetWorldPosition(const glm::vec3 &position);
+        
+        void SetWorldPosition(float32 x, float32 y);
+        
+        void SetWorldPosition(float32 x, float32 y, float32 z);
+        
+        void Move(const glm::vec3 &delta);
+        
+        void Move(float32 x, float32 y);
+
+        void SetScale(const glm::vec2 &val);
+        
+        void SetScale(float32 x, float32 y);
+        
+        void Scale(const glm::vec2 &val);
+        
+        void Scale(float32 x, float32 y);
+        
+        void Scale(float32 x);
+        
+        void SetRotation(float32 val);
+        
+        void Rotate(float32 delta);
+        
+        void SetParent(const GameObject *parent);
+
     private:
-        ComponentObject *m_gameobject;
+        GameObject *m_gameobject;
         
     protected:
         BitFlag m_flags;
@@ -64,69 +135,15 @@ namespace Base
     };
 
     template<class T>
-    Component *ComponentDefaultFactory(const ::rapidjson::Value::Object &obj, ::Base::StackAllocator &allocator)
+    Component *ComponentDefaultFactory(const ::rapidjson::Value::Object &obj, ::Base::StackAllocator &allocator, GameObject *gameobject)
     {
+        assert(gameobject);
         Component *result = new (allocator.Alloc<T>()) T();
         assert(result);
+        result->SetGameObject(gameobject);
         result->InitWithJson(obj, allocator);
         return result;
     }
-
-    class ComponentObject : public GameObject
-    {
-    public:
-        GAMEOBJECT(ComponentObject);
-
-        ComponentObject();
-
-        ComponentObject(Uint32 id, int32 isStatic = false);
-
-        ComponentObject(Uint32 id, const GameObject *parent, int32 isStatic = false);
-
-        // not copying components
-        ComponentObject(const ComponentObject &other);
-
-        virtual ~ComponentObject();
-
-        // not copying components
-        ComponentObject &operator=(const ComponentObject &other);
-
-        virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
-
-        virtual void Start();
-
-        virtual void Update();
-
-        virtual void Release();
-
-        template<class T>
-        T *GetComponent()
-        {
-            for(Uint32 i=0; i<m_componentcount; ++i)
-            {
-                if(T::ID == m_components[i]->GetTypeID())
-                    return static_cast<T*>(m_components[i]);
-            }
-            return nullptr;
-        }
-
-        template<class T>
-        const T *GetComponent()const
-        {
-            for(Uint32 i=0; i<m_componentcount; ++i)
-            {
-                if(T::ID == m_components[i]->GetTypeID())
-                    return static_cast<T*>(m_components[i]);
-            }
-            return nullptr;
-        }
-
-        Uint32 GetComponentCount()const;
-
-    private:
-        Uint32 m_componentcount;
-        Component **m_components;
-    };
 
     class ComponentFactory : public Storage<Component::FactoryFunc>
     {

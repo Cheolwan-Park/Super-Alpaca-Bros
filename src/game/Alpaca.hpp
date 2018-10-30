@@ -7,7 +7,7 @@ using namespace Base;
 
 namespace Game
 {
-    namespace Alpaca
+    namespace Alpaca 
     {
         class Head;
         class Action;
@@ -127,6 +127,7 @@ namespace Game
 
         private:
             Head *m_head;
+            GameObject m_headobject;
             AnimatedSprite *m_animator;
             float32 m_speed;
             Keymap m_keymap;

@@ -7,6 +7,9 @@
 #include "Allocator.hpp"
 #include "types.hpp"
 #include "Array.hpp"
+#include "Json.hpp"
+#include "FileIO.hpp"
+
 
 namespace Base
 {
@@ -23,35 +26,6 @@ namespace Base
         
         virtual int32 Init();
 
-        virtual GameObject *GetObject(Uint32 hash) = 0;
-
-        virtual GameObject *GetObject(Uint32 storage, Uint32 hash) = 0;
-        
-        virtual void Update() = 0;
-        
-        virtual void Render() = 0;
-        
-        virtual void CheckDeletedObjects() = 0;
-        
-    protected:
-        virtual int32 LoadShaders() = 0;
-        virtual int32 LoadTextures() = 0;
-        virtual int32 LoadAnimations() = 0;
-    };
-    
-    class ObjectScene : public Scene
-    {
-    public:
-        ObjectScene();
-        
-        ObjectScene(const ObjectScene &other) = delete;
-        
-        virtual ~ObjectScene();
-        
-        ObjectScene &operator=(const ObjectScene &other) = delete;
-        
-        virtual int32 Init();
-
         virtual GameObject *GetObject(Uint32 hash);
 
         virtual GameObject *GetObject(Uint32 storage, Uint32 hash);
@@ -61,7 +35,7 @@ namespace Base
         virtual void Render();
         
         virtual void CheckDeletedObjects();
-        
+
         void AddObjectStorage(ObjectStorage *storage);
         
         void AddDrawableStorage(DrawableStorage *storage);
@@ -73,18 +47,26 @@ namespace Base
         GameObject *AddGameObject(Uint32 storagehash, GameObject *gameobject);
 
         int32 RegisterDrawable(Uint32 storagehash, Drawable *drawable);
+
+        void SetJsonFile(const FileIO &f);
+
+        int32 SetJsonFile(const char *filename);
+
+        GameObject *CreateGameObject(const rapidjson::Value::Object &obj);
         
     protected:
-        virtual int32 CreateObjectStorages() = 0;
-        virtual int32 CreateDrawableStorages() = 0;
-        virtual int32 CreateObjects() = 0;
-        
+        virtual int32 LoadShaders();
+        virtual int32 LoadTextures();
+        virtual int32 LoadAnimations();
+        virtual int32 CreateObjectStorages();
+        virtual int32 CreateDrawableStorages();
+        virtual int32 CreateObjects();
+
     private:
         Array<ObjectStorage*> m_objstorages;
         Array<DrawableStorage*> m_drawablestorages;
+        rapidjson::Document m_doc;
     };
-
-    
 }
 
 #endif

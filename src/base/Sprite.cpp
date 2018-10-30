@@ -12,20 +12,20 @@
 namespace Base
 {
     // Drawable class
-    Component *Drawable::Factory(const rapidjson::Value::Object &obj, StackAllocator &allocator)
+    Component *Drawable::Factory(const rapidjson::Value::Object &obj, StackAllocator &allocator, GameObject *gameobject)
     {
         fprintf(stderr, "Drawable is abstract class\n");
         return nullptr;
     }
 
     Drawable::Drawable()
-    :Component(), m_id(0)
+    :Component()
     {
         ;
     }
 
     Drawable::Drawable(const Drawable &other)
-    :Component(other), m_id(0)
+    :Component(other)
     {
         ;
     }
@@ -46,23 +46,19 @@ namespace Base
     {
         Component::InitWithJson(obj, allocator);
 
-        assert(obj.HasMember("id"));
         assert(obj.HasMember("storage"));
-        assert(obj["id"].IsString());
         assert(obj["storage"].IsString());
 
-        const char *idstr = obj["id"].GetString();
         const char *storagename = obj["storage"].GetString();
-        m_id = CompileTimeHash::runtime_hash(idstr, strlen(idstr));
         Uint32 storageid = CompileTimeHash::runtime_hash(storagename, strlen(storagename));
 
         if("none"_hash != storageid)
         {
-            ObjectScene *scene = Application::Get().GetScene();
+            Scene *scene = Application::Get().GetScene();
             assert(scene);
             DrawableStorage *storage = scene->GetDrawableStorage(storageid);
             assert(storage);
-            storage->Register(this, GetID());
+            storage->Register(this);
         }
     }
     
@@ -80,15 +76,10 @@ namespace Base
     {
         ;
     }
-    
+
     void Drawable::SetDrawer(DrawableStorage *drawer)
     {
-        drawer->Register(this, GetID());
-    }
-
-    Uint32 Drawable::GetID()const
-    {
-        return m_id;
+        drawer->Register(this);
     }
 
     
@@ -319,18 +310,25 @@ namespace Base
     }
     
     DrawableStorage::DrawableStorage(Uint32 id, Uint32 order)
-    :Storage<Drawable>(),  m_id(id), m_order(order), 
-    m_shader(nullptr), m_rendersetting(DefaultRenderSettingFun)
+    :m_id(id), m_order(order), m_shader(nullptr), m_rendersetting(DefaultRenderSettingFun), 
+    m_len(0), m_drawables(nullptr)
     {
         ;
     }
     
     DrawableStorage::~DrawableStorage()
     {
-        Clear();
+        ;
+    }
+
+    void DrawableStorage::AssignMemory(void *mem, Uint32 len)
+    {
+        m_len = len;
+        m_drawables = (Drawable**)mem;
+        memset(m_drawables, 0, sizeof(Type)*len);
     }
     
-    void DrawableStorage::SetShader(const ShaderProgram *shader)
+    void DrawableStorage::SetShader(ShaderProgram *shader)
     {
         m_shader = shader;
     }
@@ -340,6 +338,21 @@ namespace Base
         m_rendersetting = fun;
     }
     
+    Drawable *DrawableStorage::Register(Drawable *drawable)
+    {
+        for(Uint32 i=0; i<m_len; ++i)
+        {
+            if(!m_drawables[i])
+            {
+                m_drawables[i] = drawable;
+                return drawable;
+            }
+        }
+        fprintf(stderr, "there is no space in DrawableStorage\n");
+        exit(-1);
+        return nullptr;
+    }
+
     void DrawableStorage::DrawDrawables()
     {
         if(nullptr != m_shader)
@@ -357,13 +370,25 @@ namespace Base
                                glm::value_ptr(vp));
             glUniform1i(m_shader->GetTextureLocation(), 0);
             
-            ForDo(DrawDrawable);
+            for(Uint32 i=0; i<m_len; ++i)
+            {
+                if(m_drawables[i] && m_drawables[i]->isAvailable())
+                {
+                    m_drawables[i]->Draw();
+                }
+            }
         }
     }
     
     void DrawableStorage::CheckDeletedDrawables()
     {
-        ForDo(CheckDeleteDrawable);
+        for(Uint32 i=0; i<m_len; ++i)
+            {
+                if(m_drawables[i] && m_drawables[i]->GetGameObject()->isDeleted())
+                {
+                    m_drawables[i] = nullptr;
+                }
+            }
     }
     
     Uint32 DrawableStorage::GetID()const
@@ -374,18 +399,6 @@ namespace Base
     Uint32 DrawableStorage::GetOrder()const
     {
         return m_order;
-    }
-
-    void DrawableStorage::DrawDrawable(Drawable **drawable)
-    {
-        if((*drawable)->isAvailable())
-            (*drawable)->Draw();
-    }
-
-    void DrawableStorage::CheckDeleteDrawable(Drawable **drawable)
-    {
-        if((*drawable)->GetGameObject()->isDeleted())
-            (*drawable) = nullptr;
     }
 }
 

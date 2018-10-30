@@ -1,6 +1,7 @@
 #include <rapidjson/document.h>
 #include <glm/glm.hpp>
 #include "Math.hpp"
+#include "FileIO.hpp"
 
 namespace Base
 {
@@ -13,4 +14,7 @@ namespace Base
         void ReadSize(const rapidjson::Value::Object &obj, Math::Size *size);
         void ReadPoint(const rapidjson::Value::Object &obj, Math::Point *point);
     }
+    
+    void OpenJsonFile(const FileIO &f, rapidjson::Document *doc);
+    int32 OpenJsonFile(const char *filename, rapidjson::Document *doc);
 }

@@ -4,7 +4,6 @@
 #include "SDLInput.hpp"
 #include "Sprite.hpp"
 #include "Scene.hpp"
-#include "JsonScene.hpp"
 
 
 namespace Base
@@ -75,53 +74,49 @@ namespace Base
     
     void Application::Release(AppReleaseFun fun)
     {
+        m_scene->~Scene();
+        m_release_marker = m_allocator.GetTopMarker();
+        m_texturestorage.Clear();
+        m_shaderstorage.Clear();
         if(fun)
             fun();
         SDL::Quit();
     }
 
-    int32 Application::SetScene(ObjectScene *scene)
+    int32 Application::SetScene(const FileIO &f)
     {
-        assert(scene);
-        if(nullptr != m_scene)
+        if(m_scene)
         {
-            m_scene->~ObjectScene();
+            m_scene->~Scene();
             m_allocator.FreeWithMarker(m_release_marker);
         }
-        m_texturestorage.Clear();
-        m_shaderstorage.Clear();
-        m_scene = scene;
+
         m_release_marker = m_allocator.GetTopMarker();
-        return m_scene->Init();
-    }
-    
-    int32 Application::SetScene(ObjectScene *scene, StackAllocator::Marker mark)
-    {
-        assert(scene);
-        
-        if(nullptr != m_scene)
-        {
-            m_scene->~ObjectScene();
-            m_allocator.FreeWithMarker(m_release_marker);
-        }
         m_texturestorage.Clear();
         m_shaderstorage.Clear();
-        m_scene = scene;
-        m_release_marker = mark;
+        
+        m_scene = new (m_allocator.Alloc<Scene>()) Scene();
+        assert(m_scene);
+        m_scene->SetJsonFile(f);
         return m_scene->Init();
     }
 
     int32 Application::SetScene(const char *filename)
     {
-        StackAllocator::Marker mark = m_allocator.GetTopMarker();
-        JsonScene *scene = new (m_allocator.Alloc<JsonScene>()) JsonScene();
-        assert(scene);
+        if(m_scene)
+        {
+            m_scene->~Scene();
+            m_allocator.FreeWithMarker(m_release_marker);
+        }
 
-        String128 path = Directories::Scene;
-        path += filename;
-        scene->SetJsonFile(path.C_Str());
-
-        return SetScene(scene, mark);
+        m_release_marker = m_allocator.GetTopMarker();
+        m_texturestorage.Clear();
+        m_shaderstorage.Clear();
+        
+        m_scene = new (m_allocator.Alloc<Scene>()) Scene();
+        assert(m_scene);
+        m_scene->SetJsonFile(filename);
+        return m_scene->Init();
     }
     
     SDL::Window Application::GetWindow()
@@ -129,7 +124,7 @@ namespace Base
         return m_window;
     }
     
-    ObjectScene *Application::GetScene()
+    Scene *Application::GetScene()
     {
         return m_scene;
     }

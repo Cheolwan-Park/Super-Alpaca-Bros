@@ -40,6 +40,7 @@
             "type": "ComponentObject",
             "storage": "global",
             "id": "alpaca0",
+            "tag": "player1",
             "available": true,
             "static": false,
             "position": {"x": -3.0, "y": 0.0, "z": 1.0},
@@ -49,7 +50,6 @@
                 {
                     "type": "AnimatedSprite",
                     "available": true,
-                    "id": "alpaca0",
                     "storage": "unlit",
                     "uv": {"x": 0, "y": 0, "w": 1024, "h": 1024},
                     "texture": "alpacas.png",

@@ -1,6 +1,6 @@
 #include "GameObject.hpp"
 #include "Application.hpp"
-#include "JsonScene.hpp"
+#include "Scene.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/matrix_transform_2d.hpp>
@@ -16,38 +16,38 @@ namespace Base
         GameObject *result = new (allocator.Alloc<GameObject>()) GameObject();
         assert(result);
         result->SetID(id);
-        storage->Register(result, result->GetID());
+        storage->Register(result);
         result->InitWithJson(obj, allocator);
         return result;
     }
 
     GameObject::GameObject()
-    :m_id(0), m_position(), m_parent(nullptr),
-    m_scale(), m_rotation(0.0f), m_model(), m_flags()
+    :m_id(0), m_componentcount(0), m_rotation(0.0f), m_components(nullptr),
+    m_parent(nullptr), m_position(), m_scale(), m_model(), m_flags()
     {
         SetAvailable(true);
     }
 
     GameObject::GameObject(Uint32 id, int32 isStatic)
-    :m_id(id), m_position(), m_parent(nullptr), 
-    m_scale(), m_rotation(0.0f), m_model(), m_flags()
+    :m_id(id), m_componentcount(0), m_rotation(0.0f), m_components(nullptr),
+    m_parent(nullptr), m_position(), m_scale(), m_model(), m_flags()
     {
         SetAvailable(true);
         m_flags.SetFlag(3, isStatic);
     }
     
     GameObject::GameObject(Uint32 id, const GameObject *parent, int32 isStatic)
-    :m_id(id), m_position(), m_parent(parent), 
-    m_scale(), m_rotation(0.0f), m_model(), m_flags()
+    :m_id(id), m_componentcount(0), m_rotation(0.0f), m_components(nullptr),
+    m_parent(parent), m_position(), m_scale(), m_model(), m_flags()
     {
         SetAvailable(true);
         m_flags.SetFlag(3, isStatic);
     }
     
     GameObject::GameObject(const GameObject &other)
-    :m_id(0), m_position(other.m_position), m_parent(other.m_parent), 
-    m_scale(other.m_scale), m_rotation(other.m_rotation), m_model(),
-    m_flags()
+    :m_id(0), m_componentcount(0), m_rotation(other.m_rotation), m_components(nullptr),
+    m_parent(other.m_parent), m_position(other.m_position), m_scale(other.m_scale), 
+    m_model(), m_flags()
     {
         m_flags.SetFlag(1, other.m_flags.GetFlag(1));
         m_flags.SetFlag(3, other.m_flags.GetFlag(3));
@@ -72,49 +72,79 @@ namespace Base
 
     void GameObject::InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator)
     {
+        assert(obj.HasMember("tag"));
         assert(obj.HasMember("available"));
         assert(obj.HasMember("static"));
         assert(obj.HasMember("position"));
         assert(obj.HasMember("scale"));
         assert(obj.HasMember("rotation"));
+        assert(obj.HasMember("components"));
+        assert(obj["tag"].IsString());
         assert(obj["available"].IsBool());
         assert(obj["static"].IsBool());
         assert(obj["position"].IsObject());
         assert(obj["scale"].IsObject());
         assert(obj["rotation"].IsFloat());
+        assert(obj["components"].IsArray());
 
+        // read elements
+        const char *tag = obj["tag"].GetString();
+        m_tag = CompileTimeHash::runtime_hash(tag, strlen(tag));
         SetAvailable(obj["available"].GetBool());
         m_flags.SetFlag(3, obj["static"].GetBool());
         JsonParseMethods::ReadVector(obj["position"].GetObject(), &m_position);
         JsonParseMethods::ReadVector2(obj["scale"].GetObject(), &m_scale);
         m_rotation = obj["rotation"].GetFloat();
 
+        // read components
+        auto compolist = obj["components"].GetArray();
+        m_componentcount = compolist.Size();
+
+        auto &factory = ComponentFactory::GetGlobal();
+        m_components = allocator.Alloc<Component*>(m_componentcount);
+        Component::FactoryFunc *factoryfunc = nullptr;
+        Component *newcompo = nullptr;
+        const char *type = nullptr;
+        
+        // read parent
         if(obj.HasMember("parent"))
         {
+            assert(obj["parent"].IsObject());
             Application &app = Application::Get();
-            JsonScene *scene = static_cast<JsonScene*>(app.GetScene());
+            Scene *scene = app.GetScene();
             assert(scene);
-            if(obj["parent"].IsObject())
-            {
-                auto parentdata = obj["parent"].GetObject();
-                assert(parentdata.HasMember("storage"));
-                assert(parentdata.HasMember("id"));
-                assert(parentdata["storage"].IsString());
-                assert(parentdata["id"].IsString());
+            auto parentdata = obj["parent"].GetObject();
+            assert(parentdata.HasMember("storage"));
+            assert(parentdata.HasMember("id"));
+            assert(parentdata["storage"].IsString());
+            assert(parentdata["id"].IsString());
 
-                const char *storageidstr = parentdata["storage"].GetString();
-                const char *idstr = parentdata["id"].GetString();
-                Uint32 storageid = CompileTimeHash::runtime_hash(storageidstr, strlen(storageidstr));
-                Uint32 id = CompileTimeHash::runtime_hash(idstr, strlen(idstr));
-                m_parent = scene->GetObject(storageid, id);
-                assert(m_parent);
-            }
-            else if(obj["parent"].IsString())
-            {
-                const char *parent_id = obj["parent"].GetString();
-                m_parent = scene->GetObject(CompileTimeHash::runtime_hash(parent_id, strlen(parent_id)));
-            }
+            const char *storageidstr = parentdata["storage"].GetString();
+            const char *idstr = parentdata["id"].GetString();
+            Uint32 storageid = CompileTimeHash::runtime_hash(storageidstr, strlen(storageidstr));
+            Uint32 id = CompileTimeHash::runtime_hash(idstr, strlen(idstr));
+            m_parent = scene->GetObject(storageid, id);
+            assert(m_parent);
         }
+
+        for(int i=0; i<m_componentcount; ++i)
+        {
+            assert(compolist[i].IsObject());
+            auto componentobj = compolist[i].GetObject();
+
+            assert(componentobj.HasMember("type"));
+            assert(componentobj["type"].IsString());
+
+            type = componentobj["type"].GetString();
+            factoryfunc = factory.GetFunction(CompileTimeHash::runtime_hash(type, strlen(type)));
+            assert(factoryfunc);
+            newcompo = factoryfunc(componentobj, allocator, this);
+            assert(newcompo);
+
+            newcompo->SetGameObject(this);
+            m_components[i] = newcompo;
+        }
+
     }
     
     void GameObject::Start()
@@ -126,6 +156,11 @@ namespace Base
         m_model = glm::rotate(m_model, GetRotation());
         m_model = glm::scale(m_model, GetScale());
 
+        for(int i=0; i<m_componentcount; ++i)
+        {
+            m_components[i]->Start();
+        }
+
         m_flags.SetFlag(2, true);
     }
 
@@ -133,6 +168,7 @@ namespace Base
     {
         if(!isStarted())
             Start();
+
         if(!isStatic())
         {
             // update model matrix
@@ -142,11 +178,21 @@ namespace Base
             m_model = glm::rotate(m_model, GetRotation());
             m_model = glm::scale(m_model, GetScale());
         }
+
+        for(int i=0; i<m_componentcount; ++i)
+        {
+            m_components[i]->Update();
+        }
     }
 
     void GameObject::Release()
     {
-        ;
+        for(int i=0; i<m_componentcount; ++i)
+        {
+            m_components[i]->Release();
+            m_components[i]->~Component();
+            m_components[i] = nullptr;
+        }
     }
     
     GameObject *GameObject::AddChild(GameObject *child)const
@@ -154,10 +200,39 @@ namespace Base
         child->SetParent(this);
         return child;
     }
+
+    void GameObject::OnColliderEnter(const Collider *other)
+    {
+        for(int i=0; i<m_componentcount; ++i)
+        {
+            m_components[i]->OnColliderEnter(other);
+        }
+    }
+
+    void GameObject::OnColliderStay(const Collider *other)
+    {
+        for(int i=0; i<m_componentcount; ++i)
+        {
+            m_components[i]->OnColliderStay(other);
+        }
+    }
+
+    void GameObject::OnColliderExit(const Collider *other)
+    {
+        for(int i=0; i<m_componentcount; ++i)
+        {
+            m_components[i]->OnColliderExit(other);
+        }
+    }
     
     Uint32 GameObject::GetID()const
     {
         return m_id;
+    }
+
+    Uint32 GameObject::GetTag()const
+    {
+        return m_tag;
     }
     
     const glm::vec3 &GameObject::GetLocalPosition()const
@@ -208,6 +283,11 @@ namespace Base
             }
         }
     }
+
+    Uint32 GameObject::GetComponentCount()const 
+    {
+        return m_componentcount;
+    }
     
     const GameObject *GameObject::GetParent()const
     {
@@ -240,6 +320,11 @@ namespace Base
             m_id = id;
             m_flags.SetFlag(4, true);
         }
+    }
+
+    void GameObject::SetTag(Uint32 tag)
+    {
+        m_tag = tag;
     }
     
     void GameObject::SetLocalPosition(const glm::vec3 &position)
@@ -283,9 +368,10 @@ namespace Base
         else
         {
             glm::vec3 pos(x, y, m_position.z);
-            glm::vec3 worldpos;
-            m_parent->GetWorldPosition(&worldpos);
-            m_position = pos - worldpos;
+            glm::mat3x3 model(1.0f);
+            m_parent->GetModel(&model);
+            model = glm::inverse(model);
+            m_position = model * pos;
         }
     }
     
@@ -300,9 +386,10 @@ namespace Base
         else
         {
             glm::vec3 pos(x, y, z);
-            glm::vec3 worldpos;
-            m_parent->GetWorldPosition(&worldpos);
-            m_position = pos - worldpos;
+            glm::mat3x3 model(1.0f);
+            m_parent->GetModel(&model);
+            model = glm::inverse(model);
+            m_position = model * pos;
         }
     }
     
@@ -373,24 +460,72 @@ namespace Base
     
     // Object Storage
     ObjectStorage::ObjectStorage(Uint32 id, Uint32 order)
-    :Storage<GameObject>(), m_id(id), m_order(order)
+    :m_id(id), m_order(order), m_len(0), m_gameobjects(nullptr)
     {
-        SetFreeFunc(FreeObject);
+        ;
     }
     
     ObjectStorage::~ObjectStorage()
     {
         Clear();
     }
+
+    void ObjectStorage::AssignMemory(void *mem, Uint32 len)
+    {
+        m_len = len;
+        m_gameobjects = (GameObject**)mem;
+        memset(m_gameobjects, 0, sizeof(Type)*len);
+    }
+
+    GameObject *ObjectStorage::Register(GameObject *gameobject)
+    {
+        for(Uint32 i=0; i<m_len; ++i)
+        {
+            if(!m_gameobjects[i])
+            {
+                m_gameobjects[i] = gameobject;
+                return gameobject;
+            }
+        }
+        fprintf(stderr, "there is no space in ObjectStorage\n");
+        exit(-1);
+        return nullptr;
+    }
+
+    GameObject *ObjectStorage::Get(Uint32 hash)
+    {
+        for(Uint32 i=0; i<m_len; ++i)
+        {
+            if(m_gameobjects[i] && hash == m_gameobjects[i]->GetID())
+            {
+                return m_gameobjects[i];
+            }
+        }
+        return nullptr;
+    }
     
     void ObjectStorage::UpdateObjects()
     {
-        ForDo(UpdateObject);
+        for(Uint32 i=0; i<m_len; ++i)
+        {
+            if(m_gameobjects[i] && m_gameobjects[i]->isAvailable())
+            {
+                m_gameobjects[i]->Update();
+            }
+        }
     }
     
     void ObjectStorage::CheckAndDeleteObjects()
     {
-        ForDo(CheckAndDeleteObject);
+        for(Uint32 i=0; i<m_len; ++i)
+        {
+            if(m_gameobjects[i] && m_gameobjects[i]->isDeleted())
+            {
+                m_gameobjects[i]->Release();
+                m_gameobjects[i]->~GameObject();
+                m_gameobjects[i] = nullptr;
+            }
+        }
     }
     
     Uint32 ObjectStorage::GetID()const
@@ -403,25 +538,17 @@ namespace Base
         return m_order;
     }
 
-    void ObjectStorage::UpdateObject(GameObject **gobj)
+    void ObjectStorage::Clear()
     {
-        if((*gobj)->isAvailable())
-            (*gobj)->Update();
-    }
-
-    void ObjectStorage::CheckAndDeleteObject(GameObject **gobj)
-    {
-        if((*gobj)->isDeleted())
+        for(Uint32 i=0; i<m_len; ++i)
         {
-            FreeObject(gobj);
+            if(m_gameobjects[i])
+            {
+                m_gameobjects[i]->Release();
+                m_gameobjects[i]->~GameObject();
+                m_gameobjects[i] = nullptr;
+            }
         }
-    }
-
-    void ObjectStorage::FreeObject(GameObject **gobj)
-    {
-        (*gobj)->Release();
-        (*gobj)->~GameObject();
-        (*gobj) = nullptr;
     }
 }
 

@@ -55,7 +55,7 @@ namespace Game
 
         private:
             Alpaca *m_alpaca;
-            FixedArray<ComponentObject, NECK_COUNT> m_necks;
+            FixedArray<GameObject, NECK_COUNT> m_necks;
             FixedArray<Sprite*, NECK_COUNT> m_necksprites; 
             glm::vec3 m_headpos;
             glm::vec3 m_neckpos;

@@ -1,39 +1,20 @@
-#include "JsonScene.hpp"
-#include "FileIO.hpp"
-#include "ShaderProgram.hpp"
-#include "Allocator.hpp"
+#include "Scene.hpp"
 
 namespace Base
 {
-    JsonScene::JsonScene()
-    :ObjectScene(), m_doc()
-    {
-        ;
-    }
-
-    JsonScene::~JsonScene()
-    {
-        ;
-    }
-
-    int32 JsonScene::Init()
-    {
-        assert(m_doc.IsObject());
-
-        return ObjectScene::Init();
-    }
-
-    void JsonScene::SetJsonFile(const FileIO &f)
+    void Scene::SetJsonFile(const FileIO &f)
     {
         OpenJsonFile(f, &m_doc);
     }
 
-    int32 JsonScene::SetJsonFile(const char *filename)
+    int32 Scene::SetJsonFile(const char *filename)
     {
-        return OpenJsonFile(filename, &m_doc);
+        String128 path = Directories::Scene;
+        path += filename;
+        return OpenJsonFile(path.C_Str(), &m_doc);
     }
 
-    GameObject *JsonScene::CreateGameObject(const rapidjson::Value::Object &obj)
+    GameObject *Scene::CreateGameObject(const rapidjson::Value::Object &obj)
     {
         if(obj.HasMember("file"))
         {
@@ -41,7 +22,6 @@ namespace Base
             String128 path("");
             path = Directories::GameObject;
             path += obj["file"].GetString();
-            printf("path : %s\n", path.C_Str());
             rapidjson::Document doc;
             OpenJsonFile(path.C_Str(), &doc);
 
@@ -62,11 +42,9 @@ namespace Base
         const char *storageid = obj["storage"].GetString();
         const char *id = obj["id"].GetString();
 
-        auto *factoryfunc = GameObjectFactory::GetGlobal().GetFunction(CompileTimeHash::runtime_hash(type, strlen(type)));
-        assert(factoryfunc);
         auto *storage = GetObjectStorage(CompileTimeHash::runtime_hash(storageid, strlen(storageid)));
         assert(storage);
-        GameObject *newobject = (*factoryfunc)(obj, Application::Get().GetAllocator(), storage, CompileTimeHash::runtime_hash(id, strlen(id)));
+        GameObject *newobject = GameObject::Factory(obj, Application::Get().GetAllocator(), storage, CompileTimeHash::runtime_hash(id, strlen(id)));
         assert(newobject);
         #ifndef NDEBUG 
         printf("%s(%u) added\n", id, newobject->GetID());
@@ -74,7 +52,7 @@ namespace Base
         return newobject;
     }
 
-    int32 JsonScene::LoadShaders()
+    int32 Scene::LoadShaders()
     {
         Application &app = Application::Get();
         auto &shaders = app.GetShaderStorage();
@@ -161,8 +139,9 @@ namespace Base
 
                 StringID shader_id(shader_name, strlen(shader_name));
                 shaders.Register(program, (Uint32)shader_id);
-
+                #ifndef NDEBUG
                 printf("shader : name(%s) vert(%s) frag(%s)\n", shader_name, vert_filename, frag_filename);
+                #endif
             }
         
         free(mem_vert);
@@ -171,7 +150,7 @@ namespace Base
         return RET_SUCC;
     }
 
-    int32 JsonScene::LoadTextures()
+    int32 Scene::LoadTextures()
     {
         Application &app = Application::Get();
         auto &textures = app.GetTextureStorage();
@@ -202,14 +181,16 @@ namespace Base
             assert(texture->id);
 
             textures.Register(texture, (Uint32)texture_id);
-
+            
+            #ifndef NDEBUG
             printf("tex : %s\n", filename);
+            #endif
         }
 
         return RET_SUCC;
     }
 
-    int32 JsonScene::LoadAnimations()
+    int32 Scene::LoadAnimations()
     {
         Application &app = Application::Get();
         auto &allocator = app.GetAllocator();
@@ -259,13 +240,15 @@ namespace Base
 
                 animations.Register(newanim, CompileTimeHash::runtime_hash(name, strlen(name)));
 
+                #ifndef NDEBUG
                 printf("anim : %s\n", name);
+                #endif
             }
 
         return RET_SUCC;
     }
 
-    int32 JsonScene::CreateObjectStorages()
+    int32 Scene::CreateObjectStorages()
     {
         Application &app = Application::Get();
         auto &allocator = app.GetAllocator();
@@ -300,13 +283,15 @@ namespace Base
                 new_storage->AssignMemory(allocator.Alloc<ObjectStorage::Type>(size), size);
                 AddObjectStorage(new_storage);
 
+                #ifndef NDEBUG
                 printf("objsto : name(%s) size(%d) order(%d)\n", storage_name, size, order);
+                #endif
             }
 
         return RET_SUCC;
     }
 
-    int32 JsonScene::CreateDrawableStorages()
+    int32 Scene::CreateDrawableStorages()
     {
         Application &app = Application::Get();
         StackAllocator &allocator = app.GetAllocator();
@@ -348,15 +333,16 @@ namespace Base
                 new_storage->SetShader(shaders[(Uint32)shader_id]);
                 AddDrawableStorage(new_storage);
 
+                #ifndef NDEBUG
                 printf("drawablesto : name(%s) shader(%s) size(%d) order(%d)\n", storage_name, shader_name, size, order);
+                #endif
             }
 
         return RET_SUCC;
     }
 
-    int32 JsonScene::CreateObjects()
+    int32 Scene::CreateObjects()
     {
-        auto &factory = GameObjectFactory::GetGlobal();
         Application &app = Application::Get();
         auto &allocator = app.GetAllocator();
         
@@ -373,39 +359,5 @@ namespace Base
             }
 
         return RET_SUCC;
-    }
-
-    void OpenJsonFile(const FileIO &f, rapidjson::Document *doc)
-    {
-        assert(doc);
-        doc->Parse(f.GetBuffer());
-        assert(doc->IsObject());
-    }
-
-    int32 OpenJsonFile(const char *filename, rapidjson::Document *doc)
-    {
-        assert(doc);
-
-        FILE *f = OpenFile(filename, "r");
-        assert(f);
-
-        size_t len_json = GetFileSize(f);
-        void *mem_json = nullptr;
-        
-        FileIO json_io;
-        mem_json = malloc(len_json+1);
-        memset(mem_json, 0, len_json+1);
-        if(RET_SUCC != json_io.Open(f, mem_json, len_json))
-        {
-            fprintf(stderr, "failed to read %s\n", filename);
-            fclose(f);
-            free(mem_json);
-            return RET_FAILED;
-        }
-
-        doc->Parse(json_io.GetBuffer());
-        assert(doc->IsObject());
-        fclose(f);
-        free(mem_json);
     }
 }

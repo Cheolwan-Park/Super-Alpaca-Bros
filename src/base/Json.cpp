@@ -97,4 +97,38 @@ namespace Base
             point->y = obj["y"].GetInt();
         }
     }
+
+    void OpenJsonFile(const FileIO &f, rapidjson::Document *doc)
+    {
+        assert(doc);
+        doc->Parse(f.GetBuffer());
+        assert(doc->IsObject());
+    }
+
+    int32 OpenJsonFile(const char *filename, rapidjson::Document *doc)
+    {
+        assert(doc);
+
+        FILE *f = OpenFile(filename, "r");
+        assert(f);
+
+        size_t len_json = GetFileSize(f);
+        void *mem_json = nullptr;
+        
+        FileIO json_io;
+        mem_json = malloc(len_json+1);
+        memset(mem_json, 0, len_json+1);
+        if(RET_SUCC != json_io.Open(f, mem_json, len_json))
+        {
+            fprintf(stderr, "failed to read %s\n", filename);
+            fclose(f);
+            free(mem_json);
+            return RET_FAILED;
+        }
+
+        doc->Parse(json_io.GetBuffer());
+        assert(doc->IsObject());
+        fclose(f);
+        free(mem_json);
+    }
 }

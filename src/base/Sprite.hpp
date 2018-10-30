@@ -16,7 +16,7 @@ namespace Base
     class Drawable : public Component
     {
     public:
-        static Component *Factory(const rapidjson::Value::Object &obj, StackAllocator &allocator);
+        static Component *Factory(const rapidjson::Value::Object &obj, StackAllocator &allocator, GameObject *gameobject);
 
     public:
         COMPONENT(Drawable);
@@ -44,11 +44,6 @@ namespace Base
         virtual void UpdateVBO() = 0;
         
         void SetDrawer(DrawableStorage *drawer);
-
-        Uint32 GetID()const;
-        
-    private:
-        Uint32 m_id;
     };
     
     class Sprite : public Drawable
@@ -116,7 +111,7 @@ namespace Base
          */
     };
     
-    class DrawableStorage : public Storage<Drawable>
+    class DrawableStorage 
     {
     public:
         typedef Drawable* Type;
@@ -130,10 +125,14 @@ namespace Base
         ~DrawableStorage();
         
         DrawableStorage &operator=(const DrawableStorage &other) = delete;
+
+        void AssignMemory(void *mem, Uint32 len);
         
-        void SetShader(const ShaderProgram *shader);
+        void SetShader(ShaderProgram *shader);
         
         void SetRenderSettingFun(const ::std::function<void(void)> &fun);
+
+        Drawable *Register(Drawable *drawable);
         
         void DrawDrawables();
         
@@ -145,14 +144,12 @@ namespace Base
         Uint32 GetOrder()const;
 
     private:
-        static void DrawDrawable(Drawable **drawable);
-        static void CheckDeleteDrawable(Drawable **drawable);
-        
-    private:
         Uint32 m_id;
         Uint32 m_order;
-        const ShaderProgram *m_shader;
+        ShaderProgram *m_shader;
         std::function<void(void)> m_rendersetting;
+        Uint32 m_len;
+        Type *m_drawables;
     };
 }
 

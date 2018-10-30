@@ -216,7 +216,7 @@ namespace Game
         };
 
         Alpaca::Alpaca()
-        :Component(), m_head(nullptr), m_animator(nullptr), m_speed(0.0f), 
+        :Component(), m_head(nullptr), m_headobject(), m_animator(nullptr), m_speed(0.0f), 
         m_keymap(Keymap::NONE), m_actionm()
         {
             ;
@@ -243,9 +243,10 @@ namespace Game
             SetSpeed(obj["speed"].GetFloat());
             SetKeymap(Alpaca::Keymap(obj["keymap"].GetInt()));
 
-            JsonScene *scene = static_cast<JsonScene*>(Application::Get().GetScene());
-            ComponentObject *headobject = static_cast<ComponentObject*>(scene->CreateGameObject(obj["head"].GetObject()));
-            m_head = headobject->GetComponent<Head>();
+            Scene *scene = Application::Get().GetScene();
+            GameObject *head = scene->CreateGameObject(obj["head"].GetObject());
+            head->SetID((GetGameObject()->GetID()) + "head"_hash);
+            m_head = head->GetComponent<Head>();
             m_head->SetAlpaca(this);
 
             m_actionm.InitWithJson(obj["action_manager"].GetObject());
@@ -255,7 +256,7 @@ namespace Game
         void Alpaca::Start()
         {
             Component::Start();
-            ComponentObject *gameobjcet = GetGameObject();
+            GameObject *gameobjcet = GetGameObject();
             m_animator = gameobjcet->GetComponent<AnimatedSprite>();
         }
 
@@ -264,11 +265,12 @@ namespace Game
             ControlledMove();
             CheckActions();
             m_actionm.Update();
+            m_headobject.Update();
         }
 
         void Alpaca::Release()
         {
-            ;
+            m_headobject.Release();
         }
 
         Head *Alpaca::GetHeadObject()
@@ -317,13 +319,12 @@ namespace Game
             auto &t = Time::Get();
             const SDL_Scancode *keys = keymap[(int32)m_keymap];
             glm::vec3 delta = {0.0f, 0.0f, 0.0f};
-            auto *gameobject = GetGameObject();
             
             int32 hasMoved = isMoving();
             SetMoving(false);
             if(!m_actionm.DoingAnyAction())
             {
-                const glm::vec2 &scale = gameobject->GetScale();
+                const glm::vec2 &scale = GetScale();
                 if(input.isKeyDown(keys[(int32)Key::UP]))
                 {
                     delta.y += m_speed;
@@ -336,13 +337,13 @@ namespace Game
                 }
                 if(input.isKeyDown(keys[(int32)Key::LEFT]))
                 {
-                    gameobject->SetScale(Math::Abs(scale.x), scale.y);
+                    SetScale(Math::Abs(scale.x), scale.y);
                     delta.x -= m_speed;
                     SetMoving(true);
                 }
                 if(input.isKeyDown(keys[(int32)Key::RIGHT]))
                 {
-                    gameobject->SetScale(-Math::Abs(scale.x), scale.y);
+                    SetScale(-Math::Abs(scale.x), scale.y);
                     delta.x += m_speed;
                     SetMoving(true);
                 }
@@ -359,7 +360,7 @@ namespace Game
             
             delta *= t.GetDeltatime();
 
-            gameobject->Move(delta);
+            Move(delta);
         }
 
         void Alpaca::CheckActions()

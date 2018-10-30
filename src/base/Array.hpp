@@ -23,13 +23,13 @@ namespace Base
         
     public:
         explicit Array()
-        :Array(32,32)
+        :Array(32)
         {
             ;
         }
         
-        explicit Array(size_t maxsize, size_t growsize)
-        :m_arr(nullptr), m_count(0), m_maxsize(maxsize), m_growsize(growsize)
+        explicit Array(size_t maxsize)
+        :m_arr(nullptr), m_count(0), m_maxsize(maxsize)
         {
             m_arr = (ValueType*)malloc(sizeof(ValueType)*maxsize);
             assert(m_arr);
@@ -38,7 +38,7 @@ namespace Base
         
         Array(const Array &other)
         :m_arr(nullptr), m_count(other.m_count), 
-        m_maxsize(other.m_maxsize), m_growsize(other.m_growsize)
+        m_maxsize(other.m_maxsize)
         {
             this->m_arr = (ValueType*)malloc(sizeof(ValueType)*m_maxsize);
             assert(this->m_arr);
@@ -68,18 +68,17 @@ namespace Base
                 memcpy(newarr, other.m_arr, sizeof(ValueType)*other.m_maxsize);
                 this->m_arr = newarr;
                 this->m_maxsize = other.m_maxsize;
-                this->m_growsize = other.m_growsize;
             }
             return (*this);
         }
         
         void Grow()
         {
-            size_t newsize = m_maxsize+m_growsize;
+            size_t newsize = m_maxsize*2;
             ValueType *newarr = (ValueType*)realloc(m_arr, sizeof(ValueType)*newsize);
             assert(newarr);
             ValueType *added = newarr + m_maxsize;
-            memset((void*)added, 0, m_growsize*sizeof(T));
+            memset((void*)added, 0, m_maxsize*sizeof(ValueType));
             m_arr = newarr;
             m_maxsize = newsize;
         }
@@ -150,16 +149,10 @@ namespace Base
             return m_maxsize;
         }
         
-        size_t GetGrowSize()const
-        {
-            return m_growsize;
-        }
-        
     private:
         ValueType   *m_arr;
         size_t      m_count;
         size_t      m_maxsize;
-        size_t      m_growsize;
     };
     
     template <class T, size_t MaxSize>

@@ -5,62 +5,59 @@
 #include "Math.hpp"
 #include "Array.hpp"
 #include "String.hpp"
-#include "Schedule.hpp"
 #include "BitFlag.hpp"
 #include "Storage.hpp"
 #include "Json.hpp"
+#include "Component.hpp"
 #include <glm/glm.hpp>
 
-
-#define MAKE_TYPE_ID(__TYPENAME__)  \
-static constexpr Uint32 ID = ::Base::CompileTimeHash::fnv1a_32(#__TYPENAME__, sizeof(#__TYPENAME__)-1);
-
-#define GAMEOBJECT(__TYPENAME__)    \
-MAKE_TYPE_ID(__TYPENAME__);         \
-static GameObject *Factory(const ::rapidjson::Value::Object &obj, ::Base::StackAllocator &allocator, ::Base::ObjectStorage *storage, ::Base::Uint32 id);    \
-virtual Uint32 GetTypeID()const  { return ID; }
-    
 
 namespace Base
 {
     class Schedule;
     class ObjectStorage;
     class Component;
+    class Collider;
     
     class GameObject
     {
     public:
-        typedef GameObject* (FactoryFunc)(const ::rapidjson::Value::Object&, ::Base::StackAllocator&, ::Base::ObjectStorage*, ::Base::Uint32);
+        static GameObject *Factory(const ::rapidjson::Value::Object &obj, ::Base::StackAllocator &allocator, ::Base::ObjectStorage *storage, ::Base::Uint32 id);
     
     public:
-        GAMEOBJECT(GameObject);
-
         GameObject();
         
         GameObject(Uint32 id, int32 isStatic = false);
         
         GameObject(Uint32 id, const GameObject *parent, int32 isStatic = false);
 
-        // not copying parent, id, isDeleted, isIdSet, isStarted
+        // not copying parent, id, isDeleted, isIdSet, isStarted, components
         GameObject(const GameObject &other);
         
-        virtual ~GameObject();
+        ~GameObject();
         
-        // not copying parent, id, isDeleted, isIdSet, isStarted
+        // not copying parent, id, isDeleted, isIdSet, isStarted, components
         GameObject &operator=(const GameObject &other);
 
-        virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
+        void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
         
-        virtual void Start();
+        void Start();
         
-        virtual void Update();
+        void Update();
 
-        virtual void Release();
+        void Release();
         
         GameObject *AddChild(GameObject *child)const;
+
+        // collide callback
+        void OnColliderEnter(const Collider *other);
+        void OnColliderStay(const Collider *other);
+        void OnColliderExit(const Collider *other);
         
         // get
         Uint32 GetID()const;
+
+        Uint32 GetTag()const;
         
         const glm::vec3 &GetLocalPosition()const;
         
@@ -83,9 +80,35 @@ namespace Base
         const glm::mat3x3 &GetLocalModel()const;
 
         void GetModel(glm::mat3x3 *mat)const;
+
+        template<class T>
+        T *GetComponent()
+        {
+            for(Uint32 i=0; i<m_componentcount; ++i)
+            {
+                if(T::ID == m_components[i]->GetTypeID())
+                    return static_cast<T*>(m_components[i]);
+            }
+            return nullptr;
+        }
+
+        template<class T>
+        const T *GetComponent()const
+        {
+            for(Uint32 i=0; i<m_componentcount; ++i)
+            {
+                if(T::ID == m_components[i]->GetTypeID())
+                    return static_cast<T*>(m_components[i]);
+            }
+            return nullptr;
+        }
+
+        Uint32 GetComponentCount()const;
         
         // set
         void SetID(Uint32 id);
+
+        void SetTag(Uint32 tag);
         
         void SetLocalPosition(const glm::vec3 &position);
         
@@ -126,10 +149,13 @@ namespace Base
         
     private:
         Uint32 m_id;
-        glm::vec3 m_position;
-        const GameObject *m_parent;     // worldpos = m_position + m_parent.GetWorldPos()
-        glm::vec2 m_scale;
+        Uint32 m_tag;
+        Uint32 m_componentcount;
         float32 m_rotation;
+        Component **m_components;
+        const GameObject *m_parent;     // worldpos = m_position + m_parent.GetWorldPos()
+        glm::vec3 m_position;
+        glm::vec2 m_scale;
         glm::mat3x3 m_model;
 
     protected:
@@ -143,7 +169,7 @@ namespace Base
         BitFlag m_flags;
     };
     
-    class ObjectStorage : public Storage<GameObject>
+    class ObjectStorage
     {
     public:
         typedef GameObject* Type;
@@ -157,10 +183,18 @@ namespace Base
         ~ObjectStorage();
         
         ObjectStorage &operator=(const ObjectStorage &other) = delete;
+
+        void AssignMemory(void *mem, Uint32 len);
+
+        GameObject *Register(GameObject *gameobject);
+
+        GameObject *Get(Uint32 hash);
         
         void UpdateObjects();
         
         void CheckAndDeleteObjects();
+
+        void Clear();
         
         // get
         Uint32 GetID()const;
@@ -175,41 +209,8 @@ namespace Base
     private:
         Uint32 m_id;
         Uint32 m_order;
-    };
-
-    class GameObjectFactory : public Storage<GameObject::FactoryFunc>
-    {
-    public:
-        GameObjectFactory() : Storage<GameObject::FactoryFunc>() { ; }
-
-        GameObjectFactory(const GameObjectFactory &other) = delete;
-
-        ~GameObjectFactory() { Clear(); }
-
-        GameObjectFactory &operator=(const GameObjectFactory) = delete;
-
-        template <typename T>
-        void AddFunction()
-        {
-            Register(&T::Factory, T::ID);
-        }
-
-        template <typename T>
-        GameObject::FactoryFunc *GetFunction()
-        {
-            return (Get(T::ID));
-        }
-
-        GameObject::FactoryFunc *GetFunction(Uint32 id)
-        {
-            return (Get(id));
-        }
-
-        static GameObjectFactory &GetGlobal()
-        {
-            static GameObjectFactory instance;
-            return instance;
-        }
+        Uint32 m_len;
+        Type *m_gameobjects;
     };
 }
 

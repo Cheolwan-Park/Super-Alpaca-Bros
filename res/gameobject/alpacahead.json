@@ -2,19 +2,18 @@
     "Object": {
         "type": "ComponentObject",
         "storage": "global",
-        "id": "alpaca0head",
+        "id": "alpacahead",
+        "tag": "default",
         "available": true,
         "static": false,
         "position": {"x": 0.0, "y": 0.0, "z": 1.0},
         "scale": {"x": 0.35, "y": 0.35},
         "rotation": 0.0,
-        "parent": {"storage": "global", "id": "alpaca0"},
         "components": [
             {
                 "type": "Head",
-                "available": true,
-                "id": "alpaca0head",
                 "storage": "unlit",
+                "available": true,
                 "uv": {"x": 0, "y": 640, "w": 128, "h": 128},
                 "texture": "alpacas.png",
                 "headpos": {"x":-0.35, "y":0.45, "z":1.0},
@@ -22,18 +21,17 @@
                 "neck": {
                     "type": "ComponentObject",
                     "storage": "global",
-                    "id": "alpaca0neck",
+                    "id": "alpacaneck",
+                    "tag": "default",
                     "available": true,
                     "static": false,
                     "position": {"x": 0.0, "y": 0.0, "z": 1.0},
                     "scale": {"x": 0.35, "y": 0.35},
                     "rotation": 0.0,
-                    "parent": {"storage": "global", "id": "alpaca0"},
                     "components": [
                         {
                             "type": "Sprite",
                             "available": true,
-                            "id": "alpaca0neck",
                             "storage": "none",
                             "uv": {"x": 128, "y": 640, "w": 128, "h": 128},
                             "texture": "alpacas.png"

@@ -75,6 +75,7 @@
                 <li><a href="#Animation">Animation</a></li>
                 <li><a href="#ObjectStorage">ObjectStorage</a></li>
                 <li><a href="#DrawableStorage">DrawableStorage</a></li>
+                <li><a href="#ParentData">Parent data</a></li>
             </ul>
         </div>
         <div id="file-formats-gameobjects-index">
@@ -86,7 +87,6 @@
             <h3> GameObjects </h3>
             <ul>
                 <li><a href="#GameObject">GameObject</a></li>
-                <li><a href="#ComponentObject">ComponentObject</a></li>
             </ul>
         </div>
         <div id="components-index">
@@ -217,6 +217,16 @@
             </p>
         </div>
     </div>
+    <div id="ParentData" class="class">
+        <h1> Parent data </h1>
+        <p class="description"> parent gameobject data </p>
+        <div class="elements">
+            <p>
+                storage (string) : storage of parent gameobject <br>
+                id (string) : id of parent gameobject
+            </p>
+        </div>
+    </div>
     <hr>
 
     <h1 id="category-fileformat" class="category"> File Format </h1>
@@ -262,31 +272,17 @@
                 type (string) : type of gameobject (classname) <br>
                 storage (string) : name of the storage contains gameobject <br>
                 id (string) : id of gameobject <br>
-                available (bool) : is gameobject available (updated) <br>
-                static (bool) : is gameobject static (not movable) <br>
-                position (vec3) : location of gameobject <br>
-                scale (vec2) : scale of gameobject <br>
-                rotation (float) : rotation of gameobject
-            </p>
-            <p style="color: rgb(177, 254, 255)">
-                file (string) : init gameobject with file (file containing Object(GameObject))
-            </p>
-        </div>
-    </div>
-    <div id="ComponentObject" class="class">
-        <h1> ComponentObject </h1>
-        <p> GameObject that can contain Components </p>
-        <div class="elements">
-            <p>
-                type (string) : type of gameobject (classname) <br>
-                storage (string) : name of the objectstorage contains gameobject <br>
-                id (string) : id of gameobject <br>
+                tag (string) : tag of gameobject <br>
                 available (bool) : is gameobject available (updated) <br>
                 static (bool) : is gameobject static (not movable) <br>
                 position (vec3) : location of gameobject <br>
                 scale (vec2) : scale of gameobject <br>
                 rotation (float) : rotation of gameobject <br>
+                parent (Parent data) (optional) : parent of gameobject <br>
                 components (array) : array of components gameobject contains
+            </p>
+            <p style="color: rgb(177, 254, 255)">
+                file (string) : init gameobject with file (file containing Object(GameObject))
             </p>
         </div>
     </div>
@@ -310,7 +306,6 @@
             <p>
                 type (string) : type of component (Drawable) <br>
                 available (bool) : is component available (updated) <br>
-                id (string) : id of drawable component <br>
                 storage (string) : name of the drawablestorage contains drawable (if none, not registering)
             </p>
         </div>
@@ -322,7 +317,6 @@
             <p>
                 type (string) : type of component (Sprite) <br>
                 available (bool) : is component available (updated) <br>
-                id (string) : id of drawable component <br>
                 storage (string) : name of the drawablestorage contains drawable (if none, not registering) <br>
                 uv (irect) : uv rect (unit: pixel) <br>
                 texture (string) : texture id
@@ -336,7 +330,6 @@
             <p>
                 type (string) : type of component (AnimatedSprite) <br>
                 available (bool) : is component available (updated) <br>
-                id (string) : id of drawable component <br>
                 storage (string) : name of the drawablestorage contains drawable (if none, not registering) <br>
                 uv (irect) : uv rect (unit: pixel) <br>
                 texture (string) : texture id <br>
@@ -365,7 +358,6 @@
             <p>
                 type (string) : type of component (Head) <br>
                 available (bool) : is component available (updated) <br>
-                id (string) : id of drawable component <br>
                 storage (string) : name of the drawablestorage contains drawable (if none, not registering) <br>
                 uv (irect) : uv rect (unit: pixel) <br>
                 texture (string) : texture id
