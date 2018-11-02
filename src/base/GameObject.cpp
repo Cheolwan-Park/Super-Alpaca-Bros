@@ -515,7 +515,7 @@ namespace Base
         }
     }
     
-    void ObjectStorage::CheckAndDeleteObjects()
+    void ObjectStorage::CheckAndDelete()
     {
         for(Uint32 i=0; i<m_len; ++i)
         {

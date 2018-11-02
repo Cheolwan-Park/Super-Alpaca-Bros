@@ -99,11 +99,11 @@ namespace Base
     {
         for(size_t i=0; i<m_drawablestorages.GetCount(); ++i)
         {
-            m_drawablestorages[i]->CheckDeletedDrawables();
+            m_drawablestorages[i]->CheckDeleted();
         }
         for(size_t i=0; i<m_objstorages.GetCount(); ++i)
         {
-            m_objstorages[i]->CheckAndDeleteObjects();
+            m_objstorages[i]->CheckAndDelete();
         }
     }
 

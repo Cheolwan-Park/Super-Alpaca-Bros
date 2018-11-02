@@ -136,7 +136,7 @@ namespace Base
         
         void DrawDrawables();
         
-        void CheckDeletedDrawables();
+        void CheckDeleted();
         
         // get
         Uint32 GetID()const;

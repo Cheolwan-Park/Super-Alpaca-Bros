@@ -380,7 +380,7 @@ namespace Base
         }
     }
     
-    void DrawableStorage::CheckDeletedDrawables()
+    void DrawableStorage::CheckDeleted()
     {
         for(Uint32 i=0; i<m_len; ++i)
             {

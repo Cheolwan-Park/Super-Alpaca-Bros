@@ -192,7 +192,7 @@ namespace Base
         
         void UpdateObjects();
         
-        void CheckAndDeleteObjects();
+        void CheckAndDelete();
 
         void Clear();
         

@@ -49,6 +49,7 @@ add_library(
     src/base/AnimatedSprite.cpp 
     src/base/Component.cpp
     src/base/Collider.cpp
+    src/base/Physics.cpp
     # src/base/LuaPlayer.cpp
 )
 include_directories( src/base )
