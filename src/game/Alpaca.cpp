@@ -8,14 +8,10 @@ namespace Game
     {
         // ActionManager class 
         ActionManager::ActionManager()
-        :m_actions(), m_stack(),  m_remain(), m_count(0), 
+        :m_actions(), m_lastaction(ActionManager::ActionType::NONE),  m_remain(),
         m_resettime(0.0f), m_remain_to_reset(0.0f)
         {
-            for(int i=0; i<NUM_ACTIONS; ++i)
-            {
-                m_stack[i] = ActionType::NONE;
-                m_remain[i] = 0.0f;
-            }
+            ;
         }
 
         ActionManager::~ActionManager()
@@ -72,11 +68,9 @@ namespace Game
             if(!DoingAnyAction())
             {
                 m_remain_to_reset -= t.GetDeltatime();
-                if(m_remain_to_reset < 0.0f)
+                if(m_remain_to_reset < 0.0f && m_lastaction != ActionType::NONE)
                 {
-                    for(int i=0; i<NUM_ACTIONS; ++i)
-                        m_stack[i] = ActionType::NONE;
-                    m_count = 0;
+                    m_lastaction = ActionType::NONE;
                 }
             }
         }
@@ -143,9 +137,9 @@ namespace Game
                 {
                     if(m_remain[i] < 0.0f)
                     {
-                        m_remain[i] = m_actions[i]->GetCooltime();
-                        m_stack[m_count++] = type;
                         m_actions[i]->Act();
+                        m_remain[i] = m_actions[i]->GetCooltime();
+                        m_lastaction = type;
                     }
                 }
             }
@@ -156,30 +150,20 @@ namespace Game
             assert(idx < NUM_ACTIONS);
             if(m_actions[idx] && m_remain[idx] < 0.0f)
             {
-                m_remain[idx] = m_actions[idx]->GetCooltime();
-                m_stack[m_count++] = m_actions[idx]->GetType();
                 m_actions[idx]->Act();
+                m_remain[idx] = m_actions[idx]->GetCooltime();
+                m_lastaction = m_actions[idx]->GetType();
             }
         }
 
-        void ActionManager::EndAction(ActionManager::ActionType type)
+        void ActionManager::CountResetTime()
         {
             m_remain_to_reset = m_resettime;
         }
 
-        const ActionManager::ActionType *ActionManager::GetActionStack()const
-        {
-            return m_stack;
-        }
-
         ActionManager::ActionType ActionManager::GetLastAction()const
         {
-            return m_stack[m_count-1];
-        }
-
-        Uint32 ActionManager::GetActionDidCount()const
-        {
-            return m_count;
+            return m_lastaction;
         }
 
         void ActionManager::SetAlpaca(Alpaca *alpaca)
@@ -216,8 +200,8 @@ namespace Game
         };
 
         Alpaca::Alpaca()
-        :Component(), m_head(nullptr), m_headobject(), m_animator(nullptr), m_speed(0.0f), 
-        m_keymap(Keymap::NONE), m_actionm()
+        :Component(), m_head(nullptr), m_headobject(), m_animator(nullptr), m_rigidbody(nullptr),
+        m_nowground(nullptr), m_speed(0.0f), m_jumppower(0.0f), m_keymap(Keymap::NONE), m_actionm()
         {
             ;
         }
@@ -233,15 +217,15 @@ namespace Game
 
             assert(obj.HasMember("head"));
             assert(obj.HasMember("speed"));
-            assert(obj.HasMember("keymap")); 
+            assert(obj.HasMember("jumppower"));
             assert(obj.HasMember("action_manager"));
             assert(obj["head"].IsObject());
             assert(obj["speed"].IsFloat());
-            assert(obj["keymap"].IsInt());
+            assert(obj["jumppower"].IsFloat());
             assert(obj["action_manager"].IsObject());
             
-            SetSpeed(obj["speed"].GetFloat());
-            SetKeymap(Alpaca::Keymap(obj["keymap"].GetInt()));
+            m_speed = obj["speed"].GetFloat();
+            m_jumppower = obj["jumppower"].GetFloat();
 
             Scene *scene = Application::Get().GetScene();
             GameObject *head = scene->CreateGameObject(obj["head"].GetObject());
@@ -258,6 +242,8 @@ namespace Game
             Component::Start();
             GameObject *gameobjcet = GetGameObject();
             m_animator = gameobjcet->GetComponent<AnimatedSprite>();
+            m_rigidbody = gameobjcet->GetComponent<Rigidbody>();
+            m_hitgauge = gameobjcet->GetComponent<HitGauge>();
         }
 
         void Alpaca::Update()
@@ -273,6 +259,24 @@ namespace Game
             m_headobject.Release();
         }
 
+        void Alpaca::OnTriggerStay(Collider *other)
+        {
+            if(other->GetTag() == "ground"_hash)
+            {
+                m_nowground = other->GetGameObject()->GetComponent<Ground>();
+                SetGrounded(true);
+            }
+        }
+
+        void Alpaca::OnTriggerExit(Collider *other)
+        {
+            if(other->GetTag() == "ground"_hash)
+            {
+                m_nowground = nullptr;
+                SetGrounded(false);
+            }
+        }
+
         Head *Alpaca::GetHeadObject()
         {
             return m_head;
@@ -283,6 +287,11 @@ namespace Game
             return m_speed;
         }
 
+        float32 Alpaca::GetJumpPower()const
+        {
+            return m_jumppower;
+        }
+
         Alpaca::Keymap Alpaca::GetKeymap()const
         {
             return m_keymap;
@@ -291,6 +300,21 @@ namespace Game
         int32 Alpaca::isMoving()const
         {
             return m_flags.GetFlag(13);
+        }
+
+        int32 Alpaca::isGrounded()const
+        {
+            return m_flags.GetFlag(14);
+        }
+
+        Rigidbody *Alpaca::GetRigidbody()
+        {
+            return m_rigidbody;
+        }
+
+        HitGauge *Alpaca::GetHitGauge()
+        {
+            return m_hitgauge;
         }
 
         ActionManager &Alpaca::GetActionManager()
@@ -325,15 +349,15 @@ namespace Game
             if(!m_actionm.DoingAnyAction())
             {
                 const glm::vec2 &scale = GetScale();
-                if(input.isKeyDown(keys[(int32)Key::UP]))
+                if(input.isKeyPressed(keys[(int32)Key::UP]) && isGrounded())
                 {
-                    delta.y += m_speed;
-                    SetMoving(true);
+                    m_rigidbody->AddForce(0.0f, m_jumppower, 0.0f);
                 }
-                if(input.isKeyDown(keys[(int32)Key::DOWN]))
+                if(input.isKeyPressed(keys[(int32)Key::DOWN]) && isGrounded()
+                && m_nowground)
                 {
-                    delta.y -= m_speed;
-                    SetMoving(true);
+                    m_nowground->Pass(this->GetGameObject());
+                    SetGrounded(false);
                 }
                 if(input.isKeyDown(keys[(int32)Key::LEFT]))
                 {
@@ -357,9 +381,8 @@ namespace Game
                 else
                     m_animator->SetAnimation(animations["idle"_hash]);
             }
-            
-            delta *= t.GetDeltatime();
 
+            delta *= t.GetDeltatime();
             Move(delta);
         }
 
@@ -373,17 +396,22 @@ namespace Game
             }
             if(input.isKeyDown(keys[(int32)Key::ACTION2]))
             {
-                ;
+                m_actionm.DoAction(1);
             }
             if(input.isKeyDown(keys[(int32)Key::ACTION3]))
             {
-                m_actionm.DoAction(1);
+                m_actionm.DoAction(2);
             }
         }
 
         void Alpaca::SetMoving(int32 val)
         {
             m_flags.SetFlag(13, val);
+        }
+
+        void Alpaca::SetGrounded(int32 val)
+        {
+            m_flags.SetFlag(14, val);
         }
     }
 }

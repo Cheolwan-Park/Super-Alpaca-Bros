@@ -7,7 +7,7 @@ namespace Base
 {
     // Scene class
     Scene::Scene()
-    :m_objstorages(4), m_drawablestorages(4), m_doc()
+    :m_objstorages(4), m_drawablestorages(4), m_physics(), m_doc()
     {
         ;
     }
@@ -32,6 +32,9 @@ namespace Base
         printf("==== loading scene ====\n");
         #endif
         
+        if(RET_SUCC != LoadPhysics())
+            return RET_FAILED;
+
         if(RET_SUCC != LoadShaders())
             return RET_FAILED;
 
@@ -81,6 +84,7 @@ namespace Base
 
     void Scene::Update()
     {
+        m_physics.Update();
         for(size_t i=0; i<m_objstorages.GetCount(); ++i)
         {
             m_objstorages[i]->UpdateObjects();
@@ -97,6 +101,7 @@ namespace Base
 
     void Scene::CheckDeletedObjects()
     {
+        m_physics.CheckDeleted();
         for(size_t i=0; i<m_drawablestorages.GetCount(); ++i)
         {
             m_drawablestorages[i]->CheckDeleted();
@@ -149,6 +154,11 @@ namespace Base
                 return m_drawablestorages[i];
         }
         return nullptr;
+    }
+
+    Physics &Scene::GetPhysics()
+    {
+        return m_physics;
     }
 
     GameObject *Scene::AddGameObject(Uint32 storage, GameObject *gameobject)

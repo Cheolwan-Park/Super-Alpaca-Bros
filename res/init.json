@@ -1,7 +1,7 @@
 {
     "title": "Alpaca's Head",
-    "windowsize": {"w": 1280, "h": 960},
-    "camera_range":  {"x": 12.0, "y": 9.0},
+    "windowsize": {"w": 1280, "h": 720},
+    "camera_range":  {"x": 96.0, "y": 64.0},
 
     "allocator_size" : 16777216,
     "shaderstorage_size": 8,

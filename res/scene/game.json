@@ -1,4 +1,10 @@
 {
+    "Physics": 
+    { 
+        "collider_count": 32,
+        "gravity": 110.0
+    },
+
     "Shaders": [
         {"name": "default", "vert": "default_vert.glsl", "frag": "default_frag.glsl"}
     ],
@@ -37,47 +43,114 @@
 
     "GameObjects": [
         {
-            "type": "ComponentObject",
             "storage": "global",
-            "id": "alpaca0",
-            "tag": "player1",
+            "id": "GameManager",
+            "tag": "GameManager",
             "available": true,
             "static": false,
-            "position": {"x": -3.0, "y": 0.0, "z": 1.0},
-            "scale": {"x": 1.1, "y": 1.1},
+            "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+            "scale": {"x":1.0, "y": 1.0},
             "rotation": 0.0,
             "components": [
                 {
-                    "type": "AnimatedSprite",
+                    "type": "GameManager",
                     "available": true,
-                    "storage": "unlit",
-                    "uv": {"x": 0, "y": 0, "w": 1024, "h": 1024},
-                    "texture": "alpacas.png",
-                    "default_anim": "idle"
+                    "respawntime": 3.0,
+                    "lifecount": 5,
+                    "alpaca": {"file": "alpaca.json"}
                 },
                 {
-                    "type": "Alpaca",
+                    "type": "CameraController",
                     "available": true,
-                    "head": { "file": "alpacahead.json" },
-                    "speed": 1.0,
-                    "keymap": 0,
-                    "action_manager": {
-                        "actions": [
-                            {
-                                "type": "Heading",
-                                "cooltime": 4.0,
-                                "time": 1.0, 
-                                "length": 3.0
-                            },
-                            {
-                                "type": "Dash",
-                                "cooltime": 2.0,
-                                "time": 0.06, 
-                                "length":1.2
-                            }
-                        ],
-                        "resettime": 1.0
-                    }
+                    "margin": 30.0,
+                    "cammovespeed": 10.0,
+                    "expandspeed": 0.5,
+                    "viewratio": {"x": 16.0, "y": 9.0},
+                    "min_camerarange": 6.0,
+                    "max_camerarange": 9.0
+                }
+            ]
+        },
+
+
+        {
+            "storage": "global",
+            "id": "ground0",
+            "tag": "ground",
+            "available": true,
+            "static": false,
+            "position": {"x": 0.0, "y": -13.5, "z": 1.0},
+            "scale": {"x": 72.0, "y": 3.0},
+            "rotation": 0.0,
+            "components": [
+                {
+                    "type": "Sprite",
+                    "available": true,
+                    "storage": "unlit",
+                    "uv": {"x": 0, "y": 0, "w": 128, "h": 128},
+                    "texture": "alpacas.png"
+                },
+                {
+                    "type": "Ground",
+                    "available": true,
+                    "isTrigger": true,
+                    "box": {"x": 0.0, "y": 0.0, "w": 72.0, "h": 3.0},
+                    "ignorelist_size": 8,
+                    "isPassable": false
+                }
+            ]
+        },
+        {
+            "storage": "global",
+            "id": "ground1",
+            "tag": "ground",
+            "available": true,
+            "static": false,
+            "position": {"x": -18.0, "y": 0.0, "z": 1.0},
+            "scale": {"x": 18.0, "y": 3.0},
+            "rotation": 0.0,
+            "components": [
+                {
+                    "type": "Sprite",
+                    "available": true,
+                    "storage": "unlit",
+                    "uv": {"x": 0, "y": 0, "w": 128, "h": 128},
+                    "texture": "alpacas.png"
+                },
+                {
+                    "type": "Ground",
+                    "available": true,
+                    "isTrigger": true,
+                    "box": {"x": 0.0, "y": 0.0, "w": 18.0, "h": 3.0},
+                    "ignorelist_size": 8,
+                    "isPassable": true
+                }
+            ]
+        },
+        {
+            "storage": "global",
+            "id": "ground2",
+            "tag": "ground",
+            "available": true,
+            "static": false,
+            "position": {"x": 18.0, "y": 0.0, "z": 1.0},
+            "scale": {"x": 18.0, "y": 3.0},
+            "rotation": 0.0,
+            "components": [
+                {
+                    "type": "Sprite",
+                    "available": true,
+                    "storage": "unlit",
+                    "uv": {"x": 0, "y": 0, "w": 128, "h": 128},
+                    "texture": "alpacas.png"
+                },
+                {
+                    "type": "Ground",
+                    "available": true,
+                    "isTrigger": true,
+                    "box": {"x": 0.0, "y": 0.0, "w": 18.0, "h": 3.0},
+                    "ignorelist_size": 8,
+                    "isPassable": true
                 }
             ]
         }

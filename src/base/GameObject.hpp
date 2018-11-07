@@ -50,9 +50,14 @@ namespace Base
         GameObject *AddChild(GameObject *child)const;
 
         // collide callback
-        void OnColliderEnter(const Collider *other);
-        void OnColliderStay(const Collider *other);
-        void OnColliderExit(const Collider *other);
+        void OnColliderEnter(Collider *other);
+        void OnColliderStay(Collider *other);
+        void OnColliderExit(Collider *other);
+
+        // trigger callback
+        void OnTriggerEnter(Collider *other);
+        void OnTriggerStay(Collider *other);
+        void OnTriggerExit(Collider *other);
         
         // get
         Uint32 GetID()const;

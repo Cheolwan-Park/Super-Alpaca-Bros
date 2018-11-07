@@ -5,7 +5,6 @@
 #include "Alpaca.hpp"
 
 
-
 namespace Game 
 {
     namespace Alpaca
@@ -30,7 +29,7 @@ namespace Game
             // not copying alpaca pointer
             Action &operator=(const Action &other);
 
-            virtual void InitWithJson(const rapidjson::Value::Object &obj);
+            virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
 
             virtual void Update() = 0;
 
@@ -58,7 +57,7 @@ namespace Game
         {
             Action *result = new (allocator.Alloc<T>()) T();
             assert(result);
-            result->InitWithJson(obj);
+            result->InitWithJson(obj, allocator);
             return result;
         }
 
@@ -78,7 +77,7 @@ namespace Game
             // copying time, length
             Heading &operator=(const Heading &other);
 
-            virtual void InitWithJson(const rapidjson::Value::Object &obj);
+            virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
 
             virtual void Update();
 
@@ -131,7 +130,7 @@ namespace Game
             // copying length , time
             Dash &operator=(const Dash &other);
 
-            virtual void InitWithJson(const rapidjson::Value::Object &obj);
+            virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
 
             virtual void Update();
 
@@ -141,24 +140,45 @@ namespace Game
             
             virtual int32 isActing()const;
 
-            // get 
-            int32 isDashing()const;
-
         private:
-            void SetDashing(int32 val);
-
-        private:
-            float32 m_time;
-            float32 m_length;
-            float32 m_elapsedtime;
-            glm::vec3 m_taragetpos;
-            glm::vec3 m_startpos;
-            BitFlag m_flags;
-            /*
-             * 0 : dashing
-             */
+            float32 m_force;
         };
 
+        class Spit;
+        class Spitting : public Action
+        {
+        public:
+            ACTION(Spitting);
+
+            Spitting();
+
+            // copying length , time
+            Spitting(const Spitting &other) = delete;
+
+            virtual ~Spitting();
+
+            // copying length , time
+            Spitting &operator=(const Spitting &other) = delete;
+
+            virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
+
+            virtual void Update();
+
+            virtual void Act();
+
+            virtual Action::Type GetType()const;
+            
+            virtual int32 isActing()const;
+
+        private:
+            Spit *GetSpit();
+
+        private:
+            Uint32 m_circularspits;
+            Uint32 m_maxspits;
+            GameObject **m_spitobjects;
+            Spit **m_spits;
+        };
 
 
         class ActionFactory : public Storage<Action::FactoryFunc>

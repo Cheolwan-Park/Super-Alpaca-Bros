@@ -113,19 +113,26 @@ void AddFactoryFuncs()
     // component factory
     auto &cfactory = ComponentFactory::GetGlobal();
     cfactory.AssignMemory(allocator.Alloc<ComponentFactory::Type>(4096), 4096);
-    // cfactory.AddFunction<Collider>(Collider::Factory);
-    // cfactory.AddFunction<CircleCollider>();
-    // cfactory.AddFunction<BoxCollider>();
+    cfactory.AddFunction<Collider>(Collider::Factory);
+    cfactory.AddFunction<CircleCollider>();
+    cfactory.AddFunction<BoxCollider>();
+    cfactory.AddFunction<Rigidbody>();
     cfactory.AddFunction<Component>(Component::Factory);
     cfactory.AddFunction<Drawable>(Drawable::Factory);
     cfactory.AddFunction<Sprite>();
     cfactory.AddFunction<AnimatedSprite>();
     cfactory.AddFunction<Game::Alpaca::Alpaca>();
     cfactory.AddFunction<Game::Alpaca::Head>();
+    cfactory.AddFunction<Game::Ground>();
+    cfactory.AddFunction<Game::HitGauge>();
+    cfactory.AddFunction<Game::Alpaca::Spit>();
+    cfactory.AddFunction<Game::GameManager>();
+    cfactory.AddFunction<Game::CameraController>();
 
     // action factory
     auto &afactory = Game::Alpaca::ActionFactory::GetGlobal();
     afactory.AssignMemory(allocator.Alloc<Game::Alpaca::ActionFactory::Type>(128), 128);
     afactory.AddFunction<Game::Alpaca::Heading>();
     afactory.AddFunction<Game::Alpaca::Dash>();
+    afactory.AddFunction<Game::Alpaca::Spitting>();
 }

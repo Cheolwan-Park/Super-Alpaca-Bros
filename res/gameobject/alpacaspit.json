@@ -1,0 +1,35 @@
+{
+    "Object": {
+        "storage": "global",
+        "id": "spit",
+        "tag": "default",
+        "available": true,
+        "static": false,
+        "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+        "scale": {"x": 3.0, "y": 3.0},
+        "rotation": 0.0,
+        "components": [
+            {
+                "type": "Sprite",
+                "available": true,
+                "storage": "unlit",
+                "uv": {"x": 0, "y": 512, "w": 128, "h": 128},
+                "texture": "alpacas.png"
+            },
+            {
+                "type": "Spit",
+                "available": true,
+                "lifetime": 10.0,
+                "speed": 70.0, 
+                "force": 9.0,
+                "gaugeup": 5.0
+            },
+            {
+                "type": "CircleCollider",
+                "available": true,
+                "isTrigger": true,
+                "radius": 1.5
+            }
+        ]
+    }
+}

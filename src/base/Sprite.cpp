@@ -372,7 +372,9 @@ namespace Base
             
             for(Uint32 i=0; i<m_len; ++i)
             {
-                if(m_drawables[i] && m_drawables[i]->isAvailable())
+                if(m_drawables[i] 
+                && m_drawables[i]->isAvailable()
+                && m_drawables[i]->GetGameObject()->isAvailable())
                 {
                     m_drawables[i]->Draw();
                 }

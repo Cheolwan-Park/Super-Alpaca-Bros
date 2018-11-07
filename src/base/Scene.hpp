@@ -9,6 +9,7 @@
 #include "Array.hpp"
 #include "Json.hpp"
 #include "FileIO.hpp"
+#include "Physics.hpp"
 
 
 namespace Base
@@ -44,6 +45,8 @@ namespace Base
         
         DrawableStorage *GetDrawableStorage(Uint32 hash);
 
+        Physics &GetPhysics();
+
         GameObject *AddGameObject(Uint32 storagehash, GameObject *gameobject);
 
         int32 RegisterDrawable(Uint32 storagehash, Drawable *drawable);
@@ -55,6 +58,7 @@ namespace Base
         GameObject *CreateGameObject(const rapidjson::Value::Object &obj);
         
     protected:
+        virtual int32 LoadPhysics();
         virtual int32 LoadShaders();
         virtual int32 LoadTextures();
         virtual int32 LoadAnimations();
@@ -65,6 +69,7 @@ namespace Base
     private:
         Array<ObjectStorage*> m_objstorages;
         Array<DrawableStorage*> m_drawablestorages;
+        Physics m_physics;
         rapidjson::Document m_doc;
     };
 }

@@ -201,7 +201,7 @@ namespace Base
         return child;
     }
 
-    void GameObject::OnColliderEnter(const Collider *other)
+    void GameObject::OnColliderEnter(Collider *other)
     {
         for(int i=0; i<m_componentcount; ++i)
         {
@@ -209,7 +209,7 @@ namespace Base
         }
     }
 
-    void GameObject::OnColliderStay(const Collider *other)
+    void GameObject::OnColliderStay(Collider *other)
     {
         for(int i=0; i<m_componentcount; ++i)
         {
@@ -217,11 +217,35 @@ namespace Base
         }
     }
 
-    void GameObject::OnColliderExit(const Collider *other)
+    void GameObject::OnColliderExit(Collider *other)
     {
         for(int i=0; i<m_componentcount; ++i)
         {
             m_components[i]->OnColliderExit(other);
+        }
+    }
+
+    void GameObject::OnTriggerEnter(Collider *other)
+    {
+        for(int i=0; i<m_componentcount; ++i)
+        {
+            m_components[i]->OnTriggerEnter(other);
+        }
+    }
+
+    void GameObject::OnTriggerStay(Collider *other)
+    {
+        for(int i=0; i<m_componentcount; ++i)
+        {
+            m_components[i]->OnTriggerStay(other);
+        }
+    }
+
+    void GameObject::OnTriggerExit(Collider *other)
+    {
+        for(int i=0; i<m_componentcount; ++i)
+        {
+            m_components[i]->OnTriggerExit(other);
         }
     }
     

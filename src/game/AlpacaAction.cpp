@@ -1,5 +1,7 @@
 #include "AlpacaAction.hpp"
 #include "AlpacaHead.hpp"
+#include "AlpacaSpit.hpp"
+#include "GameManager.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/matrix_transform_2d.hpp>
 
@@ -32,7 +34,7 @@ namespace Game
             return (*this);
         }
 
-        void Action::InitWithJson(const rapidjson::Value::Object &obj)
+        void Action::InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator)
         {
             assert(obj.HasMember("cooltime"));
             assert(obj["cooltime"].IsFloat());
@@ -85,9 +87,9 @@ namespace Game
             return (*this);
         }
 
-        void Heading::InitWithJson(const rapidjson::Value::Object &obj)
+        void Heading::InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator)
         {
-            Action::InitWithJson(obj);
+            Action::InitWithJson(obj, allocator);
             assert(obj.HasMember("time"));
             assert(obj.HasMember("length"));
             assert(obj["time"].IsFloat());
@@ -126,12 +128,13 @@ namespace Game
                 {
                     if(isHeadHooking())
                     {
+                        alpaca->GetRigidbody()->SetGravityActive(true);
                         SetHooking(false);
-                        alpaca->GetActionManager().EndAction(ActionManager::ActionType::DASH);
                     }
                     SetHeading(false);
                     head->ResetPosition();
-                    alpaca->GetActionManager().EndAction(ActionManager::ActionType::HEADING);
+                    head->GetGameObject()->GetComponent<CircleCollider>()->SetAvailable(false);
+                    alpaca->GetActionManager().CountResetTime();
                 }
             }
         }
@@ -142,6 +145,7 @@ namespace Game
             m_headingtargetpos = head->GetNeckPos();
             m_headingtargetpos.x -= m_length;
             head->SetRotation(Math::Constant::PIf/2.0f);
+            head->GetGameObject()->GetComponent<CircleCollider>()->SetAvailable(true);
             m_elapsedtime = 0.0f;
             SetHeading(true);
         }
@@ -180,6 +184,8 @@ namespace Game
                 m_hookingstartpos = m_hookingtargetpos;
                 glm::vec3 headinglen(m_length, 0.0f, 1.0f);
                 m_hookingstartpos += model * headinglen;
+
+                alpaca->GetRigidbody()->SetGravityActive(false);
                 
                 StopHeading();
                 SetHooking(true);
@@ -209,15 +215,13 @@ namespace Game
 
         // Dash class
         Dash::Dash()
-        :Action(), m_time(0.0f), m_length(0.0f), m_elapsedtime(0.0f), 
-        m_taragetpos(), m_startpos(), m_flags()
+        :Action(), m_force(0.0f)
         {
             ;
         }
 
         Dash::Dash(const Dash &other)
-        :Action(other), m_time(other.m_time), m_length(other.m_length), m_elapsedtime(0.0f), 
-        m_taragetpos(), m_startpos(), m_flags()
+        :Action(other), m_force(other.m_force)
         {
             ;
         }
@@ -231,41 +235,23 @@ namespace Game
         {
             assert(this != &other);
             Action::operator=(other);
-            this->m_time = other.m_time;
-            this->m_length = other.m_length;
+            this->m_force = other.m_force;
             return (*this);
         }
 
-        void Dash::InitWithJson(const rapidjson::Value::Object &obj)
+        void Dash::InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator)
         {
-            Action::InitWithJson(obj);
+            Action::InitWithJson(obj, allocator);
 
-            assert(obj.HasMember("time"));
-            assert(obj.HasMember("length"));
-            assert(obj["time"].IsFloat());
-            assert(obj["length"].IsFloat());
+            assert(obj.HasMember("force"));
+            assert(obj["force"].IsFloat());
 
-            m_time = obj["time"].GetFloat();
-            m_length = obj["length"].GetFloat();
+            m_force = obj["force"].GetFloat();
         }
 
         void Dash::Update()
         {
-            if(isDashing())
-            {
-                auto &t = Time::Get();
-                m_elapsedtime += t.GetDeltatime();
-                
-                float32 a = m_elapsedtime/m_time;
-                Alpaca *alpaca = GetAlpaca();
-                alpaca->SetLocalPosition(glm::mix(m_startpos, m_taragetpos, a));
-
-                if(m_elapsedtime > m_time)
-                {
-                    SetDashing(false);
-                    alpaca->GetActionManager().EndAction(ActionManager::ActionType::HEADING);
-                }
-            }
+            ;
         }
 
         void Dash::Act()
@@ -281,19 +267,17 @@ namespace Game
             }
             else
             {
-                m_startpos = alpaca->GetLocalPosition();
-                m_taragetpos = m_startpos;
+                Rigidbody *alpacarigid = alpaca->GetGameObject()->GetComponent<Rigidbody>();
                 if((alpaca->GetScale().x) < 0.0f)
                 {
-                    m_taragetpos.x += m_length;
+                    alpacarigid->AddForce(m_force, 0.0f, 0.0f);
                 }
                 else
                 {
-                    m_taragetpos.x -= m_length;
+                    alpacarigid->AddForce(-m_force, 0.0f, 0.0f);
                 }
-                m_elapsedtime = 0.0f;
-                SetDashing(true);
             }
+            actions.CountResetTime();
         }
 
         Action::Type Dash::GetType()const
@@ -303,17 +287,124 @@ namespace Game
 
         int32 Dash::isActing()const
         {
-            return isDashing();
+            return false;
         }
 
-        int32 Dash::isDashing()const
+        
+        // Spitting class
+        Spitting::Spitting()
+        :Action(), m_circularspits(0), m_maxspits(0), 
+        m_spitobjects(nullptr), m_spits(nullptr)
         {
-            return m_flags.GetFlag(0);
+            ;
         }
 
-        void Dash::SetDashing(int32 val)
+        Spitting::~Spitting()
         {
-            m_flags.SetFlag(0, val);
+            ;
+        }
+
+        void Spitting::InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator)
+        {
+            Action::InitWithJson(obj, allocator);
+
+            assert(obj.HasMember("circularspits"));
+            assert(obj.HasMember("maxspits"));
+            assert(obj.HasMember("spit"));
+            assert(obj["circularspits"].IsInt());
+            assert(obj["maxspits"].IsInt());
+            assert(obj["spit"].IsObject());
+
+            m_circularspits = obj["circularspits"].GetInt();
+            m_maxspits = obj["maxspits"].GetInt();
+            auto spitjsonobj = obj["spit"].GetObject();
+
+            m_spitobjects = allocator.Alloc<GameObject*>(m_maxspits);
+            m_spits = allocator.Alloc<Spit*>(m_maxspits);
+            memset(m_spitobjects, 0, sizeof(GameObject*)*m_maxspits);
+            memset(m_spits, 0, sizeof(Spit*)*m_maxspits);
+
+            Scene *scene = Application::Get().GetScene();
+            for(Uint32 i=0; i<m_maxspits; ++i)
+            {
+                m_spitobjects[i] = scene->CreateGameObject(spitjsonobj);
+                m_spits[i] = m_spitobjects[i]->GetComponent<Spit>();
+                m_spitobjects[i]->SetAvailable(false);
+            }
+        }
+
+        void Spitting::Update()
+        {
+            ;
+        }
+
+        void Spitting::Act()
+        {
+            Alpaca *alpaca = GetAlpaca();
+            Head *alpacahead = alpaca->GetHeadObject();
+            GameObject *headobject = alpacahead->GetGameObject();
+            auto &actions = alpaca->GetActionManager();
+
+            glm::vec3 pos(0.0f);
+            headobject->GetWorldPosition(&pos);
+            Spit *newspit = nullptr;
+
+            // circular
+            if(Action::Type::DASH == actions.GetLastAction())
+            {
+                float32 angle = 0.0f;
+                float32 delta = 2.0f*Math::Constant::PI/(float32)m_circularspits;
+                glm::vec3 dir(0.0f);
+                for(Uint32 i=0; i<m_circularspits; ++i)
+                {
+                    dir.x = Math::Cos(angle);
+                    dir.y = Math::Sin(angle);
+
+                    newspit = GetSpit();
+                    newspit->SetWorldPosition(pos);
+                    newspit->Shoot(dir, alpaca);
+
+                    angle += delta;
+                }
+            }
+            // default
+            else
+            {
+                newspit = GetSpit();
+                newspit->SetWorldPosition(pos);
+
+                Uint32 alpacanum = (Uint32)alpaca->GetKeymap();
+                alpacanum = alpacanum ? 0 : 1;
+                GameManager *gmanager = GameManager::GetGlobal();
+                glm::vec3 opponentpos(0.0f);
+                gmanager->GetAlpaca(alpacanum)->GetWorldPosition(&opponentpos);
+                newspit->Shoot(opponentpos - pos, alpaca);    
+            }
+            actions.CountResetTime();
+        }
+
+        Action::Type Spitting::GetType()const
+        {
+            return Action::Type::SPIT;
+        }
+
+        int32 Spitting::isActing()const
+        {
+            return false;
+        }
+
+        Spit *Spitting::GetSpit()
+        {
+            for(Uint32 i=0; i<m_maxspits; ++i)
+            {
+                if(!(m_spitobjects[i]->isAvailable()))
+                {
+                    m_spitobjects[i]->SetAvailable(true);
+                    return m_spits[i];
+                }
+            }
+            fprintf(stderr, "there is no remain spit\n");
+            exit(-1);
         }
     }
 }

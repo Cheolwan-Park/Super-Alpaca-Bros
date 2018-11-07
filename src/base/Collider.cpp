@@ -1,4 +1,7 @@
 #include "Collider.hpp"
+#include "Physics.hpp"
+#include "Application.hpp"
+#include "Scene.hpp"
 
 namespace Base
 {
@@ -36,11 +39,21 @@ namespace Base
     void Collider::InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator)
     {
         Component::InitWithJson(obj, allocator);
+
+        assert(obj.HasMember("isTrigger"));
+        assert(obj["isTrigger"].IsBool());
+        SetTrigger(obj["isTrigger"].GetBool());
     }
 
     void Collider::Start()
     {
         Component::Start();
+        
+        m_rigidbody = GetGameObject()->GetComponent<Rigidbody>();
+
+        Scene *scene = Application::Get().GetScene();
+        assert(scene);
+        scene->GetPhysics().Register(this);
     }
 
     void Collider::Update()
@@ -51,6 +64,26 @@ namespace Base
     void Collider::Release()
     {
         ;
+    }
+
+    Rigidbody *Collider::GetRigidbody()
+    {
+        return m_rigidbody;
+    }
+
+    const Rigidbody *Collider::GetRigidbody()const
+    {
+        return m_rigidbody;
+    }
+
+    int32 Collider::isTrigger()const
+    {
+        return m_flags.GetFlag(2);
+    }
+
+    void Collider::SetTrigger(int32 val)
+    {
+        m_flags.SetFlag(2, val);
     }
 
     
@@ -204,7 +237,10 @@ namespace Base
             assert(circle0);
             assert(circle1);
 
-            const glm::vec3 delta = (circle0->GetLocalPosition()) - (circle1->GetLocalPosition());
+            glm::vec3 pos0, pos1;
+            circle0->GetWorldPosition(&pos0);
+            circle1->GetWorldPosition(&pos1);
+            const glm::vec3 delta = pos0 - pos1;
             float32 radiussum = (circle0->GetRadius()) + (circle1->GetRadius());
 
             if((delta.x*delta.x + delta.y*delta.y) < radiussum*radiussum) 
@@ -221,9 +257,10 @@ namespace Base
         {
             assert(box);
             assert(circle);
-
-            const glm::vec3 &boxpos = box->GetLocalPosition();
-            const glm::vec3 &circlepos = circle->GetLocalPosition();
+            
+            glm::vec3 boxpos, circlepos;
+            box->GetWorldPosition(&boxpos);
+            circle->GetWorldPosition(&circlepos);
 
             Math::Rect rect = box->GetBox();
             float32 radius = circle->GetRadius();
@@ -271,8 +308,9 @@ namespace Base
             assert(box0);
             assert(box1);
 
-            const glm::vec3 &pos0 = box0->GetLocalPosition();
-            const glm::vec3 &pos1 = box1->GetLocalPosition();
+            glm::vec3 pos0, pos1;
+            box0->GetWorldPosition(&pos0);
+            box1->GetWorldPosition(&pos1);
             Math::Rect r0 = box0->GetBox();
             Math::Rect r1 = box1->GetBox();
 

@@ -35,6 +35,8 @@ namespace Game
 
             virtual void Release();
 
+            virtual void OnTriggerEnter(Collider *other);
+
             virtual void Draw();
 
             void ResetPosition();
@@ -49,12 +51,18 @@ namespace Game
 
             Uint32 GetNeckCount()const;
 
+            float32 GetForce()const;
+
+            float32 GetGaugeUp()const;
+
             const glm::vec3 &GetHeadPos()const;
 
             const glm::vec3 &GetNeckPos()const;
 
         private:
             Alpaca *m_alpaca;
+            float32 m_force;
+            float32 m_gaugeup;
             FixedArray<GameObject, NECK_COUNT> m_necks;
             FixedArray<Sprite*, NECK_COUNT> m_necksprites; 
             glm::vec3 m_headpos;

@@ -102,6 +102,10 @@ namespace Base
         float32 Sqrt(float32 value);
         
         float64 Sqrt(float64 value);
+
+        float32 Log(float32 value);
+
+        float64 Log(float64 value);
     }
 }
 

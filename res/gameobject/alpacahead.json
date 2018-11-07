@@ -1,6 +1,5 @@
 {
     "Object": {
-        "type": "ComponentObject",
         "storage": "global",
         "id": "alpacahead",
         "tag": "default",
@@ -16,6 +15,8 @@
                 "available": true,
                 "uv": {"x": 0, "y": 640, "w": 128, "h": 128},
                 "texture": "alpacas.png",
+                "force": 50.0,
+                "gaugeup": 30.0, 
                 "headpos": {"x":-0.35, "y":0.45, "z":1.0},
                 "neckpos": {"x":-0.33, "y":0.3, "z":1.0},
                 "neck": {
@@ -38,6 +39,12 @@
                         }
                     ]
                 }
+            },
+            {
+                "type": "CircleCollider",
+                "available": false,
+                "isTrigger": true,
+                "radius": 2.0
             }
         ]
     }

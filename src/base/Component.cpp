@@ -46,17 +46,32 @@ namespace Base
         m_flags.SetFlag(1, true);
     }
 
-    void Component::OnColliderEnter(const Collider *other)
+    void Component::OnColliderEnter(Collider *other)
     {
         ;
     }
 
-    void Component::OnColliderStay(const Collider *other)
+    void Component::OnColliderStay(Collider *other)
     {
         ;
     }
 
-    void Component::OnColliderExit(const Collider *other)
+    void Component::OnColliderExit(Collider *other)
+    {
+        ;
+    }
+
+    void Component::OnTriggerEnter(Collider *other)
+    {
+        ;
+    }
+
+    void Component::OnTriggerStay(Collider *other)
+    {
+        ;
+    }
+
+    void Component::OnTriggerExit(Collider *other)
     {
         ;
     }

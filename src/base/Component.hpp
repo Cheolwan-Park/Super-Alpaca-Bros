@@ -53,9 +53,14 @@ namespace Base
         virtual void Release() = 0;
 
         // collide callback
-        virtual void OnColliderEnter(const Collider *other);
-        virtual void OnColliderStay(const Collider *other);
-        virtual void OnColliderExit(const Collider *other);
+        virtual void OnColliderEnter(Collider *other);
+        virtual void OnColliderStay(Collider *other);
+        virtual void OnColliderExit(Collider *other);
+
+        // trigger callback
+        virtual void OnTriggerEnter(Collider *other);
+        virtual void OnTriggerStay(Collider *other);
+        virtual void OnTriggerExit(Collider *other);
 
         // get
         GameObject *GetGameObject();

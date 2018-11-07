@@ -31,14 +31,11 @@ namespace Base
             return CreateGameObject(doc["Object"].GetObject());
         }
 
-        assert(obj.HasMember("type"));
         assert(obj.HasMember("storage"));
         assert(obj.HasMember("id"));
-        assert(obj["type"].IsString());
         assert(obj["storage"].IsString());
         assert(obj["id"].IsString());
 
-        const char *type = obj["type"].GetString();
         const char *storageid = obj["storage"].GetString();
         const char *id = obj["id"].GetString();
 
@@ -50,6 +47,16 @@ namespace Base
         printf("%s(%u) added\n", id, newobject->GetID());
         #endif
         return newobject;
+    }
+
+    int32 Scene::LoadPhysics()
+    {
+        assert(m_doc.HasMember("Physics"));
+        assert(m_doc["Physics"].IsObject());
+
+        m_physics.InitWithJson(m_doc["Physics"].GetObject(), Application::Get().GetAllocator());
+
+        return RET_SUCC;
     }
 
     int32 Scene::LoadShaders()

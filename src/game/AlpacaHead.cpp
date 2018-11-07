@@ -8,7 +8,7 @@ namespace Game
     namespace Alpaca
     {
         Head::Head()
-        :Sprite(), m_alpaca(nullptr), m_necks(), m_necksprites(),
+        :Sprite(), m_alpaca(nullptr), m_force(0.0f), m_necks(), m_necksprites(),
         m_headpos(), m_neckpos()
         {
             ;
@@ -23,13 +23,19 @@ namespace Game
         {
             Sprite::InitWithJson(obj, allocator);
 
+            assert(obj.HasMember("force"));
+            assert(obj.HasMember("gaugeup"));
             assert(obj.HasMember("headpos"));
             assert(obj.HasMember("neckpos"));
             assert(obj.HasMember("neck"));
+            assert(obj["force"].IsFloat());
+            assert(obj["gaugeup"].IsFloat());
             assert(obj["headpos"].IsObject());
             assert(obj["neckpos"].IsObject());
             assert(obj["neck"].IsObject());
 
+            m_force = obj["force"].GetFloat();
+            m_gaugeup = obj["gaugeup"].GetFloat();
             JsonParseMethods::ReadVector(obj["headpos"].GetObject(), &m_headpos);
             JsonParseMethods::ReadVector(obj["neckpos"].GetObject(), &m_neckpos);
 
@@ -69,6 +75,28 @@ namespace Game
                 m_necks[i].~GameObject();
             }
             Sprite::Release();
+        }
+
+        void Head::OnTriggerEnter(Collider *other)
+        {
+            if(other->GetTag() == "player"_hash && other->GetGameObject() != m_alpaca->GetGameObject())
+            {
+                Alpaca *alpaca = other->GetGameObject()->GetComponent<Alpaca>();
+                Rigidbody *rigid = alpaca->GetRigidbody();
+                HitGauge *hitgauge = alpaca->GetHitGauge();
+                float32 force = m_force * (hitgauge->GetFactor());
+                if(m_alpaca->GetScale().x > 0.0f)
+                {
+                    rigid->AddForce(-force, 0.0f, 0.0f);
+                }
+                else
+                {
+                    rigid->AddForce(force, 0.0f, 0.0f);
+                }
+                rigid->AddForce(0.0f, force, 0.0f);
+
+                hitgauge->GaugeUp(m_gaugeup);
+            }
         }
 
         void Head::Draw()
@@ -120,6 +148,16 @@ namespace Game
         Uint32 Head::GetNeckCount()const
         {
             return m_necks.GetMaxSize();
+        }
+
+        float32 Head::GetForce()const
+        {
+            return m_force;
+        }
+
+        float32 Head::GetGaugeUp()const
+        {
+            return m_gaugeup;
         }
 
         const glm::vec3 &Head::GetHeadPos()const

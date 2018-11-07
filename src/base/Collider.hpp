@@ -6,6 +6,8 @@
 
 namespace Base 
 {
+    class Rigidbody;
+
     class Collider : public Component
     {
     public:
@@ -14,6 +16,8 @@ namespace Base
         static Component* Factory(const ::rapidjson::Value::Object &obj, ::Base::StackAllocator &allocator, GameObject *gameobject);
 
     public:
+        COMPONENT(Collider);
+
         Collider();
 
         Collider(const Collider &other);
@@ -33,11 +37,30 @@ namespace Base
         virtual int32 isCollideWith(const Collider *other)const = 0;
 
         virtual Type GetType()const = 0;
+
+        Rigidbody *GetRigidbody();
+
+        const Rigidbody *GetRigidbody()const;
+
+        int32 isTrigger()const;
+
+        void SetTrigger(int32 val);
+
+    private:
+        Rigidbody *m_rigidbody;
+        
+        /*
+         * flags 
+         * Component's flags
+         * 2 : isTrigger
+         */
     };
 
     class CircleCollider : public Collider
     {
     public:
+        COMPONENT(CircleCollider);
+
         CircleCollider();
 
         CircleCollider(const CircleCollider &other);
@@ -65,6 +88,8 @@ namespace Base
     class BoxCollider : public Collider
     {
     public:
+        COMPONENT(BoxCollider);
+
         BoxCollider();
 
         BoxCollider(const BoxCollider &other);

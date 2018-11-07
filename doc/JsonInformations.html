@@ -76,6 +76,7 @@
                 <li><a href="#ObjectStorage">ObjectStorage</a></li>
                 <li><a href="#DrawableStorage">DrawableStorage</a></li>
                 <li><a href="#ParentData">Parent data</a></li>
+                <li><a href="#PhysicsSetting">Physics setting</a></li>
             </ul>
         </div>
         <div id="file-formats-gameobjects-index">
@@ -227,6 +228,15 @@
             </p>
         </div>
     </div>
+     <div id="PhysicsSetting" class="class">
+        <h1> PhysicsSetting </h1>
+        <p class="description"> Physics setting data </p>
+        <div class="elements">
+            <p>
+                collider_count (int) : maximum num of colliders
+            </p>
+        </div>
+    </div>
     <hr>
 
     <h1 id="category-fileformat" class="category"> File Format </h1>
@@ -251,6 +261,7 @@
         <p class="description"> file for initialize scene </p>
         <div class="elements">
             <p>
+                Physics (PhysicsSetting) : physics setting <br>
                 Shaders (array: Shader) : array of Shader <br>
                 Textures (array: string) : array of texture filename <br>
                 Animations (array: Animation) : array of Animation <br>
@@ -344,7 +355,7 @@
             <p>
                 type (string) : type of component (Alpaca) <br>
                 available (bool) : is component available (updated) <br>
-                head (ComponentObject) : head object for alpaca <br>
+                head (GameObject) : head object for alpaca <br>
                 speed (float) : alpaca moving speed <br>
                 keymap (int) : 0 -> 1P, 1 -> 2P <br>
                 action_manager (ActionManager) : ActionManager for alpaca 
@@ -363,7 +374,7 @@
                 texture (string) : texture id
                 headpos (vec3) : default head position <br>
                 neckpos (vec3) : default neck position <br>
-                neck (ComponentObject) : neck object for alpaca
+                neck (GameObject) : neck object for alpaca
             </p>
         </div>
     </div>

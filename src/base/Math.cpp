@@ -144,5 +144,15 @@ namespace Base
         {
             return sqrt(value);
         }
+
+        float32 Log(float32 value)
+        {
+            return log(value);
+        }
+
+        float64 Log(float64 value)
+        {
+            return log(value);
+        }
     }
 }

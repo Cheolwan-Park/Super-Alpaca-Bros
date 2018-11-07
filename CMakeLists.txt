@@ -20,6 +20,11 @@ add_library(
     src/game/Alpaca.cpp
     src/game/AlpacaHead.cpp
     src/game/AlpacaAction.cpp
+    src/game/Ground.cpp
+    src/game/HitGauge.cpp
+    src/game/AlpacaSpit.cpp
+    src/game/GameManager.cpp
+    src/game/CameraController.cpp
 )
 include_directories( src/game )
 target_link_libraries( alpacas Game )
@@ -50,7 +55,6 @@ add_library(
     src/base/Component.cpp
     src/base/Collider.cpp
     src/base/Physics.cpp
-    # src/base/LuaPlayer.cpp
 )
 include_directories( src/base )
 target_link_libraries( alpacas Base )

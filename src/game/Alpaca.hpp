@@ -2,6 +2,8 @@
 #define GameAlpaca_hpp
 
 #include "base.hpp"
+#include "Ground.hpp"
+#include "HitGauge.hpp"
 
 using namespace Base;
 
@@ -48,28 +50,23 @@ namespace Game
 
             void DoAction(Uint32 idx);
 
-            void EndAction(ActionType type);
-
-            const ActionType *GetActionStack()const;
+            void CountResetTime();
 
             ActionType GetLastAction()const;
-
-            Uint32 GetActionDidCount()const;
 
             void SetAlpaca(Alpaca *alpaca);
 
         private:
             FixedArray<Action*, NUM_ACTIONS> m_actions;
-            ActionType m_stack[NUM_ACTIONS];
+            ActionType m_lastaction;
             float32 m_remain[NUM_ACTIONS];
-            Uint32 m_count;
             float32 m_resettime;
             float32 m_remain_to_reset;
         };
 
         class Alpaca : public Component
         {
-        private:
+        public:
             static const SDL_Scancode keymap[2][7];
             enum class Keymap : int32 { NONE = -1, MAP1 = 0, MAP2 = 1 };
             enum class Key : int32 
@@ -98,16 +95,26 @@ namespace Game
 
             virtual void Release();
 
+            virtual void OnTriggerStay(Collider *other);
+
+            virtual void OnTriggerExit(Collider *other);
+
             // get
             Head *GetHeadObject();
 
             float32 GetSpeed()const;
 
+            float32 GetJumpPower()const;
+
             Alpaca::Keymap GetKeymap()const;
 
             int32 isMoving()const;
 
-            int32 isDoingAction()const;
+            int32 isGrounded()const;
+
+            Rigidbody *GetRigidbody();
+
+            HitGauge *GetHitGauge();
 
             ActionManager &GetActionManager();
 
@@ -125,17 +132,19 @@ namespace Game
 
             void SetMoving(int32 val);
 
+            void SetGrounded(int32 val);
+
         private:
             Head *m_head;
             GameObject m_headobject;
             AnimatedSprite *m_animator;
+            Rigidbody *m_rigidbody;
+            HitGauge *m_hitgauge;
+            Ground *m_nowground;
             float32 m_speed;
+            float32 m_jumppower;
             Keymap m_keymap;
             ActionManager m_actionm;
-            /* flags
-            * AnimatedSprite's flags
-            * 13 : nowmoving
-            */
         };
     }
 }
