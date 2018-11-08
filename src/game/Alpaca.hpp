@@ -141,6 +141,7 @@ namespace Game
             Rigidbody *m_rigidbody;
             HitGauge *m_hitgauge;
             Ground *m_nowground;
+            Uint32 m_anims[2];  // 0 : idle, 1 : walking
             float32 m_speed;
             float32 m_jumppower;
             Keymap m_keymap;

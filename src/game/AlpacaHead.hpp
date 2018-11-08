@@ -62,6 +62,7 @@ namespace Game
         private:
             Alpaca *m_alpaca;
             float32 m_force;
+            glm::vec2 m_forceratio;
             float32 m_gaugeup;
             FixedArray<GameObject, NECK_COUNT> m_necks;
             FixedArray<Sprite*, NECK_COUNT> m_necksprites; 

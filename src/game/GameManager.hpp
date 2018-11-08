@@ -42,6 +42,9 @@ namespace Game
         Uint32 m_lifecount;
         Uint32 m_remainlife[2];
     };
+
+    
+    
 }
 
 

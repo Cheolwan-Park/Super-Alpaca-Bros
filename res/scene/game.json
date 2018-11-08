@@ -15,7 +15,7 @@
 
     "Animations": [
         { 
-            "name": "walking", 
+            "name": "walking0", 
             "texture": "alpacas.png",
             "range": {"x": 0, "y": 768, "w": 1024, "h": 256},
             "count": {"w": 4, "h": 1},
@@ -23,9 +23,25 @@
             "loop": true
         },
         { 
-            "name": "idle", 
+            "name": "idle0", 
             "texture": "alpacas.png",
             "range": {"x": 384, "y": 512, "w": 512, "h": 256},
+            "count": {"w": 2, "h": 1},
+            "eachtime": 0.5,
+            "loop": true
+        },
+        { 
+            "name": "walking1", 
+            "texture": "alpacas.png",
+            "range": {"x": 0, "y": 256, "w": 1024, "h": 256},
+            "count": {"w": 4, "h": 1},
+            "eachtime": 0.1,
+            "loop": true
+        },
+        { 
+            "name": "idle1", 
+            "texture": "alpacas.png",
+            "range": {"x": 384, "y": 0, "w": 512, "h": 256},
             "count": {"w": 2, "h": 1},
             "eachtime": 0.5,
             "loop": true
@@ -57,17 +73,19 @@
                     "available": true,
                     "respawntime": 3.0,
                     "lifecount": 5,
-                    "alpaca": {"file": "alpaca.json"}
+                    "alpaca0": {"file": "alpaca0.json"},
+                    "alpaca1": {"file": "alpaca1.json"}
                 },
                 {
                     "type": "CameraController",
                     "available": true,
-                    "margin": 30.0,
-                    "cammovespeed": 10.0,
-                    "expandspeed": 0.5,
+                    "isSmooth": true,
+                    "margin": 25.0,
+                    "cammovespeed": 5.0,
+                    "expandspeed": 0.3,
                     "viewratio": {"x": 16.0, "y": 9.0},
-                    "min_camerarange": 6.0,
-                    "max_camerarange": 9.0
+                    "min_camerarange": 4.0,
+                    "max_camerarange": 8.0
                 }
             ]
         },

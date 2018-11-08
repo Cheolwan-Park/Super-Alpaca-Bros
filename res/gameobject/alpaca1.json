@@ -5,7 +5,7 @@
         "tag": "player",
         "available": true,
         "static": false,
-        "position": {"x": -27.0, "y": 0.0, "z": 1.0},
+        "position": {"x": 27.0, "y": 0.0, "z": 1.0},
         "scale": {"x": 9.0, "y": 9.0},
         "rotation": 0.0,
         "components": [
@@ -15,12 +15,14 @@
                 "storage": "unlit",
                 "uv": {"x": 0, "y": 0, "w": 1024, "h": 1024},
                 "texture": "alpacas.png",
-                "default_anim": "idle"
+                "default_anim": "idle1"
             },
             {
                 "type": "Alpaca",
                 "available": true,
-                "head": { "file": "alpacahead.json" },
+                "idleanim": "idle1",
+                "walkinganim": "walking1",
+                "head": { "file": "alpacahead1.json" },
                 "speed": 15.0,
                 "jumppower": 90.0,
                 "action_manager": {
@@ -44,7 +46,7 @@
                             "force": 90.0
                         }
                     ],
-                    "resettime": 1.0
+                    "resettime": 0.5
                 }
             },
             {
@@ -66,7 +68,7 @@
                 "available": true,
                 "maxgauge": 350.0,
                 "minfactor": 0.7,
-                "maxfactor": 2.0
+                "maxfactor": 3.0
             }
         ]
     }

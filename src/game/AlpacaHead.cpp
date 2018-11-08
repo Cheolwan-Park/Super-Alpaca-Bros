@@ -8,8 +8,8 @@ namespace Game
     namespace Alpaca
     {
         Head::Head()
-        :Sprite(), m_alpaca(nullptr), m_force(0.0f), m_necks(), m_necksprites(),
-        m_headpos(), m_neckpos()
+        :Sprite(), m_alpaca(nullptr), m_force(0.0f), m_forceratio(),
+        m_necks(), m_necksprites(), m_headpos(), m_neckpos()
         {
             ;
         }
@@ -24,17 +24,20 @@ namespace Game
             Sprite::InitWithJson(obj, allocator);
 
             assert(obj.HasMember("force"));
+            assert(obj.HasMember("forceratio"));
             assert(obj.HasMember("gaugeup"));
             assert(obj.HasMember("headpos"));
             assert(obj.HasMember("neckpos"));
             assert(obj.HasMember("neck"));
             assert(obj["force"].IsFloat());
+            assert(obj["forceratio"].IsObject());
             assert(obj["gaugeup"].IsFloat());
             assert(obj["headpos"].IsObject());
             assert(obj["neckpos"].IsObject());
             assert(obj["neck"].IsObject());
 
             m_force = obj["force"].GetFloat();
+            JsonParseMethods::ReadVector2(obj["forceratio"].GetObject(), &m_forceratio);
             m_gaugeup = obj["gaugeup"].GetFloat();
             JsonParseMethods::ReadVector(obj["headpos"].GetObject(), &m_headpos);
             JsonParseMethods::ReadVector(obj["neckpos"].GetObject(), &m_neckpos);
@@ -87,13 +90,13 @@ namespace Game
                 float32 force = m_force * (hitgauge->GetFactor());
                 if(m_alpaca->GetScale().x > 0.0f)
                 {
-                    rigid->AddForce(-force, 0.0f, 0.0f);
+                    rigid->AddForce(-force*m_forceratio.x, 0.0f, 0.0f);
                 }
                 else
                 {
-                    rigid->AddForce(force, 0.0f, 0.0f);
+                    rigid->AddForce(force*m_forceratio.x, 0.0f, 0.0f);
                 }
-                rigid->AddForce(0.0f, force, 0.0f);
+                rigid->AddForce(0.0f, force*m_forceratio.y, 0.0f);
 
                 hitgauge->GaugeUp(m_gaugeup);
             }

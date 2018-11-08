@@ -1,0 +1,52 @@
+{
+    "Object": {
+        "storage": "global",
+        "id": "alpacahead",
+        "tag": "default",
+        "available": true,
+        "static": false,
+        "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+        "scale": {"x": 0.35, "y": 0.35},
+        "rotation": 0.0,
+        "components": [
+            {
+                "type": "Head",
+                "storage": "unlit",
+                "available": true,
+                "uv": {"x": 0, "y": 128, "w": 128, "h": 128},
+                "texture": "alpacas.png",
+                "force": 50.0,
+                "forceratio": {"x": 1.0, "y": 1.3},
+                "gaugeup": 30.0, 
+                "headpos": {"x":-0.35, "y":0.45, "z":1.0},
+                "neckpos": {"x":-0.33, "y":0.3, "z":1.0},
+                "neck": {
+                    "type": "ComponentObject",
+                    "storage": "global",
+                    "id": "alpacaneck",
+                    "tag": "default",
+                    "available": true,
+                    "static": false,
+                    "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+                    "scale": {"x": 0.35, "y": 0.35},
+                    "rotation": 0.0,
+                    "components": [
+                        {
+                            "type": "Sprite",
+                            "available": true,
+                            "storage": "none",
+                            "uv": {"x": 128, "y": 640, "w": 128, "h": 128},
+                            "texture": "alpacas.png"
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "CircleCollider",
+                "available": false,
+                "isTrigger": true,
+                "radius": 2.0
+            }
+        ]
+    }
+}

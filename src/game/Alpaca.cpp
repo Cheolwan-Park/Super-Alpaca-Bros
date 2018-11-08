@@ -200,8 +200,10 @@ namespace Game
         };
 
         Alpaca::Alpaca()
-        :Component(), m_head(nullptr), m_headobject(), m_animator(nullptr), m_rigidbody(nullptr),
-        m_nowground(nullptr), m_speed(0.0f), m_jumppower(0.0f), m_keymap(Keymap::NONE), m_actionm()
+        :Component(), m_head(nullptr), m_headobject(), 
+        m_animator(nullptr), m_rigidbody(nullptr), m_nowground(nullptr), 
+        m_anims(), m_speed(0.0f), m_jumppower(0.0f), m_keymap(Keymap::NONE), 
+        m_actionm()
         {
             ;
         }
@@ -215,15 +217,24 @@ namespace Game
         {
             Component::InitWithJson(obj, allocator);
 
+            assert(obj.HasMember("idleanim"));
+            assert(obj.HasMember("walkinganim"));
             assert(obj.HasMember("head"));
             assert(obj.HasMember("speed"));
             assert(obj.HasMember("jumppower"));
             assert(obj.HasMember("action_manager"));
+            assert(obj["idleanim"].IsString());
+            assert(obj["walkinganim"].IsString());
             assert(obj["head"].IsObject());
             assert(obj["speed"].IsFloat());
             assert(obj["jumppower"].IsFloat());
             assert(obj["action_manager"].IsObject());
             
+            const char *idlestr = obj["idleanim"].GetString();
+            const char *walkingstr = obj["walkinganim"].GetString();
+            m_anims[0] = CompileTimeHash::runtime_hash(idlestr, strlen(idlestr));
+            m_anims[1] = CompileTimeHash::runtime_hash(walkingstr, strlen(walkingstr));
+
             m_speed = obj["speed"].GetFloat();
             m_jumppower = obj["jumppower"].GetFloat();
 
@@ -349,7 +360,9 @@ namespace Game
             if(!m_actionm.DoingAnyAction())
             {
                 const glm::vec2 &scale = GetScale();
-                if(input.isKeyPressed(keys[(int32)Key::UP]) && isGrounded())
+                if(input.isKeyPressed(keys[(int32)Key::UP]) 
+                && isGrounded()
+                && (m_rigidbody->GetVelocity().y) <= 0.0f)
                 {
                     m_rigidbody->AddForce(0.0f, m_jumppower, 0.0f);
                 }
@@ -377,9 +390,9 @@ namespace Game
             {
                 auto &animations = Application::Get().GetAnimationStorage();
                 if(isMoving())
-                    m_animator->SetAnimation(animations["walking"_hash]);
+                    m_animator->SetAnimation(animations[m_anims[1]]);
                 else
-                    m_animator->SetAnimation(animations["idle"_hash]);
+                    m_animator->SetAnimation(animations[m_anims[0]]);
             }
 
             delta *= t.GetDeltatime();

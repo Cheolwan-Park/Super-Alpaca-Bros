@@ -21,35 +21,34 @@ namespace Game
 
         assert(obj.HasMember("respawntime"));
         assert(obj.HasMember("lifecount"));
-        assert(obj.HasMember("alpaca"));
+        assert(obj.HasMember("alpaca0"));
+        assert(obj.HasMember("alpaca1"));
         assert(obj["respawntime"].IsFloat());
         assert(obj["lifecount"].IsInt());
-        assert(obj["alpaca"].IsObject());
+        assert(obj["alpaca0"].IsObject());
+        assert(obj["alpaca1"].IsObject());
 
         m_respawntime = obj["respawntime"].GetFloat();
         m_lifecount = obj["lifecount"].GetInt();
         m_remainlife[0] = m_remainlife[1] = m_lifecount;
-        auto alpacajson = obj["alpaca"].GetObject();
+        auto alpaca0json = obj["alpaca0"].GetObject();
+        auto alpaca1json = obj["alpaca1"].GetObject();
 
         Scene *scene = Application::Get().GetScene();
         assert(scene);
 
         GameObject *newalpaca = nullptr;
-        newalpaca = scene->CreateGameObject(alpacajson);
+        newalpaca = scene->CreateGameObject(alpaca0json);
         assert(newalpaca);
         m_alpacas[0] = newalpaca->GetComponent<Alpaca::Alpaca>();
         assert(m_alpacas[0]);
         m_alpacas[0]->SetKeymap(Alpaca::Alpaca::Keymap::MAP1);
         
-        newalpaca = scene->CreateGameObject(alpacajson);
+        newalpaca = scene->CreateGameObject(alpaca1json);
         assert(newalpaca);
         m_alpacas[1] = newalpaca->GetComponent<Alpaca::Alpaca>();
         assert(m_alpacas[1]);
         m_alpacas[1]->SetKeymap(Alpaca::Alpaca::Keymap::MAP2);
-        glm::vec3 alpacapos(0.0f);
-        newalpaca->GetWorldPosition(&alpacapos);
-        alpacapos.x *= -1.0f;
-        newalpaca->SetWorldPosition(alpacapos);
     }
 
     void GameManager::Start()

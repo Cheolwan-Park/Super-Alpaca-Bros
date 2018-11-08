@@ -30,6 +30,10 @@ namespace Game
 
         virtual void Release();
 
+        int32 isSmooth()const;
+
+        void SetSmooth(int32 val);
+
     private:
         GameManager *m_gmanager;
         float32 m_margin;
@@ -39,6 +43,12 @@ namespace Game
         glm::vec2 m_viewratio;
         float32 m_mincamerarange;
         float32 m_maxcamerarange;
+
+        /*
+         * flags
+         * Component's flag
+         * 2 : isSmooth
+         */
     };
 }
 
