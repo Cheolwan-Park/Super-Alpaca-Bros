@@ -5,6 +5,23 @@
 
 namespace Base
 {
+    void LoadTexture(Texture *texture, const rapidjson::Value::Object &obj)
+    {
+        assert(texture);
+
+        assert(obj.HasMember("file"));
+        assert(obj["file"].IsString());
+
+        const char *filename = obj["file"].GetString();
+        StringID hashid(filename);
+        texture->hashid = (Uint32)hashid;
+
+        String128 path = Directories::Texture;
+        path += filename;
+        texture->id = LoadTexture(path.C_Str(), &(texture->w), &(texture->h));
+        assert(texture->id);
+    }
+
     GLuint LoadTexture(const char *filename, GLint *w, GLint *h)
     {
         SDL_Surface *surface = IMG_Load(filename);

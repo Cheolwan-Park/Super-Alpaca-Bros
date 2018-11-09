@@ -55,7 +55,8 @@ namespace Game
         assert(m_gmanager);
 
         // fitting camera
-        OrthoCamera *camera = (OrthoCamera*)Camera::GetMain();
+        auto *scene = Application::Get().GetScene();
+        Camera *camera = scene->GetCamera("main"_hash);
         Time &t = Time::Get();
         const glm::vec3 &ltn = camera->GetLeftTopNear();
         const glm::vec3 &rbf = camera->GetRightBottomFar();

@@ -79,21 +79,6 @@ int32 JsonAppInit(const char *filename)
     textures.AssignMemory(allocator.Alloc<Storage<Texture>::Type>(textures_size), textures_size);
     animations.AssignMemory(allocator.Alloc<Storage<Animation>::Type>(animations_size), animations_size);
 
-    // setting camera
-    assert(doc.HasMember("camera_range"));
-    assert(doc["camera_range"].IsObject());
-    glm::vec2 camera_range(0.0f, 0.0f);
-    JsonParseMethods::ReadVector2(doc["camera_range"].GetObject(), &camera_range);
-
-    OrthoCamera *maincam = new (allocator.Alloc<OrthoCamera>()) OrthoCamera();
-    maincam->SetView(glm::vec3(0.0f, 0.0f, 1.0f),
-                     glm::vec3(0.0f, 0.0f, 0.0f),
-                     glm::vec3(0.0f, 1.0f, 0.0f));  
-    maincam->SetProjection(-0.5f*camera_range.x, 0.5f*camera_range.x,
-                           -0.5f*camera_range.y, 0.5f*camera_range.y,
-                           0.1f, 8.0f);
-    Camera::SetMain(maincam);
-
     // add factory funcs
     AddFactoryFuncs();
 

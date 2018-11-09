@@ -5,12 +5,29 @@
         "gravity": 110.0
     },
 
+    "Cameras": [
+        {
+            "name": "main", 
+            "left_top_near": {"x": -48.0, "y": 32.0, "z": 0.1},
+            "right_bottom_far": {"x": 48.0, "y": -32.0, "z": 8.0}
+        },
+        {
+            "name": "ui",
+            "left_top_near": {"x": 0.0, "y": 720.0, "z": 0.1},
+            "right_bottom_far": {"x": 1280.0, "y": 0.0, "z": 8.0}
+        }
+    ],
+
     "Shaders": [
-        {"name": "default", "vert": "default_vert.glsl", "frag": "default_frag.glsl"}
+        {
+            "name": "default", 
+            "vert": "default_vert.glsl", 
+            "frag": "default_frag.glsl"
+        }
     ],
 
     "Textures": [
-        "alpacas.png"
+        { "file": "alpacas.png" }
     ],
 
     "Animations": [
@@ -49,12 +66,33 @@
     ],
 
     "ObjectStorages": [
-        {"name": "global", "order": 512, "size": 2096}
+        {
+            "name": "global", 
+            "order": 512, 
+            "size": 1024
+        },
+        {
+            "name": "ui",
+            "order": 1024,
+            "size": 1024
+        }
     ],
 
     "DrawableStorages": [
-        {"name": "unlit", "shader": "default", "order": 1024, "size": 512},
-        {"name": "transparent", "shader": "default", "order": 128, "size": 512}
+        {
+            "name": "unlit", 
+            "shader": "default", 
+            "camera": "main", 
+            "order": 1024, 
+            "size": 512
+        },
+        {
+            "name": "ui",
+            "shader": "default",
+            "camera": "ui",
+            "order": 512,
+            "size": 512
+        }
     ],
 
     "GameObjects": [
@@ -169,6 +207,28 @@
                     "box": {"x": 0.0, "y": 0.0, "w": 18.0, "h": 3.0},
                     "ignorelist_size": 8,
                     "isPassable": true
+                }
+            ]
+        },
+
+
+
+        {
+            "storage": "ui",
+            "id": "test",
+            "tag": "default",
+            "available": true,
+            "static": true,
+            "position": {"x": 100.0, "y":360.0, "z": 1.0},
+            "scale": {"x": 100.0, "y": 100.0},
+            "rotation": 0.0,
+            "components": [
+                {
+                    "type": "Sprite",
+                    "available": true,
+                    "storage": "ui",
+                    "uv": {"x": 0, "y": 128, "w": 128, "h": 128},
+                    "texture": "alpacas.png"
                 }
             ]
         }

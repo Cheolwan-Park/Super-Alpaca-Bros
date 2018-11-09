@@ -10,6 +10,7 @@
 #include "Json.hpp"
 #include "FileIO.hpp"
 #include "Physics.hpp"
+#include "Camera.hpp"
 
 
 namespace Base
@@ -45,6 +46,8 @@ namespace Base
         
         DrawableStorage *GetDrawableStorage(Uint32 hash);
 
+        Camera *GetCamera(Uint32 hash);
+
         Physics &GetPhysics();
 
         GameObject *AddGameObject(Uint32 storagehash, GameObject *gameobject);
@@ -59,6 +62,7 @@ namespace Base
         
     protected:
         virtual int32 LoadPhysics();
+        virtual int32 LoadCameras();
         virtual int32 LoadShaders();
         virtual int32 LoadTextures();
         virtual int32 LoadAnimations();
@@ -69,6 +73,7 @@ namespace Base
     private:
         Array<ObjectStorage*> m_objstorages;
         Array<DrawableStorage*> m_drawablestorages;
+        Array<Camera*> m_cameras;
         Physics m_physics;
         rapidjson::Document m_doc;
     };

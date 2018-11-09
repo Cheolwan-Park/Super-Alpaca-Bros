@@ -5,7 +5,7 @@ namespace Base
     // ShaderProgram class
     
     ShaderProgram::ShaderProgram()
-    :m_program(0), m_vert(0), m_frag(0), m_uniform_locs()
+    :m_id(0), m_program(0), m_vert(0), m_frag(0), m_uniform_locs()
     {
         ;
     }
@@ -83,6 +83,69 @@ namespace Base
         
         return RET_SUCC;
     }
+
+    int32 ShaderProgram::InitWithJson(const rapidjson::Value::Object &obj, void *vertmem, void *fragmem)
+    {
+        assert(obj.HasMember("name"));
+        assert(obj.HasMember("vert"));
+        assert(obj.HasMember("frag"));
+        assert(obj["name"].IsString());
+        assert(obj["vert"].IsString());
+        assert(obj["frag"].IsString());
+
+        const char *shader_name = obj["name"].GetString();
+        StringID id(shader_name);
+        m_id = (Uint32)id;
+
+        // open shader files
+        const char *vert_filename = obj["vert"].GetString();
+        const char *frag_filename = obj["frag"].GetString();
+        FILE *vert = nullptr, *frag = nullptr;
+        size_t size_vert = 0, size_frag = 0;
+        FileIO vert_io, frag_io;
+
+        String128 path = Directories::Shader;
+        path += vert_filename;
+        vert = OpenFile(path.C_Str(), "r");
+
+        path.Clear();
+        path = Directories::Shader;
+        path += frag_filename;
+        frag = OpenFile(path.C_Str(), "r");
+
+        size_vert = GetFileSize(vert);
+        size_frag = GetFileSize(frag);
+
+        if(nullptr == vertmem && nullptr == fragmem)
+        {
+            vertmem = malloc(size_vert+1);
+            fragmem = malloc(size_frag+1);
+        }
+        else
+        {
+            vertmem = realloc(vertmem, size_vert+1);
+            fragmem = realloc(fragmem, size_frag+1);
+        }
+        memset(vertmem, 0, size_vert+1);
+        memset(fragmem, 0, size_frag+1);
+
+        if(RET_SUCC != vert_io.Open(vert, vertmem, size_vert))
+        {
+            return RET_FAILED;
+        }
+
+        if(RET_SUCC != frag_io.Open(frag, fragmem, size_frag))
+        {
+            return RET_FAILED;
+        }
+
+        if(RET_SUCC != Init(vert_io, frag_io))
+        {
+            return RET_FAILED;
+        }
+
+        return RET_SUCC;
+    }
     
     void ShaderProgram::Release()
     {
@@ -95,6 +158,11 @@ namespace Base
         }
     }
     
+    Uint32 ShaderProgram::GetID()const
+    {
+        return m_id;
+    }
+
     GLuint ShaderProgram::GetProgram()const
     {
         return m_program;

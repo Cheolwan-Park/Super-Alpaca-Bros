@@ -7,7 +7,8 @@ namespace Base
 {
     // Scene class
     Scene::Scene()
-    :m_objstorages(4), m_drawablestorages(4), m_physics(), m_doc()
+    :m_objstorages(4), m_drawablestorages(4), m_cameras(4),
+    m_physics(), m_doc()
     {
         ;
     }
@@ -33,6 +34,9 @@ namespace Base
         #endif
         
         if(RET_SUCC != LoadPhysics())
+            return RET_FAILED;
+
+        if(RET_SUCC != LoadCameras())
             return RET_FAILED;
 
         if(RET_SUCC != LoadShaders())
@@ -152,6 +156,16 @@ namespace Base
         {
             if(hash == m_drawablestorages[i]->GetID())
                 return m_drawablestorages[i];
+        }
+        return nullptr;
+    }
+
+    Camera *Scene::GetCamera(Uint32 hash)
+    {
+        for(size_t i=0; i<m_cameras.GetCount(); ++i)
+        {
+            if(hash == m_cameras[i]->GetID())
+                return m_cameras[i];
         }
         return nullptr;
     }

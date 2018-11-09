@@ -483,8 +483,8 @@ namespace Base
     
     
     // Object Storage
-    ObjectStorage::ObjectStorage(Uint32 id, Uint32 order)
-    :m_id(id), m_order(order), m_len(0), m_gameobjects(nullptr)
+    ObjectStorage::ObjectStorage()
+    :m_id(0), m_order(0), m_len(0), m_gameobjects(nullptr)
     {
         ;
     }
@@ -494,11 +494,24 @@ namespace Base
         Clear();
     }
 
-    void ObjectStorage::AssignMemory(void *mem, Uint32 len)
+    void ObjectStorage::InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator)
     {
-        m_len = len;
-        m_gameobjects = (GameObject**)mem;
-        memset(m_gameobjects, 0, sizeof(Type)*len);
+        assert(obj.HasMember("name"));
+        assert(obj.HasMember("order"));
+        assert(obj.HasMember("size"));
+        assert(obj["name"].IsString());
+        assert(obj["order"].IsInt());
+        assert(obj["size"].IsInt());
+
+        const char *name = obj["name"].GetString();
+        StringID id(name);
+        m_id = (Uint32)id;
+
+        m_order = obj["order"].GetInt();
+
+        m_len = obj["size"].GetInt();
+        m_gameobjects = allocator.Alloc<Type>(m_len);
+        memset(m_gameobjects, 0, sizeof(Type)*m_len);
     }
 
     GameObject *ObjectStorage::Register(GameObject *gameobject)

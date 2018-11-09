@@ -179,9 +179,7 @@ namespace Base
     public:
         typedef GameObject* Type;
         
-        ObjectStorage() = delete;
-        
-        ObjectStorage(Uint32 id, Uint32 order);
+        ObjectStorage();
         
         ObjectStorage(const ObjectStorage &other) = delete;
         
@@ -189,7 +187,7 @@ namespace Base
         
         ObjectStorage &operator=(const ObjectStorage &other) = delete;
 
-        void AssignMemory(void *mem, Uint32 len);
+        void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
 
         GameObject *Register(GameObject *gameobject);
 

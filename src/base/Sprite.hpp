@@ -12,6 +12,7 @@ namespace Base
 {
     class DrawableStorage;
     class ShaderProgram;
+    class Camera;
     
     class Drawable : public Component
     {
@@ -116,9 +117,7 @@ namespace Base
     public:
         typedef Drawable* Type;
         
-        DrawableStorage() = delete;
-        
-        DrawableStorage(Uint32 id, Uint32 order);
+        DrawableStorage();
         
         DrawableStorage(const DrawableStorage &other) = delete;
         
@@ -126,7 +125,9 @@ namespace Base
         
         DrawableStorage &operator=(const DrawableStorage &other) = delete;
 
-        void AssignMemory(void *mem, Uint32 len);
+        void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
+
+        void SetCamera(Camera *camera);
         
         void SetShader(ShaderProgram *shader);
         
@@ -146,6 +147,7 @@ namespace Base
     private:
         Uint32 m_id;
         Uint32 m_order;
+        Camera *m_camera;
         ShaderProgram *m_shader;
         std::function<void(void)> m_rendersetting;
         Uint32 m_len;

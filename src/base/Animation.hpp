@@ -1,7 +1,9 @@
 #ifndef BaseAnimation_hpp
 #define BaseAnimation_hpp
 
+#include "types.hpp"
 #include "Math.hpp"
+#include "Json.hpp"
 
 namespace Base
 {
@@ -16,7 +18,11 @@ namespace Base
 
         Animation &operator=(const Animation &other);
 
+        void InitWithJson(const rapidjson::Value::Object &obj);
+
         // get
+        Uint32 GetID()const;
+
         const Math::IRect &GetSpritesRange()const;
 
         const Math::Size &GetSpritesCount()const;
@@ -39,6 +45,7 @@ namespace Base
         void SetLooping(int32 val);
 
     private:
+        Uint32 m_id;
         Math::IRect m_sprites_range;
         Math::Size m_sprites_count;
         Uint32 m_textureid;

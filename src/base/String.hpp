@@ -261,6 +261,12 @@ namespace Base
         StringID() = delete;
         
     public:
+        explicit StringID(const char *str)
+        :m_id(0)
+        {
+            m_id = CompileTimeHash::runtime_hash(str, strlen(str));
+        }
+
         explicit StringID(const char *str, size_t length)
         :m_id(0)
         {

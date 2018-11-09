@@ -309,8 +309,8 @@ namespace Base
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
     
-    DrawableStorage::DrawableStorage(Uint32 id, Uint32 order)
-    :m_id(id), m_order(order), m_shader(nullptr), m_rendersetting(DefaultRenderSettingFun), 
+    DrawableStorage::DrawableStorage()
+    :m_id(0), m_order(0), m_shader(nullptr), m_rendersetting(DefaultRenderSettingFun), 
     m_len(0), m_drawables(nullptr)
     {
         ;
@@ -321,11 +321,42 @@ namespace Base
         ;
     }
 
-    void DrawableStorage::AssignMemory(void *mem, Uint32 len)
+    void DrawableStorage::InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator)
     {
-        m_len = len;
-        m_drawables = (Drawable**)mem;
-        memset(m_drawables, 0, sizeof(Type)*len);
+        assert(obj.HasMember("name"));
+        assert(obj.HasMember("shader"));
+        assert(obj.HasMember("camera"));
+        assert(obj.HasMember("order"));
+        assert(obj.HasMember("size"));
+        assert(obj["name"].IsString());
+        assert(obj["shader"].IsString());
+        assert(obj["camera"].IsString());
+        assert(obj["order"].IsInt());
+        assert(obj["size"].IsInt());
+
+        const char *storage_name = obj["name"].GetString();
+        const char *shader_name = obj["shader"].GetString();
+        const char *camera_name = obj["camera"].GetString();
+        StringID storage_id(storage_name), shader_id(shader_name), camera_id(camera_name);
+        m_id = (Uint32)storage_id;
+        m_order = obj["order"].GetInt();
+
+        m_len = obj["size"].GetInt();
+        m_drawables = allocator.Alloc<Type>(m_len);
+        memset(m_drawables, 0, sizeof(Type)*m_len);
+
+        auto &app = Application::Get();
+        auto &shaders = app.GetShaderStorage();
+        auto *scene = app.GetScene();
+        assert(scene);
+        SetShader(shaders[(Uint32)shader_id]);
+
+        SetCamera(scene->GetCamera((Uint32)camera_id));
+    }
+
+    void DrawableStorage::SetCamera(Camera *camera)
+    {
+        m_camera = camera;
     }
     
     void DrawableStorage::SetShader(ShaderProgram *shader)
@@ -355,15 +386,14 @@ namespace Base
 
     void DrawableStorage::DrawDrawables()
     {
-        if(nullptr != m_shader)
+        if(m_shader && m_camera)
         {
             glUseProgram(m_shader->GetProgram());
             m_rendersetting();
             
             // set vp uniform
-            Camera *maincam = Camera::GetMain();
-            const glm::mat4 &proj = maincam->GetProjectionMatrix();
-            const glm::mat4 &view = maincam->GetViewMatrix();
+            const glm::mat4 &proj = m_camera->GetProjectionMatrix();
+            const glm::mat4 &view = m_camera->GetViewMatrix();
             glm::mat4 vp = proj * view;
             glUniformMatrix4fv(m_shader->GetViewProjectionLocation(),
                                1, GL_FALSE,

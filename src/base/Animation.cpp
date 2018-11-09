@@ -5,7 +5,7 @@ namespace Base
     // Animation class
 
     Animation::Animation()
-    :m_sprites_range({0,0,0,0}), m_sprites_count({0,0}), 
+    :m_id(0), m_sprites_range({0,0,0,0}), m_sprites_count({0,0}), 
     m_textureid(0), m_eachtime(0.0f), m_looping(false)
     {
         ;
@@ -35,6 +35,38 @@ namespace Base
         this->m_eachtime = other.m_eachtime;
         this->m_looping = other.m_looping;
         return (*this);
+    }
+
+    void Animation::InitWithJson(const rapidjson::Value::Object &obj)
+    {
+        assert(obj.HasMember("name"));
+        assert(obj.HasMember("texture"));
+        assert(obj.HasMember("range"));
+        assert(obj.HasMember("count"));
+        assert(obj.HasMember("eachtime"));
+        assert(obj.HasMember("loop"));
+        assert(obj["name"].IsString());
+        assert(obj["texture"].IsString());
+        assert(obj["range"].IsObject());
+        assert(obj["count"].IsObject());
+        assert(obj["eachtime"].IsFloat());
+        assert(obj["loop"].IsBool());
+
+        const char *name = obj["name"].GetString();
+        const char *texture_name = obj["texture"].GetString();
+        JsonParseMethods::ReadIRect(obj["range"].GetObject(), &m_sprites_range);
+        JsonParseMethods::ReadSize(obj["count"].GetObject(), &m_sprites_count);
+        m_eachtime = obj["eachtime"].GetFloat();
+        m_looping = obj["loop"].GetBool();
+
+        StringID id(name), texture_id(texture_name);
+        m_id = (Uint32)id;
+        m_textureid = (Uint32)texture_id;
+    }
+
+    Uint32 Animation::GetID()const
+    {
+        return m_id;
     }
 
     const Math::IRect &Animation::GetSpritesRange()const
