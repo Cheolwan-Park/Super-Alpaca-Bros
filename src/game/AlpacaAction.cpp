@@ -301,7 +301,7 @@ void Spitting::act() {
     glm::vec3 dir(0.0f);
     for (Uint32 i = 0; i < m_circular_spits; ++i) {
       dir.x = cosf(angle);
-      dir.y = cosf(angle);
+      dir.y = sinf(angle);
 
       newspit = GetSpit();
       newspit->setWorldPosition(pos);

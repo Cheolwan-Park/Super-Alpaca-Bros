@@ -5,7 +5,7 @@ using namespace Base;
 int32 JsonAppInit(const char *filename);
 void AddFactoryFuncs();
 
-int main() {
+int main(int argc, char* argv[]) {
   SDL::InitSDL(nullptr);
 
   String128 path(Directories::res);
@@ -89,7 +89,7 @@ int32 JsonAppInit(const char *filename) {
 }
 
 void AddFactoryFuncs() {
-  auto &allocator = Application::Get().getAllocator();;
+  auto &allocator = Application::Get().getAllocator();
 
   // component factory
   auto &component_factory = ComponentFactory::getGlobal();

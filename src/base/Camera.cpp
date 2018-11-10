@@ -53,16 +53,16 @@ void Camera::initWithJson(const rapidjson::Value::Object &obj) {
 
 void Camera::setProjection(float32 left, float32 right,
                            float32 bottom, float32 top,
-                           float32 near, float32 far) {
+                           float32 n, float32 f) {
   m_projection = glm::ortho(left, right,
                             bottom, top,
-                            near, far);
+                            n, f);
   m_left_top_near.x = left;
   m_left_top_near.y = top;
-  m_left_top_near.z = near;
+  m_left_top_near.z = n;
   m_right_bottom_far.x = right;
   m_right_bottom_far.y = bottom;
-  m_right_bottom_far.z = far;
+  m_right_bottom_far.z = f;
 }
 
 Uint32 Camera::getID() const {

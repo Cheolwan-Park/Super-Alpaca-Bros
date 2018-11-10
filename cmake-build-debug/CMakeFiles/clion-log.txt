@@ -1,6 +1,6 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/cheolwanpark/Documents/Projects/Alpacas'_Head
--- module path: /Users/cheolwanpark/Documents/Projects/Alpacas'_Head/cmake
--- Found rapidjson header files in /usr/local/include
+"C:\Program Files\JetBrains\CLion 2018.2.5\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" E:\Develop\Projects\Alpaca-s-Head
+-- module path: E:/Develop/Projects/Alpaca-s-Head/cmake
+-- Found rapidjson header files in C:/msys64/mingw64/include
 -- Configuring done
 -- Generating done
--- Build files have been written to: /Users/cheolwanpark/Documents/Projects/Alpacas'_Head/cmake-build-debug
+-- Build files have been written to: E:/Develop/Projects/Alpaca-s-Head/cmake-build-debug

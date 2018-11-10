@@ -77,11 +77,11 @@ void Spit::onTriggerEnter(Collider *other) {
       && (other->getGameObject()) != (m_owner->getGameObject())) {
     auto *alpaca = other->getGameObject()->getComponent<Alpaca>();
     Rigidbody *rigid = alpaca->getRigidbody();
-    HitGauge *hitgauge = alpaca->getHitGauge();
+    HitGauge *hit_gauge = alpaca->getHitGauge();
 
-    float32 force = m_force * (hitgauge->GetFactor());
+    float32 force = m_force * (hit_gauge->GetFactor());
     rigid->addForce(m_direction * force);
-    hitgauge->gaugeUp(m_gauge_up);
+    hit_gauge->gaugeUp(m_gauge_up);
 
     getGameObject()->setAvailable(false);
   }

@@ -6,8 +6,10 @@
 #include "Json.hpp"
 #define GL_SILENCE_DEPRECATION
 #ifdef _WIN32
-#include <GL/gl.h>
 #include <GL/glew.h>
+#include <GL/gl.h>
+#define GL_GLEXT_PROTOTYPES
+#include <GL/glext.h>
 #endif
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>

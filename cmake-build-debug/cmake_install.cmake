@@ -1,8 +1,8 @@
-# Install script for directory: /Users/cheolwanpark/Documents/Projects/Alpacas'_Head
+# Install script for directory: E:/Develop/Projects/Alpaca-s-Head
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/usr/local")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/alpacas")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/cheolwanpark/Documents/Projects/Alpacas'_Head/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "E:/Develop/Projects/Alpaca-s-Head/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

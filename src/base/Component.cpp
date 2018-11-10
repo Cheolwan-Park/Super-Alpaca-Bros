@@ -27,6 +27,7 @@ Component::~Component() {
 Component &Component::operator=(const Component &other) {
   assert(this != &other);
   this->m_flags.setFlag(0, other.m_flags.getFlag(0));
+  return (*this);
 }
 
 void Component::initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) {

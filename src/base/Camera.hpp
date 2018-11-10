@@ -3,10 +3,7 @@
 
 #include "types.hpp"
 #include "Json.hpp"
-#ifdef _WIN32
-#include <GL/gl.h>
 #define GLM_ENABLE_EXPERIMENTAL
-#endif
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
 #endif
@@ -27,7 +24,7 @@ class Camera {
 
   void setProjection(float32 left, float32 right,
                      float32 bottom, float32 top,
-                     float32 near, float32 far);
+                     float32 n, float32 f);
 
   Uint32 getID() const;
 

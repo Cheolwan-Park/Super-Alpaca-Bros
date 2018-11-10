@@ -98,12 +98,12 @@ int32 ShaderProgram::initWithJson(const rapidjson::Value::Object &obj, void *ver
 
   String128 path(Directories::Shader);
   path += vert_filename;
-  vert = OpenFile(path.c_str(), "r");
+  vert = OpenFile(path.c_str(), "rb");
 
   path.clear();
   path = Directories::Shader;
   path += frag_filename;
-  frag = OpenFile(path.c_str(), "r");
+  frag = OpenFile(path.c_str(), "rb");
 
   size_vert = GetFileSize(vert);
   size_frag = GetFileSize(frag);

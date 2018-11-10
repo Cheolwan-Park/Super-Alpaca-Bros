@@ -1,7 +1,9 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/alpacas.dir/src/main.cpp.o"
+  "CMakeFiles/alpacas.dir/src/main.cpp.obj"
   "alpacas.pdb"
-  "alpacas"
+  "alpacas.exe"
+  "alpacas.exe.manifest"
+  "libalpacas.dll.a"
 )
 
 # Per-language clean rules from dependency scanning.

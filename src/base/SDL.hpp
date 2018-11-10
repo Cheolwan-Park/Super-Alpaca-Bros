@@ -8,6 +8,7 @@
 #include <SDL2/SDL_image.h>
 #else
 #include <SDL.h>
+#include <SDL_image.h>
 #endif
 #include <GL/glew.h>
 
