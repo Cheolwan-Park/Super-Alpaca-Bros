@@ -16,180 +16,177 @@ static constexpr Uint32 ID = ::Base::CompileTimeHash::fnv1a_32(#__TYPENAME__, si
 #ifndef COMPONENT
 #define COMPONENT(__TYPENAME__)     \
 MAKE_TYPE_ID(__TYPENAME__);         \
-virtual Uint32 GetTypeID()const  { return ID; }
+Uint32 getTypeID()const override  { return ID; }
 #endif
 
-namespace Base
-{
-    class GameObject;
-    class Collider;
+namespace Base {
+class GameObject;
+class Collider;
 
-    class Component 
-    {
-    public:
-        typedef Component* (FactoryFunc)(const ::rapidjson::Value::Object &obj, ::Base::StackAllocator &allocator, GameObject *gameobject);
+class Component {
+ public:
+  typedef Component
+      *(FactoryFunc)(const ::rapidjson::Value::Object &obj, ::Base::StackAllocator &allocator, GameObject *gameobject);
 
-        static Component* Factory(const ::rapidjson::Value::Object &obj, ::Base::StackAllocator &allocator, GameObject *gameobject);
+  static Component *Factory(const ::rapidjson::Value::Object &obj,
+                            ::Base::StackAllocator &allocator,
+                            GameObject *gameobject);
 
-    public:
-        COMPONENT(Component);
+ public:
+  MAKE_TYPE_ID(Component);
+  virtual Uint32 getTypeID()const { return ID; }
 
-        Component();
+  Component();
 
-        // not copying gameobject, isStarted 
-        Component(const Component &other);
+  // not copying gameobject, isStarted
+  Component(const Component &other);
 
-        virtual ~Component();
+  virtual ~Component();
 
-        // not copying gameobject, isStarted 
-        Component &operator=(const Component &other);
+  // not copying gameobject, isStarted
+  Component &operator=(const Component &other);
 
-        virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
+  virtual void initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
 
-        virtual void Start();
+  virtual void start();
 
-        virtual void Update() = 0;
+  virtual void update() = 0;
 
-        virtual void Release() = 0;
+  virtual void release() = 0;
 
-        // collide callback
-        virtual void OnColliderEnter(Collider *other);
-        virtual void OnColliderStay(Collider *other);
-        virtual void OnColliderExit(Collider *other);
+  // collide callback
+  virtual void onColliderEnter(Collider *other);
+  virtual void onColliderStay(Collider *other);
+  virtual void onColliderExit(Collider *other);
 
-        // trigger callback
-        virtual void OnTriggerEnter(Collider *other);
-        virtual void OnTriggerStay(Collider *other);
-        virtual void OnTriggerExit(Collider *other);
+  // trigger callback
+  virtual void onTriggerEnter(Collider *other);
+  virtual void onTriggerStay(Collider *other);
+  virtual void onTriggerExit(Collider *other);
 
-        // get
-        GameObject *GetGameObject();
+  // get
+  GameObject *getGameObject();
 
-        const GameObject *GetGameObject()const;
+  const GameObject *getGameObject()const;
 
-        int32 isAvailable()const;
+  int32 isAvailable() const;
 
-        int32 isStarted()const;
+  int32 isStarted() const;
 
-        // set 
-        void SetGameObject(GameObject *gameobject);
+  // set
+  void setGameObject(GameObject *gameobject);
 
-        void SetAvailable(int32 val);
+  void setAvailable(int32 val);
 
-        // gameobject functions wrapping
-        Uint32 GetTag()const;
+  // gameobject functions wrapping
+  Uint32 getTag() const;
 
-        const glm::vec3 &GetLocalPosition()const;
-        
-        void GetWorldPosition(glm::vec3 *vec)const;
-        
-        const GameObject *GetParent()const;
+  const glm::vec3 &getLocalPosition() const;
 
-        const glm::vec2 &GetScale()const;
-        
-        float32 GetRotation()const;
+  void getWorldPosition(glm::vec3 *vec) const;
 
-        const glm::mat3x3 &GetLocalModel()const;
+  const GameObject *getParent() const;
 
-        void GetModel(glm::mat3x3 *mat)const;
+  const glm::vec2 &getScale() const;
 
-        void SetTag(Uint32 tag);
-        
-        void SetLocalPosition(const glm::vec3 &position);
-        
-        void SetLocalPosition(float32 x, float32 y);
-        
-        void SetLocalPosition(float32 x, float32 y, float32 z);
-        
-        void SetWorldPosition(const glm::vec3 &position);
-        
-        void SetWorldPosition(float32 x, float32 y);
-        
-        void SetWorldPosition(float32 x, float32 y, float32 z);
-        
-        void Move(const glm::vec3 &delta);
-        
-        void Move(float32 x, float32 y);
+  float32 getRotation() const;
 
-        void SetScale(const glm::vec2 &val);
-        
-        void SetScale(float32 x, float32 y);
-        
-        void Scale(const glm::vec2 &val);
-        
-        void Scale(float32 x, float32 y);
-        
-        void Scale(float32 x);
-        
-        void SetRotation(float32 val);
-        
-        void Rotate(float32 delta);
-        
-        void SetParent(const GameObject *parent);
+  const glm::mat3x3 &getLocalModel() const;
 
-    private:
-        GameObject *m_gameobject;
-        
-    protected:
-        BitFlag m_flags;
-        /*
-         * flags
-         * 0 : isAvailable (default : true)
-         * 1 : isStarted
-         */
-    };
+  void getModel(glm::mat3x3 *mat) const;
 
-    template<class T>
-    Component *ComponentDefaultFactory(const ::rapidjson::Value::Object &obj, ::Base::StackAllocator &allocator, GameObject *gameobject)
-    {
-        assert(gameobject);
-        Component *result = new (allocator.Alloc<T>()) T();
-        assert(result);
-        result->SetGameObject(gameobject);
-        result->InitWithJson(obj, allocator);
-        return result;
-    }
+  void setTag(Uint32 tag);
 
-    class ComponentFactory : public Storage<Component::FactoryFunc>
-    {
-    public:
-        ComponentFactory() : Storage<Component::FactoryFunc>() { ; }
+  void setLocalPosition(const glm::vec3 &position);
 
-        ComponentFactory(const ComponentFactory &other) = delete;
+  void setLocalPosition(float32 x, float32 y);
 
-        ~ComponentFactory() { Clear(); }
+  void setLocalPosition(float32 x, float32 y, float32 z);
 
-        ComponentFactory &operator=(const ComponentFactory) = delete;
+  void setWorldPosition(const glm::vec3 &position);
 
-        template <typename T>
-        void AddFunction()
-        {
-            Register(&ComponentDefaultFactory<T>, T::ID);
-        }
+  void setWorldPosition(float32 x, float32 y);
 
-        template <typename T>
-        void AddFunction(Component::FactoryFunc func)
-        {
-            Register(func, T::ID);
-        }
+  void setWorldPosition(float32 x, float32 y, float32 z);
 
-        template <typename T>
-        Component::FactoryFunc *GetFunction()
-        {
-            return (Get(T::ID));
-        }
+  void move(const glm::vec3 &delta);
 
-        Component::FactoryFunc *GetFunction(Uint32 id)
-        {
-            return (Get(id));
-        }
+  void move(float32 x, float32 y);
 
-        static ComponentFactory &GetGlobal()
-        {
-            static ComponentFactory instance;
-            return instance;
-        }
-    };
+  void setScale(const glm::vec2 &val);
+
+  void setScale(float32 x, float32 y);
+
+  void scale(const glm::vec2 &val);
+
+  void scale(float32 x, float32 y);
+
+  void scale(float32 x);
+
+  void setRotation(float32 val);
+
+  void rotate(float32 delta);
+
+  void setParent(const GameObject *parent);
+
+ private:
+  GameObject *m_gameobject;
+
+ protected:
+  BitFlag m_flags;
+  /*
+   * flags
+   * 0 : isAvailable (default : true)
+   * 1 : isStarted
+   */
+};
+
+template<class T>
+Component *ComponentDefaultFactory(const ::rapidjson::Value::Object &obj,
+                                   ::Base::StackAllocator &allocator,
+                                   GameObject *gameobject) {
+  assert(gameobject);
+  Component *result = new(allocator.alloc<T>()) T();
+  assert(result);
+  result->setGameObject(gameobject);
+  result->initWithJson(obj, allocator);
+  return result;
+}
+
+class ComponentFactory : public Storage<Component::FactoryFunc> {
+ public:
+  ComponentFactory() : Storage<Component::FactoryFunc>() { ; }
+
+  ComponentFactory(const ComponentFactory &other) = delete;
+
+  ~ComponentFactory() { clear(); }
+
+  ComponentFactory &operator=(const ComponentFactory) = delete;
+
+  template<typename T>
+  void addFunction() {
+    add(&ComponentDefaultFactory<T>, T::ID);
+  }
+
+  template<typename T>
+  void addFunction(Component::FactoryFunc func) {
+    add(func, T::ID);
+  }
+
+  template<typename T>
+  Component::FactoryFunc *getFunction() {
+    return (get(T::ID));
+  }
+
+  Component::FactoryFunc *getFunction(Uint32 id) {
+    return (get(id));
+  }
+
+  static ComponentFactory &getGlobal() {
+    static ComponentFactory instance;
+    return instance;
+  }
+};
 
 }
 

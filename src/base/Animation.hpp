@@ -5,55 +5,42 @@
 #include "Math.hpp"
 #include "Json.hpp"
 
-namespace Base
-{
-    class Animation
-    {
-    public:
-        Animation();
+namespace Base {
+class Animation {
+ public:
+  Animation();
 
-        Animation(const Animation &other);
+  Animation(const Animation &other);
 
-        ~Animation();
+  ~Animation();
 
-        Animation &operator=(const Animation &other);
+  Animation &operator=(const Animation &other);
 
-        void InitWithJson(const rapidjson::Value::Object &obj);
+  void initWithJson(const rapidjson::Value::Object &obj);
 
-        // get
-        Uint32 GetID()const;
+  // get
+  Uint32 getID() const;
 
-        const Math::IRect &GetSpritesRange()const;
+  const Math::IRect &getSpritesRange() const;
 
-        const Math::Size &GetSpritesCount()const;
+  const Math::Size &getSpritesCount() const;
 
-        Uint32 GetTextureID()const;
+  Uint32 getTextureID() const;
 
-        float32 GetEachTime()const;
+  float32 getEachTime() const;
 
-        int32 isLooping()const;
+  int32 isLooping() const;
 
-        // set
-        void SetSpritesRange(const Math::IRect &range);
+ private:
+  Uint32 m_id;
+  Math::IRect m_sprites_range;
+  Math::Size m_sprites_count;
+  Uint32 m_texture_id;
+  float32 m_each_time;
+  int32 m_looping;
+};
 
-        void SetSpritesCount(const Math::Size &count);
-
-        void SetTextureID(Uint32 id);
-
-        void SetEachTime(float32 t);
-
-        void SetLooping(int32 val);
-
-    private:
-        Uint32 m_id;
-        Math::IRect m_sprites_range;
-        Math::Size m_sprites_count;
-        Uint32 m_textureid;
-        float32 m_eachtime;
-        int32 m_looping;
-    };
-
-    void FreeAnimation(Animation **anim);
+void FreeAnimation(Animation **anim);
 }
 
 #endif 

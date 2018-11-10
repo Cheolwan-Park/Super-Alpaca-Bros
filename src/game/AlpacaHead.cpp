@@ -3,174 +3,144 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/matrix_transform_2d.hpp>
 
-namespace Game
-{
-    namespace Alpaca
-    {
-        Head::Head()
-        :Sprite(), m_alpaca(nullptr), m_force(0.0f), m_forceratio(),
-        m_necks(), m_necksprites(), m_headpos(), m_neckpos()
-        {
-            ;
-        }
+namespace Game {
+namespace Alpaca {
+Head::Head()
+    : Sprite(), m_alpaca(nullptr), m_force(0.0f), m_force_ratio(),
+      m_necks(), m_neck_sprites(), m_head_position(), m_neck_position() {
+  ;
+}
 
-        Head::~Head()
-        {
-            ;
-        }
+Head::~Head() {
+  ;
+}
 
-        void Head::InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator)
-        {
-            Sprite::InitWithJson(obj, allocator);
+void Head::initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) {
+  Sprite::initWithJson(obj, allocator);
 
-            assert(obj.HasMember("force"));
-            assert(obj.HasMember("forceratio"));
-            assert(obj.HasMember("gaugeup"));
-            assert(obj.HasMember("headpos"));
-            assert(obj.HasMember("neckpos"));
-            assert(obj.HasMember("neck"));
-            assert(obj["force"].IsFloat());
-            assert(obj["forceratio"].IsObject());
-            assert(obj["gaugeup"].IsFloat());
-            assert(obj["headpos"].IsObject());
-            assert(obj["neckpos"].IsObject());
-            assert(obj["neck"].IsObject());
+  assert(obj.HasMember("force"));
+  assert(obj.HasMember("forceratio"));
+  assert(obj.HasMember("gaugeup"));
+  assert(obj.HasMember("headpos"));
+  assert(obj.HasMember("neckpos"));
+  assert(obj.HasMember("neck"));
+  assert(obj["force"].IsFloat());
+  assert(obj["forceratio"].IsObject());
+  assert(obj["gaugeup"].IsFloat());
+  assert(obj["headpos"].IsObject());
+  assert(obj["neckpos"].IsObject());
+  assert(obj["neck"].IsObject());
 
-            m_force = obj["force"].GetFloat();
-            JsonParseMethods::ReadVector2(obj["forceratio"].GetObject(), &m_forceratio);
-            m_gaugeup = obj["gaugeup"].GetFloat();
-            JsonParseMethods::ReadVector(obj["headpos"].GetObject(), &m_headpos);
-            JsonParseMethods::ReadVector(obj["neckpos"].GetObject(), &m_neckpos);
+  m_force = obj["force"].GetFloat();
+  JsonParseMethods::ReadVector2(obj["forceratio"].GetObject(), &m_force_ratio);
+  m_gauge_up = obj["gaugeup"].GetFloat();
+  JsonParseMethods::ReadVector(obj["headpos"].GetObject(), &m_head_position);
+  JsonParseMethods::ReadVector(obj["neckpos"].GetObject(), &m_neck_position);
 
-            auto neckobj = obj["neck"].GetObject();
-            for(int i=0; i<m_necks.GetMaxSize(); ++i)
-            {
-                m_necks[i].InitWithJson(neckobj, allocator);
-                m_necksprites[i] = m_necks[i].GetComponent<Sprite>();
-            }
-        }
+  auto neckobj = obj["neck"].GetObject();
+  for (int i = 0; i < m_necks.getMaxSize(); ++i) {
+    m_necks[i].initWithJson(neckobj, allocator);
+    m_neck_sprites[i] = m_necks[i].getComponent<Sprite>();
+  }
+}
 
-        void Head::Start()
-        {
-            GetGameObject()->SetLocalPosition(m_headpos);
-            for(int i=0; i<m_necks.GetMaxSize(); ++i)
-            {
-                m_necks[i].Start();
-                m_necks[i].SetLocalPosition(m_neckpos);
-            }
-            Sprite::Start();
-        }
+void Head::start() {
+  getGameObject()->setLocalPosition(m_head_position);
+  for (int i = 0; i < m_necks.getMaxSize(); ++i) {
+    m_necks[i].start();
+    m_necks[i].setLocalPosition(m_neck_position);
+  }
+  Sprite::start();
+}
 
-        void Head::Update()
-        {
-            Sprite::Update();
-            for(int i=0; i<m_necks.GetMaxSize(); ++i)
-            {
-                m_necks[i].Update();
-            }
-        }
+void Head::update() {
+  Sprite::update();
+  for (int i = 0; i < m_necks.getMaxSize(); ++i) {
+    m_necks[i].update();
+  }
+}
 
-        void Head::Release()
-        {
-            for(int i=0; i<m_necks.GetMaxSize(); ++i)
-            {
-                m_necks[i].Release();
-                m_necks[i].~GameObject();
-            }
-            Sprite::Release();
-        }
+void Head::release() {
+  for (int i = 0; i < m_necks.getMaxSize(); ++i) {
+    m_necks[i].release();
+    m_necks[i].~GameObject();
+  }
+  Sprite::release();
+}
 
-        void Head::OnTriggerEnter(Collider *other)
-        {
-            if(other->GetTag() == "player"_hash && other->GetGameObject() != m_alpaca->GetGameObject())
-            {
-                Alpaca *alpaca = other->GetGameObject()->GetComponent<Alpaca>();
-                Rigidbody *rigid = alpaca->GetRigidbody();
-                HitGauge *hitgauge = alpaca->GetHitGauge();
-                float32 force = m_force * (hitgauge->GetFactor());
-                if(m_alpaca->GetScale().x > 0.0f)
-                {
-                    rigid->AddForce(-force*m_forceratio.x, 0.0f, 0.0f);
-                }
-                else
-                {
-                    rigid->AddForce(force*m_forceratio.x, 0.0f, 0.0f);
-                }
-                rigid->AddForce(0.0f, force*m_forceratio.y, 0.0f);
-
-                hitgauge->GaugeUp(m_gaugeup);
-            }
-        }
-
-        void Head::Draw()
-        {
-            for(int i=0; i<m_necks.GetMaxSize(); ++i)
-            {
-                m_necksprites[i]->Draw();
-            }
-            Sprite::Draw();
-        }
-
-        void Head::ResetPosition()
-        {
-            SetLocalPosition(m_headpos);
-            SetRotation(0.0f);
-            for(int i=0; i<m_necks.GetMaxSize(); ++i)
-                m_necks[i].SetLocalPosition(m_neckpos);
-        }
-
-        void Head::SetAlpaca(Alpaca *alpaca)
-        {
-            assert(alpaca);
-            m_alpaca = alpaca;
-            
-            SetParent(alpaca->GetGameObject());
-            for(int i=0; i<m_necks.GetMaxSize(); ++i)
-            {
-                m_necks[i].SetParent(alpaca->GetGameObject());
-            }
-
-            SetTag((alpaca->GetTag()) + "head"_hash);
-            SetTag((alpaca->GetTag()) + "neck"_hash);
-        }
-
-        void Head::SetHeadPos(const glm::vec3 &pos)
-        {
-            for(int i=0; i<m_necks.GetMaxSize(); ++i)
-            {
-                m_necks[i].SetLocalPosition(glm::mix(m_neckpos, pos, (float32)i/(float32)(m_necks.GetMaxSize())));
-            }
-            SetLocalPosition(pos);
-        }
-
-        GameObject &Head::GetNeck(int32 i)
-        {
-            return m_necks[i];
-        }
-
-        Uint32 Head::GetNeckCount()const
-        {
-            return m_necks.GetMaxSize();
-        }
-
-        float32 Head::GetForce()const
-        {
-            return m_force;
-        }
-
-        float32 Head::GetGaugeUp()const
-        {
-            return m_gaugeup;
-        }
-
-        const glm::vec3 &Head::GetHeadPos()const
-        {
-            return m_headpos;
-        }
-
-        const glm::vec3 &Head::GetNeckPos()const
-        {
-            return m_neckpos;
-        }
+void Head::onTriggerEnter(Collider *other) {
+  if (other->getTag() == "player"_hash && other->getGameObject() != m_alpaca->getGameObject()) {
+    auto *alpaca = other->getGameObject()->getComponent<Alpaca>();
+    Rigidbody *rigid = alpaca->getRigidbody();
+    HitGauge *hitgauge = alpaca->getHitGauge();
+    float32 force = m_force * (hitgauge->GetFactor());
+    if (m_alpaca->getScale().x > 0.0f) {
+      rigid->addForce(-force * m_force_ratio.x, 0.0f, 0.0f);
+    } else {
+      rigid->addForce(force * m_force_ratio.x, 0.0f, 0.0f);
     }
+    rigid->addForce(0.0f, force * m_force_ratio.y, 0.0f);
+
+    hitgauge->gaugeUp(m_gauge_up);
+  }
+}
+
+void Head::draw() {
+  for (int i = 0; i < m_necks.getMaxSize(); ++i) {
+    m_neck_sprites[i]->draw();
+  }
+  Sprite::draw();
+}
+
+void Head::resetPosition() {
+  setLocalPosition(m_head_position);
+  setRotation(0.0f);
+  for (int i = 0; i < m_necks.getMaxSize(); ++i)
+    m_necks[i].setLocalPosition(m_neck_position);
+}
+
+void Head::setAlpaca(Alpaca *alpaca) {
+  assert(alpaca);
+  m_alpaca = alpaca;
+
+  setParent(alpaca->getGameObject());
+  for (int i = 0; i < m_necks.getMaxSize(); ++i) {
+    m_necks[i].setParent(alpaca->getGameObject());
+  }
+
+  setTag((alpaca->getTag()) + "head"_hash);
+  setTag((alpaca->getTag()) + "neck"_hash);
+}
+
+void Head::setHeadPos(const glm::vec3 &pos) {
+  for (int i = 0; i < m_necks.getMaxSize(); ++i) {
+    m_necks[i].setLocalPosition(glm::mix(m_neck_position, pos, (float32) i / (float32) (m_necks.getMaxSize())));
+  }
+  setLocalPosition(pos);
+}
+
+GameObject &Head::getNeck(int32 i) {
+  return m_necks[i];
+}
+
+size_t Head::getNeckCount() const {
+  return m_necks.getMaxSize();
+}
+
+float32 Head::getForce() const {
+  return m_force;
+}
+
+float32 Head::getGaugeUp() const {
+  return m_gauge_up;
+}
+
+const glm::vec3 &Head::getHeadPos() const {
+  return m_head_position;
+}
+
+const glm::vec3 &Head::getNeckPos() const {
+  return m_neck_position;
+}
+}
 }

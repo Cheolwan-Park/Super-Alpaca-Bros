@@ -3,120 +3,99 @@
 #include "Application.hpp"
 #include <string.h>
 
-namespace SDL
-{
-    // Input class
-    
-    Input::Input()
-    :m_data()
-    {
-        memset(&m_data, 0, sizeof(Data));
+namespace SDL {
+// Input class
+
+Input::Input()
+    : m_data() {
+  memset(&m_data, 0, sizeof(Data));
+}
+
+Input::~Input() {
+  ;
+}
+
+void Input::clear() {
+  memset(m_data.key_pressed_buf, 0, sizeof(m_data.key_pressed_buf));
+  memset(m_data.mouse_info.button_pressed_buf, 0,
+         sizeof(m_data.mouse_info.button_pressed_buf));
+}
+
+void Input::pollEvents() {
+  static SDL_Event event;
+  while (SDL_PollEvent(&event)) {
+    handleEvent(event);
+  }
+}
+
+GLint Input::isKeyDown(GLint key) const {
+  return m_data.key_down_buf[key];
+}
+
+GLint Input::isKeyPressed(GLint key) const {
+  return m_data.key_pressed_buf[key];
+}
+
+GLint Input::isButtonDown(GLuint button) const {
+  return m_data.mouse_info.button_down_buf[button];
+}
+
+GLint Input::isButtonPressed(GLint button) const {
+  return m_data.mouse_info.button_pressed_buf[button];
+}
+
+void Input::getMousePos(GLdouble *x, GLdouble *y) const {
+  *x = m_data.mouse_info.x;
+  *y = m_data.mouse_info.y;
+}
+
+const Input::Mouse &Input::getMouseInfo() const {
+  return m_data.mouse_info;
+}
+
+void Input::handleEvent(const SDL_Event &event) {
+  switch (event.type) {
+    case SDL_QUIT: {
+      Base::Application::Get().quit();
+      break;
     }
-    
-    Input::~Input()
-    {
-        ;
-    }
-    
-    void Input::Clear()
-    {
-        memset(m_data.keypressed_buf, 0, sizeof(m_data.keypressed_buf));
-        memset(m_data.mouseinfo.buttonpressed_buf, 0,
-               sizeof(m_data.mouseinfo.buttonpressed_buf));
-    }
-    
-    void Input::PollEvents()
-    {
-        static SDL_Event event;
-        while(SDL_PollEvent(&event))
-        {
-            HandleEvent(event);
-        }
-    }
-    
-    GLint Input::isKeyDown(GLint key)const
-    {
-        return m_data.keydown_buf[key];
-    }
-    
-    GLint Input::isKeyPressed(GLint key)const
-    {
-        return m_data.keypressed_buf[key];
-    }
-    
-    GLint Input::isButtonDown(GLuint button)const
-    {
-        return m_data.mouseinfo.buttondown_buf[button];
-    }
-    
-    GLint Input::isButtonPressed(GLint button)const
-    {
-        return m_data.mouseinfo.buttonpressed_buf[button];
-    }
-    
-    void Input::GetMousePos(GLdouble *x, GLdouble *y)const
-    {
-        *x = m_data.mouseinfo.x;
-        *y = m_data.mouseinfo.y;
-    }
-    
-    const Input::Mouse &Input::GetMouseInfo()const
-    {
-        return m_data.mouseinfo;
+    case SDL_KEYDOWN: {
+      m_data.key_down_buf[event.key.keysym.scancode] = SDL_TRUE;
+      m_data.key_pressed_buf[event.key.keysym.scancode] = SDL_TRUE;
+      break;
     }
 
-    void Input::HandleEvent(const SDL_Event &event)
-    {
-        switch(event.type)
-        {
-            case SDL_QUIT:
-            {
-                Base::Application::Get().Quit();
-                break;
-            }
-            case SDL_KEYDOWN:
-            {
-                m_data.keydown_buf[event.key.keysym.scancode] = SDL_TRUE;
-                m_data.keypressed_buf[event.key.keysym.scancode] = SDL_TRUE;
-                break;
-            }
-
-            case SDL_KEYUP:
-            {
-                m_data.keydown_buf[event.key.keysym.scancode] = SDL_FALSE;
-                break;
-            }
-
-            case SDL_MOUSEMOTION:
-            {
-                SDL_GetMouseState(&m_data.mouseinfo.x, &m_data.mouseinfo.y);
-                break;
-            }
-
-            case SDL_MOUSEBUTTONDOWN:
-            {
-                SDL_GetMouseState(&m_data.mouseinfo.x, &m_data.mouseinfo.y);
-                m_data.mouseinfo.buttondown_buf[event.button.button] = SDL_TRUE;
-                m_data.mouseinfo.buttonpressed_buf[event.button.button] = SDL_TRUE;
-                break;
-            }
-            
-            case SDL_MOUSEBUTTONUP:
-            {
-                SDL_GetMouseState(&m_data.mouseinfo.x, &m_data.mouseinfo.y);
-                m_data.mouseinfo.buttondown_buf[event.button.button] = SDL_FALSE;
-                break;
-            }
-
-            default: break;
-        }
+    case SDL_KEYUP: {
+      m_data.key_down_buf[event.key.keysym.scancode] = SDL_FALSE;
+      break;
     }
-    
-    Input &Input::Get()
-    {
-        static Input instance;
-        return instance;
+
+    case SDL_MOUSEMOTION: {
+      SDL_GetMouseState(&m_data.mouse_info.x, &m_data.mouse_info.y);
+      break;
     }
+
+    case SDL_MOUSEBUTTONDOWN: {
+      SDL_GetMouseState(&m_data.mouse_info.x, &m_data.mouse_info.y);
+      m_data.mouse_info.button_down_buf[event.button.button] = SDL_TRUE;
+      m_data.mouse_info.button_pressed_buf[event.button.button] = SDL_TRUE;
+      break;
+    }
+
+    case SDL_MOUSEBUTTONUP: {
+      SDL_GetMouseState(&m_data.mouse_info.x, &m_data.mouse_info.y);
+      m_data.mouse_info.button_down_buf[event.button.button] = SDL_FALSE;
+      break;
+    }
+
+    default: break;
+  }
+}
+
+Input &Input::Get() {
+  static Input instance;
+  return instance;
+}
 }
 
 

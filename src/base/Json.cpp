@@ -1,134 +1,123 @@
 #include "Json.hpp"
 
-namespace Base
-{
-    namespace JsonParseMethods
-    {
-        void ReadVector(const rapidjson::Value::Object &obj, glm::vec3 *vec)
-        {
-            assert(vec);
+namespace Base {
+namespace JsonParseMethods {
+void ReadVector(const rapidjson::Value::Object &obj, glm::vec3 *vec) {
+  assert(vec);
 
-            assert(obj.HasMember("x"));
-            assert(obj.HasMember("y"));
-            assert(obj.HasMember("z"));
-            assert(obj["x"].IsFloat());
-            assert(obj["y"].IsFloat());
-            assert(obj["z"].IsFloat());
+  assert(obj.HasMember("x"));
+  assert(obj.HasMember("y"));
+  assert(obj.HasMember("z"));
+  assert(obj["x"].IsFloat());
+  assert(obj["y"].IsFloat());
+  assert(obj["z"].IsFloat());
 
-            vec->x = obj["x"].GetFloat();
-            vec->y = obj["y"].GetFloat();
-            vec->z = obj["z"].GetFloat();
-        }
+  vec->x = obj["x"].GetFloat();
+  vec->y = obj["y"].GetFloat();
+  vec->z = obj["z"].GetFloat();
+}
 
-        void ReadVector2(const rapidjson::Value::Object &obj, glm::vec2 *vec)
-        {
-            assert(vec);
+void ReadVector2(const rapidjson::Value::Object &obj, glm::vec2 *vec) {
+  assert(vec);
 
-            assert(obj.HasMember("x"));
-            assert(obj.HasMember("y"));
-            assert(obj["x"].IsFloat());
-            assert(obj["y"].IsFloat());
-            
-            vec->x = obj["x"].GetFloat();
-            vec->y = obj["y"].GetFloat();
-        }
+  assert(obj.HasMember("x"));
+  assert(obj.HasMember("y"));
+  assert(obj["x"].IsFloat());
+  assert(obj["y"].IsFloat());
 
-        void ReadRect(const rapidjson::Value::Object &obj, Math::Rect *rect)
-        {
-            assert(rect);
+  vec->x = obj["x"].GetFloat();
+  vec->y = obj["y"].GetFloat();
+}
 
-            assert(obj.HasMember("x"));
-            assert(obj.HasMember("y"));
-            assert(obj.HasMember("w"));
-            assert(obj.HasMember("h"));
-            assert(obj["x"].IsFloat());
-            assert(obj["y"].IsFloat());
-            assert(obj["w"].IsFloat());
-            assert(obj["h"].IsFloat());
+void ReadRect(const rapidjson::Value::Object &obj, Math::Rect *rect) {
+  assert(rect);
 
-            rect->x = obj["x"].GetFloat();
-            rect->y = obj["y"].GetFloat();
-            rect->w = obj["w"].GetFloat();
-            rect->h = obj["h"].GetFloat();
-        }
+  assert(obj.HasMember("x"));
+  assert(obj.HasMember("y"));
+  assert(obj.HasMember("w"));
+  assert(obj.HasMember("h"));
+  assert(obj["x"].IsFloat());
+  assert(obj["y"].IsFloat());
+  assert(obj["w"].IsFloat());
+  assert(obj["h"].IsFloat());
 
-        void ReadIRect(const rapidjson::Value::Object &obj, Math::IRect *irect)
-        {
-            assert(irect);
+  rect->x = obj["x"].GetFloat();
+  rect->y = obj["y"].GetFloat();
+  rect->w = obj["w"].GetFloat();
+  rect->h = obj["h"].GetFloat();
+}
 
-            assert(obj.HasMember("x"));
-            assert(obj.HasMember("y"));
-            assert(obj.HasMember("w"));
-            assert(obj.HasMember("h"));
-            assert(obj["x"].IsInt());
-            assert(obj["y"].IsInt());
-            assert(obj["w"].IsInt());
-            assert(obj["h"].IsInt());
+void ReadIRect(const rapidjson::Value::Object &obj, Math::IRect *rect) {
+  assert(rect);
 
-            irect->x = obj["x"].GetInt();
-            irect->y = obj["y"].GetInt();
-            irect->w = obj["w"].GetInt();
-            irect->h = obj["h"].GetInt();
-        }
+  assert(obj.HasMember("x"));
+  assert(obj.HasMember("y"));
+  assert(obj.HasMember("w"));
+  assert(obj.HasMember("h"));
+  assert(obj["x"].IsInt());
+  assert(obj["y"].IsInt());
+  assert(obj["w"].IsInt());
+  assert(obj["h"].IsInt());
 
-        void ReadSize(const rapidjson::Value::Object &obj, Math::Size *size)
-        {
-            assert(size);
+  rect->x = obj["x"].GetInt();
+  rect->y = obj["y"].GetInt();
+  rect->w = obj["w"].GetInt();
+  rect->h = obj["h"].GetInt();
+}
 
-            assert(obj.HasMember("w"));
-            assert(obj.HasMember("h"));
-            assert(obj["w"].IsInt());
-            assert(obj["h"].IsInt());
+void ReadSize(const rapidjson::Value::Object &obj, Math::Size *size) {
+  assert(size);
 
-            size->w = obj["w"].GetInt();
-            size->h = obj["h"].GetInt();
-        }
+  assert(obj.HasMember("w"));
+  assert(obj.HasMember("h"));
+  assert(obj["w"].IsInt());
+  assert(obj["h"].IsInt());
 
-        void ReadPoint(const rapidjson::Value::Object &obj, Math::Point *point)
-        {
-            assert(point);
+  size->w = obj["w"].GetInt();
+  size->h = obj["h"].GetInt();
+}
 
-            assert(obj.HasMember("x"));
-            assert(obj.HasMember("y"));
-            assert(obj["x"].IsInt());
-            assert(obj["y"].IsInt());
+void ReadPoint(const rapidjson::Value::Object &obj, Math::Point *point) {
+  assert(point);
 
-            point->x = obj["x"].GetInt();
-            point->y = obj["y"].GetInt();
-        }
-    }
+  assert(obj.HasMember("x"));
+  assert(obj.HasMember("y"));
+  assert(obj["x"].IsInt());
+  assert(obj["y"].IsInt());
 
-    void OpenJsonFile(const FileIO &f, rapidjson::Document *doc)
-    {
-        assert(doc);
-        doc->Parse(f.GetBuffer());
-        assert(doc->IsObject());
-    }
+  point->x = obj["x"].GetInt();
+  point->y = obj["y"].GetInt();
+}
+}
 
-    int32 OpenJsonFile(const char *filename, rapidjson::Document *doc)
-    {
-        assert(doc);
+void OpenJsonFile(const FileIO &f, rapidjson::Document *doc) {
+  assert(doc);
+  doc->Parse(f.getBuffer());
+  assert(doc->IsObject());
+}
 
-        FILE *f = OpenFile(filename, "r");
-        assert(f);
+int32 OpenJsonFile(const char *filename, rapidjson::Document *doc) {
+  assert(doc);
 
-        size_t len_json = GetFileSize(f);
-        void *mem_json = nullptr;
-        
-        FileIO json_io;
-        mem_json = malloc(len_json+1);
-        memset(mem_json, 0, len_json+1);
-        if(RET_SUCC != json_io.Open(f, mem_json, len_json))
-        {
-            fprintf(stderr, "failed to read %s\n", filename);
-            fclose(f);
-            free(mem_json);
-            return RET_FAILED;
-        }
+  FILE *f = OpenFile(filename, "r");
+  assert(f);
 
-        doc->Parse(json_io.GetBuffer());
-        assert(doc->IsObject());
-        fclose(f);
-        free(mem_json);
-    }
+  size_t len_json = GetFileSize(f);
+  void *mem_json = nullptr;
+
+  FileIO json_io;
+  mem_json = malloc(len_json + 1);
+  memset(mem_json, 0, len_json + 1);
+  if (RET_SUCC != json_io.open(f, mem_json, len_json)) {
+    fprintf(stderr, "failed to read %s\n", filename);
+    fclose(f);
+    free(mem_json);
+    return RET_FAILED;
+  }
+
+  doc->Parse(json_io.getBuffer());
+  assert(doc->IsObject());
+  fclose(f);
+  free(mem_json);
+}
 }

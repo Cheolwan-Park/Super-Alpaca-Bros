@@ -6,43 +6,41 @@
 
 using namespace Base;
 
-namespace Game
-{
-    class GameManager: public Component
-    {
-    public:
-        COMPONENT(GameManager);
+namespace Game {
+class GameManager : public Component {
+ public:
+  COMPONENT(GameManager);
 
-        GameManager();
+  GameManager();
 
-        GameManager(GameManager &other) = delete;
+  GameManager(GameManager &other) = delete;
 
-        virtual ~GameManager();
+  ~GameManager() override;
 
-        GameManager &operator=(const GameManager &other) = delete;
+  GameManager &operator=(const GameManager &other) = delete;
 
-        virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
+  void initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) override;
 
-        virtual void Start();
+  void start() override;
 
-        virtual void Update();
+  void update() override;
 
-        virtual void Release();
+  void release() override;
 
-        Alpaca::Alpaca *GetAlpaca(Uint32 idx);
+  Alpaca::Alpaca *getAlpaca(Uint32 idx);
 
-    private:
-        static GameManager *global;
-    public:
-        static GameManager *GetGlobal();
+ private:
+  static GameManager *global;
 
-    private:
-        Alpaca::Alpaca *m_alpacas[2];
-        float32 m_respawntime;
-        Uint32 m_lifecount;
-        Uint32 m_remainlife[2];
-    };
+ public:
+  static GameManager *GetGlobal();
+
+ private:
+  Alpaca::Alpaca *m_alpacas[2];
+  float32 m_respawn_time;
+  Uint32 m_life_count;
+  Uint32 m_remain_life[2];
+};
 }
-
 
 #endif

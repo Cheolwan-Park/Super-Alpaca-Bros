@@ -1,126 +1,121 @@
 #ifndef BaseCollider_hpp
 #define BaseCollider_hpp
 
-
 #include "GameObject.hpp"
 
-namespace Base 
-{
-    class Rigidbody;
+namespace Base {
+class Rigidbody;
 
-    class Collider : public Component
-    {
-    public:
-        enum class Type : Uint32  { NONE = 0, CIRCLE = 1, BOX = 2 };
+class Collider : public Component {
+ public:
+  enum class Type : Uint32 { NONE = 0, CIRCLE = 1, BOX = 2 };
 
-        static Component* Factory(const ::rapidjson::Value::Object &obj, ::Base::StackAllocator &allocator, GameObject *gameobject);
+  static Component *Factory(const ::rapidjson::Value::Object &obj,
+                            ::Base::StackAllocator &allocator,
+                            GameObject *gameobject);
 
-    public:
-        COMPONENT(Collider);
+ public:
+  COMPONENT(Collider);
 
-        Collider();
+  Collider();
 
-        Collider(const Collider &other);
+  Collider(const Collider &other);
 
-        virtual ~Collider();
+  ~Collider() override;
 
-        Collider &operator=(const Collider &other);
+  Collider &operator=(const Collider &other);
 
-        virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
+  void initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) override;
 
-        virtual void Start();
+  void start() override;
 
-        virtual void Update();
+  void update() override;
 
-        virtual void Release();
+  void release() override;
 
-        virtual int32 isCollideWith(const Collider *other)const = 0;
+  virtual int32 isCollideWith(const Collider *other) const = 0;
 
-        virtual Type GetType()const = 0;
+  virtual Type getType() const = 0;
 
-        Rigidbody *GetRigidbody();
+  Rigidbody *getRigidbody();
 
-        const Rigidbody *GetRigidbody()const;
+  const Rigidbody *getRigidbody() const;
 
-        int32 isTrigger()const;
+  int32 isTrigger() const;
 
-        void SetTrigger(int32 val);
+  void setTrigger(int32 val);
 
-    private:
-        Rigidbody *m_rigidbody;
-        
-        /*
-         * flags 
-         * Component's flags
-         * 2 : isTrigger
-         */
-    };
+ private:
+  Rigidbody *m_rigidbody;
 
-    class CircleCollider : public Collider
-    {
-    public:
-        COMPONENT(CircleCollider);
+  /*
+   * flags
+   * Component's flags
+   * 2 : isTrigger
+   */
+};
 
-        CircleCollider();
+class CircleCollider : public Collider {
+ public:
+  COMPONENT(CircleCollider);
 
-        CircleCollider(const CircleCollider &other);
+  CircleCollider();
 
-        virtual ~CircleCollider();
+  CircleCollider(const CircleCollider &other);
 
-        CircleCollider &operator=(const CircleCollider &other);
+  ~CircleCollider() override;
 
-        virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
+  CircleCollider &operator=(const CircleCollider &other);
 
-        virtual int32 isCollideWith(const Collider *other)const;
+  void initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) override;
 
-        virtual Collider::Type GetType()const;
+  int32 isCollideWith(const Collider *other) const override;
 
-        // get 
-        float32 GetRadius()const;
+  Collider::Type getType() const override;
 
-        // set
-        void SetRadius(float32 r);
+  // get
+  float32 getRadius() const;
 
-    private:
-        float32 m_radius;
-    };
+  // set
+  void setRadius(float32 r);
 
-    class BoxCollider : public Collider
-    {
-    public:
-        COMPONENT(BoxCollider);
+ private:
+  float32 m_radius;
+};
 
-        BoxCollider();
+class BoxCollider : public Collider {
+ public:
+  COMPONENT(BoxCollider);
 
-        BoxCollider(const BoxCollider &other);
+  BoxCollider();
 
-        virtual ~BoxCollider();
+  BoxCollider(const BoxCollider &other);
 
-        BoxCollider &operator=(const BoxCollider &other);
+  ~BoxCollider() override;
 
-        virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
+  BoxCollider &operator=(const BoxCollider &other);
 
-        virtual int32 isCollideWith(const Collider *other)const;
+  void initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) override;
 
-        virtual Collider::Type GetType()const;
+  int32 isCollideWith(const Collider *other) const override;
 
-        // get
-        const Math::Rect &GetBox()const;
+  Collider::Type getType() const override;
 
-        // set
-        void SetBox(const Math::Rect &box);
+  // get
+  const Math::Rect &getBox() const;
 
-    private:
-        Math::Rect m_box;
-    };
+  // set
+  void setBox(const Math::Rect &box);
 
-    namespace CollideCheckFunctions
-    {
-        int32 isCollide(const CircleCollider *circle0, const CircleCollider *circle1);
-        int32 isCollide(const BoxCollider *box, const CircleCollider *circle);
-        int32 isCollide(const BoxCollider *box0, const BoxCollider *box1);
-    }
+ private:
+  Math::Rect m_box;
+};
+
+namespace CollideCheckFunctions {
+int32 isCollide(const CircleCollider *circle0, const CircleCollider *circle1);
+int32 isCollide(const BoxCollider *box, const CircleCollider *circle);
+int32 isCollide(const BoxCollider *box0, const BoxCollider *box1);
 }
-
+}
 
 #endif

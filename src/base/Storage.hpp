@@ -1,118 +1,99 @@
 #ifndef BaseStorage_hpp
 #define BaseStorage_hpp
 
-#include "types.hpp" 
+#include "types.hpp"
 
-namespace Base 
-{
-    template <typename T>
-    class Storage
-    {
-    public:
-        typedef T* Type;
-        typedef void (*Func)(Type *val);
+namespace Base {
+template<typename T>
+class Storage {
+ public:
+  typedef T *Type;
+  typedef void (*Func)(Type *val);
 
-        Storage()
-        :m_len(0), m_datas(nullptr)
-        {
-            ;
-        }
+  Storage()
+      : m_len(0), m_data(nullptr) {
+    ;
+  }
 
-        Storage(const Storage &other) = delete;
+  Storage(const Storage &other) = delete;
 
-        ~Storage()
-        {
-            Clear();
-        }
+  ~Storage() {
+    clear();
+  }
 
-        Storage &operator=(const Storage &other) = delete;
+  Storage &operator=(const Storage &other) = delete;
 
-        void AssignMemory(void *mem, Uint32 len)
-        {
-            m_len = len;
-            m_datas = (Type*)mem;
-            memset(mem, 0, sizeof(Type)*m_len);
-        }
+  void assignMemory(void *mem, Uint32 len) {
+    m_len = len;
+    m_data = (Type *) mem;
+    memset(mem, 0, sizeof(Type) * m_len);
+  }
 
-        T *Register(T* data, Uint32 hash)
-        {
-            assert(data);
-            assert(m_datas);
-            
-            Uint32 idx = hash%m_len;
-            // already exist same hash
-            assert(!m_datas[idx]);  
-            m_datas[idx] = data;
-            return data;
-        }
+  T *add(T *data, Uint32 hash) {
+    assert(data);
+    assert(m_data);
 
-        void DeRegister(Uint32 hash)
-        {
-            Uint32 idx = hash%m_len;
-            if(nullptr != m_datas[idx])
-            {
-                T *result = m_datas[idx];
-                m_datas[idx] = nullptr;
-                if(m_freefunc)
-                    m_freefunc(&result);
-            }
-        }
+    Uint32 idx = hash % m_len;
+    // already exist same hash
+    assert(!m_data[idx]);
+    m_data[idx] = data;
+    return data;
+  }
 
-        void Clear()
-        {
-            for(int i=0; i<m_len; ++i)
-            {
-                if(m_datas[i])
-                {
-                    if(m_freefunc)
-                        m_freefunc(&m_datas[i]);
-                    m_datas[i] = nullptr;
-                }
-            }
-        }
+  void erase(Uint32 hash) {
+    Uint32 idx = hash % m_len;
+    if (nullptr != m_data[idx]) {
+      T *result = m_data[idx];
+      m_data[idx] = nullptr;
+      if (m_free_func)
+        m_free_func(&result);
+    }
+  }
 
-        void ForDo(Func f)
-        {
-            assert(f);
-            for(int i=0; i<m_len; ++i)
-            {
-                if(m_datas[i])
-                {
-                    f(&m_datas[i]);
-                }
-            }
-        }
+  void clear() {
+    for (int i = 0; i < m_len; ++i) {
+      if (m_data[i]) {
+        if (m_free_func)
+          m_free_func(&m_data[i]);
+        m_data[i] = nullptr;
+      }
+    }
+  }
 
-        T *Get(Uint32 hash)
-        {
-            return m_datas[hash%m_len];
-        }
+  void forDo(Func f) {
+    assert(f);
+    for (int i = 0; i < m_len; ++i) {
+      if (m_data[i]) {
+        f(&m_data[i]);
+      }
+    }
+  }
 
-        const T *Get(Uint32 hash)const
-        {
-            return m_datas[hash%m_len];
-        }
+  T *get(Uint32 hash) {
+    return m_data[hash % m_len];
+  }
 
-        T *operator[](Uint32 hash)
-        {
-            return m_datas[hash%m_len];
-        }
+  const T *get(Uint32 hash) const {
+    return m_data[hash % m_len];
+  }
 
-        const T *operator[](Uint32 hash)const
-        {
-            return m_datas[hash%m_len];
-        }
+  T *operator[](Uint32 hash) {
+    return m_data[hash % m_len];
+  }
 
-        void SetFreeFunc(Func f)
-        {
-            m_freefunc = f;
-        }
+  const T *operator[](Uint32 hash) const {
+    return m_data[hash % m_len];
+  }
 
-    private:
-        Uint32 m_len;
-        Type *m_datas;
-        Func m_freefunc;
-    };
+  void setFreeFunc(Func f) {
+    m_free_func = f;
+  }
+
+ private:
+  Uint32 m_len;
+  Type *m_data;
+  Func m_free_func;
+};
 }
 
 #endif

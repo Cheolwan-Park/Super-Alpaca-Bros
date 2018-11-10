@@ -4,109 +4,105 @@
 #include "Json.hpp"
 #include "Component.hpp"
 
-namespace Base
-{
-    class Collider;
+namespace Base {
+class Collider;
 
-    class Physics
-    {
-    public:
-        Physics();
+class Physics {
+ public:
+  Physics();
 
-        Physics(const Physics &other) = delete;
+  Physics(const Physics &other) = delete;
 
-        ~Physics();
+  ~Physics();
 
-        Physics &operator=(const Physics &other) = delete;
+  Physics &operator=(const Physics &other) = delete;
 
-        virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
+  virtual void initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
 
-        void Update();
+  void update();
 
-        void CheckDeleted();
+  void checkDeleted();
 
-        Collider *Register(Collider *collider);
+  Collider *add(Collider *collider);
 
-        float32 GetGravity()const;
+  float32 getGravity() const;
 
-        void SetGravity(float32 a);
+  void setGravity(float32 a);
 
-        Uint32 GetColliderCount()const;
+  Uint32 getColliderCount() const;
 
-        Uint32 GetMaxColliderCount()const;
+  Uint32 getMaxColliderCount() const;
 
-    private:
-        float32 m_gravity;
-        Uint32 m_collidercount;
-        Uint32 m_maxcollidercount;
-        Collider **m_colliders;
-        byte *m_collidemap;
-    };
+ private:
+  float32 m_gravity;
+  Uint32 m_collider_count;
+  Uint32 m_max_collider_count;
+  Collider **m_colliders;
+  byte *m_collide_map;
+};
 
-    class Rigidbody : public Component
-    {
-    public:
-        COMPONENT(Rigidbody);
+class Rigidbody : public Component {
+ public:
+  COMPONENT(Rigidbody);
 
-        Rigidbody();
+  Rigidbody();
 
-        Rigidbody(const Rigidbody &other);
+  Rigidbody(const Rigidbody &other);
 
-        virtual ~Rigidbody();
+  ~Rigidbody() override;
 
-        Rigidbody &operator=(const Rigidbody &other);
+  Rigidbody &operator=(const Rigidbody &other);
 
-        virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
+  void initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) override;
 
-        virtual void Start();
+  void start() override;
 
-        virtual void Update();
+  void update() override;
 
-        virtual void Release();
+  void release() override;
 
-        virtual void OnColliderEnter(Collider *other);
+  void onColliderEnter(Collider *other) override;
 
-        void Accelerate(const glm::vec3 &a);
+  void accelerate(const glm::vec3 &a);
 
-        void Accelerate(float32 x, float32 y, float32 z);
+  void accelerate(float32 x, float32 y, float32 z);
 
-        void AddForce(const glm::vec3 &f);
+  void addForce(const glm::vec3 &f);
 
-        void AddForce(float32 x, float32 y, float32 z);
+  void addForce(float32 x, float32 y, float32 z);
 
-        // get
-        float32 GetMass()const;
+  // get
+  float32 getMass() const;
 
-        const glm::vec3 &GetVelocity()const;
+  const glm::vec3 &getVelocity() const;
 
-        int32 isSimulated()const;
+  int32 isSimulated() const;
 
-        int32 isGravityActive()const;
+  int32 isGravityActive() const;
 
-        // set
-        void SetMass(float32 m);
+  // set
+  void setMass(float32 m);
 
-        void SetVelocity(const glm::vec3 &v);
+  void setVelocity(const glm::vec3 &v);
 
-        void SetVelocity(float32 x, float32 y, float32 z);
+  void setVelocity(float32 x, float32 y, float32 z);
 
-        void SetSimulated(int32 val);
+  void setSimulated(int32 val);
 
-        void SetGravityActive(int32 val);
+  void setGravityActive(int32 val);
 
-    private:
-        float32 m_mass;
-        float32 m_drag;
-        glm::vec3 m_velocity;
-        
-        /*
-         * flags
-         * Component's flags
-         * 2 : isSimulated
-         * 3 : gravity active
-         */
-    };
+ private:
+  float32 m_mass;
+  float32 m_drag;
+  glm::vec3 m_velocity;
+
+  /*
+   * flags
+   * Component's flags
+   * 2 : isSimulated
+   * 3 : gravity active
+   */
+};
 }
-
 
 #endif

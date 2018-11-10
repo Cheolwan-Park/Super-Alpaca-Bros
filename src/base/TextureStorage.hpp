@@ -5,20 +5,18 @@
 #include "SDL.hpp"
 #include "Json.hpp"
 
-namespace Base
-{
-    struct Texture
-    {
-        GLuint hashid;
-        GLuint id;
-        GLint w;
-        GLint h;
-    };
+namespace Base {
+struct Texture {
+  GLuint hash_id;
+  GLuint id;
+  GLint w;
+  GLint h;
+};
 
-    void LoadTexture(Texture *texture, const rapidjson::Value::Object &obj);
-    GLuint LoadTexture(const char *filename, GLint *w, GLint *h);
+void LoadTexture(Texture *texture, const rapidjson::Value::Object &obj);
+GLuint LoadTexture(const char *filename, GLint *w, GLint *h);
 
-    void FreeTexture(Texture **tex);
+void FreeTexture(Texture **tex);
 }
 
 #endif

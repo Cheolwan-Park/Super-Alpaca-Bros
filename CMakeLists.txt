@@ -27,6 +27,7 @@ add_library(
     src/game/CameraController.cpp
 )
 include_directories( src/game )
+target_link_libraries( Game Base )
 target_link_libraries( alpacas Game )
 
 add_library(

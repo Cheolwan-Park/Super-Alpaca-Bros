@@ -5,55 +5,52 @@
 
 using namespace Base;
 
-namespace Game
-{
-    namespace Alpaca
-    {
-        class Alpaca;
-        
-        class Spit: public Component
-        {
-        public:
-            COMPONENT(Spit);
+namespace Game {
+namespace Alpaca {
+class Alpaca;
 
-            Spit();
+class Spit : public Component {
+ public:
+  COMPONENT(Spit);
 
-            Spit(const Spit &other);
+  Spit();
 
-            virtual ~Spit();
+  Spit(const Spit &other);
 
-            Spit &operator=(const Spit &other);
+  ~Spit() override;
 
-            virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
+  Spit &operator=(const Spit &other);
 
-            virtual void Start();
+  void initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) override;
 
-            virtual void Update();
+  void start() override;
 
-            virtual void Release();
+  void update() override;
 
-            virtual void OnTriggerEnter(Collider *other);
+  void release() override;
 
-            void Shoot(const glm::vec3 &direction, Alpaca *owner);
+  void onTriggerEnter(Collider *other) override;
 
-            int32 isShooted()const;
+  void shoot(const glm::vec3 &direction, Alpaca *owner);
 
-        private:
-            float32 m_elapsedtime;
-            float32 m_lifetime;
-            float32 m_speed;
-            float32 m_force;
-            float32 m_guageup;
-            Alpaca *m_owner;
-            glm::vec3 m_direction;
+  int32 isShot() const;
 
-            /*
-             * flags
-             * Component's flags
-             * 2 : isShooted
-             */
-        };
-    }
+ private:
+  float32 m_elapsed_time;
+  float32 m_lifetime;
+  float32 m_speed;
+  float32 m_force;
+  float32 m_gauge_up;
+  Alpaca *m_owner;
+  glm::vec3 m_direction;
+
+  /*
+   * flags
+   * Component's flags
+   * 2 : isShot
+   */
+};
+}
 }
 
 #endif

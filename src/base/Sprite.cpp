@@ -9,90 +9,77 @@
 #include <glm/gtx/matrix_transform_2d.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-namespace Base
-{
-    // Drawable class
-    Component *Drawable::Factory(const rapidjson::Value::Object &obj, StackAllocator &allocator, GameObject *gameobject)
-    {
-        fprintf(stderr, "Drawable is abstract class\n");
-        return nullptr;
-    }
+namespace Base {
+// Drawable class
+Component *Drawable::Factory(const rapidjson::Value::Object &obj, StackAllocator &allocator, GameObject *gameobject) {
+  fprintf(stderr, "Drawable is abstract class\n");
+  return nullptr;
+}
 
-    Drawable::Drawable()
-    :Component()
-    {
-        ;
-    }
+Drawable::Drawable()
+    : Component() {
+  ;
+}
 
-    Drawable::Drawable(const Drawable &other)
-    :Component(other)
-    {
-        ;
-    }
-    
-    Drawable::~Drawable()
-    {
-        ;
-    }
-    
-    Drawable &Drawable::operator=(const Drawable &other)
-    {
-        assert(this != &other);
-        Component::operator=(other);
-        return (*this);
-    }
+Drawable::Drawable(const Drawable &other)
+    : Component(other) {
+  ;
+}
 
-    void Drawable::InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator)
-    {
-        Component::InitWithJson(obj, allocator);
+Drawable::~Drawable() {
+  ;
+}
 
-        assert(obj.HasMember("storage"));
-        assert(obj["storage"].IsString());
+Drawable &Drawable::operator=(const Drawable &other) {
+  assert(this != &other);
+  Component::operator=(other);
+  return (*this);
+}
 
-        const char *storagename = obj["storage"].GetString();
-        Uint32 storageid = CompileTimeHash::runtime_hash(storagename, strlen(storagename));
+void Drawable::initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) {
+  Component::initWithJson(obj, allocator);
 
-        if("none"_hash != storageid)
-        {
-            Scene *scene = Application::Get().GetScene();
-            assert(scene);
-            DrawableStorage *storage = scene->GetDrawableStorage(storageid);
-            assert(storage);
-            storage->Register(this);
-        }
-    }
-    
-    void Drawable::Start()
-    {
-        Component::Start();
-    }
-    
-    void Drawable::Update()
-    {
-        ;
-    }
+  assert(obj.HasMember("storage"));
+  assert(obj["storage"].IsString());
 
-    void Drawable::Release()
-    {
-        ;
-    }
+  const char *storage_name = obj["storage"].GetString();
+  Uint32 storage_id = CompileTimeHash::runtime_hash(storage_name, strlen(storage_name));
 
-    void Drawable::SetDrawer(DrawableStorage *drawer)
-    {
-        drawer->Register(this);
-    }
+  if ("none"_hash != storage_id) {
+    Scene *scene = Application::Get().getScene();
+    assert(scene);
+    DrawableStorage *storage = scene->getDrawableStorage(storage_id);
+    assert(storage);
+    storage->add(this);
+  }
+}
 
-    
-    // Sprite class
-    const glm::vec3 Sprite::verts[4] =
+void Drawable::start() {
+  Component::start();
+}
+
+void Drawable::update() {
+  ;
+}
+
+void Drawable::release() {
+  ;
+}
+
+void Drawable::setDrawer(DrawableStorage *drawer) {
+  drawer->add(this);
+}
+
+// Sprite class
+const glm::vec3 Sprite::vertexes[4] =
     {
-        {-0.5f,  0.5f, 1.0f},   // top left
-        { 0.5f,  0.5f, 1.0f},   // top right
+        {-0.5f, 0.5f, 1.0f},   // top left
+        {0.5f, 0.5f, 1.0f},   // top right
         {-0.5f, -0.5f, 1.0f},   // bottom left
-        { 0.5f, -0.5f, 1.0f}    // bottom right
+        {0.5f, -0.5f, 1.0f}    // bottom right
     };
-    
-    const glm::vec2 Sprite::uvs[4] =
+
+const glm::vec2 Sprite::uvs[4] =
     {
         {0.0f, 1.0f},   // top left
         {1.0f, 1.0f},   // top right
@@ -100,338 +87,290 @@ namespace Base
         {1.0f, 0.0f}    // bottom right
     };
 
-    Sprite::Sprite()
-    :Drawable(), m_vao(), m_uv(), m_tex(nullptr)
-    { 
-        ;
-    }
-    
-    Sprite::Sprite(const Sprite &other)
-    :Drawable(other), m_vao(), m_uv(other.m_uv), m_tex(other.m_tex)
-    {
-        ;
-    }
-    
-    Sprite::~Sprite()
-    {
-        ;
-    }
-    
-    Sprite &Sprite::operator=(const Sprite &other)
-    {
-        assert(this != &other);
-        Drawable::operator=(other);
-        this->m_uv = other.m_uv;
-        this->m_tex = other.m_tex;
-        return (*this);
-    }
+Sprite::Sprite()
+    : Drawable(), m_vao(), m_uv(), m_tex(nullptr) {
+  ;
+}
 
-    void Sprite::InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator)
-    {
-        Drawable::InitWithJson(obj, allocator);
-        
-        assert(obj.HasMember("uv"));
-        assert(obj.HasMember("texture"));
-        assert(obj["uv"].IsObject());
-        assert(obj["texture"].IsString());
+Sprite::Sprite(const Sprite &other)
+    : Drawable(other), m_vao(), m_uv(other.m_uv), m_tex(other.m_tex) {
+  ;
+}
 
-        Application &app = Application::Get();
-        auto &textures = app.GetTextureStorage();
-        const char *texture_id = obj["texture"].GetString();
-        m_tex = textures[CompileTimeHash::runtime_hash(texture_id, strlen(texture_id))];
+Sprite::~Sprite() {
+  ;
+}
 
-        Math::IRect irect({0, 0, 0, 0});
-        JsonParseMethods::ReadIRect(obj["uv"].GetObject(), &irect);
-        SetUV(irect);
-    }
-    
-    void Sprite::Start()
-    {
-        InitVAO();
-        glBindVertexArray(m_vao.id);
-        UpdateVBO();
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-        Drawable::Start();
-    }
-    
-    void Sprite::Update()
-    {
-        Drawable::Update();
-    }
+Sprite &Sprite::operator=(const Sprite &other) {
+  assert(this != &other);
+  Drawable::operator=(other);
+  this->m_uv = other.m_uv;
+  this->m_tex = other.m_tex;
+  return (*this);
+}
 
-    void Sprite::Release()
-    {
-        ReleaseVAO();
-        Drawable::Release();
-    }
-    
-    void Sprite::Draw()
-    {
-        static const glm::vec3 zbias(0.0f, 0.0f, 1.0f);
-        
-        if(nullptr != m_tex && isAvailable())
-        {
-            glBindVertexArray(m_vao.id);
-            
-            if(false == GetGameObject()->isStatic())
-                UpdateVBO();
-            
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, m_tex->id);
-            
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-            glBindVertexArray(0);
-        }
-    }
-    
-    void Sprite::UpdateVBO()
-    {
-        if(NeedUpdateUV())
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, m_vao.vbo[1]);
-            glm::vec2 *uv_buffer = (glm::vec2*)glMapBufferRange(GL_ARRAY_BUFFER,
-                                                                0, sizeof(uvs),
-                                                                GL_MAP_WRITE_BIT |
-                                                                GL_MAP_FLUSH_EXPLICIT_BIT |
-                                                                GL_MAP_UNSYNCHRONIZED_BIT);
-            float32 right = m_uv.x + m_uv.w;
-            float32 top = m_uv.y + m_uv.h;
-            uv_buffer[0] = {m_uv.x,top};
-            uv_buffer[1] = {right, top};
-            uv_buffer[2] = {m_uv.x, m_uv.y};
-            uv_buffer[3] = {right, m_uv.y};
-            glFlushMappedBufferRange(GL_ARRAY_BUFFER, 0, sizeof(uvs));
-            glUnmapBuffer(GL_ARRAY_BUFFER);
-            SetNeedUpdateUV(false);
-        }
-        
-        glBindBuffer(GL_ARRAY_BUFFER, m_vao.vbo[0]);
-        glm::vec3 *vert_buffer = (glm::vec3*)glMapBufferRange(GL_ARRAY_BUFFER,
-                                                         0, sizeof(verts),
-                                                         GL_MAP_WRITE_BIT |
-                                                         GL_MAP_FLUSH_EXPLICIT_BIT |
-                                                         GL_MAP_UNSYNCHRONIZED_BIT);
-        glm::mat3x3 model(1.0f);
-        GetGameObject()->GetModel(&model);
-        for(Uint32 i=0; i<4; ++i)
-        {
-            vert_buffer[i] = model * verts[i];
-        }
-        glFlushMappedBufferRange(GL_ARRAY_BUFFER, 0, sizeof(verts));
-        glUnmapBuffer(GL_ARRAY_BUFFER);
-    }
-    
-    void Sprite::InitVAO()
-    {
-        if(0 != m_vao.id)
-            return;
-        glGenVertexArrays(1, &m_vao.id);
-        glBindVertexArray(m_vao.id);
-        glGenBuffers(2, m_vao.vbo);
-        
-        // check static
-        GLenum usage = GL_DYNAMIC_DRAW;
-        if(GetGameObject()->isStatic())
-            usage = GL_STATIC_DRAW;
-            
-        
-        // vertex buffer
-        glBindBuffer(GL_ARRAY_BUFFER, m_vao.vbo[0]);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, usage);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        
-        // texcoord buffer
-        glBindBuffer(GL_ARRAY_BUFFER, m_vao.vbo[1]);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(uvs), uvs, usage);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
-        
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-    }
-    
-    void Sprite::ReleaseVAO()
-    {
-        if(0 == m_vao.id)
-            return;
-        glDeleteBuffers(2, m_vao.vbo);
-        glDeleteVertexArrays(1, &m_vao.id);
-    }
-    
-    const Math::Rect &Sprite::GetUV()const
-    {
-        return m_uv;
-    }
-    
-    const Texture *Sprite::GetTexture()const
-    {
-        return m_tex;
-    }
-    
-    void Sprite::SetUV(const Math::Rect &rect)
-    {
-        m_uv = rect;
-        SetNeedUpdateUV(true);
-    }
-    
-    void Sprite::SetUV(const Math::IRect &rect)
-    {
-        m_uv.x = (float32)rect.x/(m_tex->w);
-        m_uv.w = (float32)rect.w/(m_tex->w);
-        m_uv.y = (float32)rect.y/(m_tex->h);
-        m_uv.h = (float32)rect.h/(m_tex->h);
-        SetNeedUpdateUV(true);
-    }
-    
-    void Sprite::SetTexture(const Texture *val)
-    {
-        m_tex = val;
-    }
+void Sprite::initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) {
+  Drawable::initWithJson(obj, allocator);
 
-    int32 Sprite::NeedUpdateUV()const
-    {
-        return m_flags.GetFlag(9);
-    }
+  assert(obj.HasMember("uv"));
+  assert(obj.HasMember("texture"));
+  assert(obj["uv"].IsObject());
+  assert(obj["texture"].IsString());
 
-    void Sprite::SetNeedUpdateUV(int32 val)
-    {
-        m_flags.SetFlag(9, val);
-    }
+  Application &app = Application::Get();
+  auto &textures = app.getTextureStorage();
+  const char *texture_id = obj["texture"].GetString();
+  m_tex = textures[CompileTimeHash::runtime_hash(texture_id, strlen(texture_id))];
 
-    
-    // SpriteDrawer class
-    
-    void DefaultRenderSettingFun()
-    {
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    }
-    
-    DrawableStorage::DrawableStorage()
-    :m_id(0), m_order(0), m_shader(nullptr), m_rendersetting(DefaultRenderSettingFun), 
-    m_len(0), m_drawables(nullptr)
-    {
-        ;
-    }
-    
-    DrawableStorage::~DrawableStorage()
-    {
-        ;
-    }
+  Math::IRect rect({0, 0, 0, 0});
+  JsonParseMethods::ReadIRect(obj["uv"].GetObject(), &rect);
+  setUV(rect);
+}
 
-    void DrawableStorage::InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator)
-    {
-        assert(obj.HasMember("name"));
-        assert(obj.HasMember("shader"));
-        assert(obj.HasMember("camera"));
-        assert(obj.HasMember("order"));
-        assert(obj.HasMember("size"));
-        assert(obj["name"].IsString());
-        assert(obj["shader"].IsString());
-        assert(obj["camera"].IsString());
-        assert(obj["order"].IsInt());
-        assert(obj["size"].IsInt());
+void Sprite::start() {
+  initVAO();
+  glBindVertexArray(m_vao.id);
+  updateVBO();
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
+  Drawable::start();
+}
 
-        const char *storage_name = obj["name"].GetString();
-        const char *shader_name = obj["shader"].GetString();
-        const char *camera_name = obj["camera"].GetString();
-        StringID storage_id(storage_name), shader_id(shader_name), camera_id(camera_name);
-        m_id = (Uint32)storage_id;
-        m_order = obj["order"].GetInt();
+void Sprite::update() {
+  Drawable::update();
+}
 
-        m_len = obj["size"].GetInt();
-        m_drawables = allocator.Alloc<Type>(m_len);
-        memset(m_drawables, 0, sizeof(Type)*m_len);
+void Sprite::release() {
+  releaseVAO();
+  Drawable::release();
+}
 
-        auto &app = Application::Get();
-        auto &shaders = app.GetShaderStorage();
-        auto *scene = app.GetScene();
-        assert(scene);
-        SetShader(shaders[(Uint32)shader_id]);
+void Sprite::draw() {
+  static const glm::vec3 zbias(0.0f, 0.0f, 1.0f);
 
-        SetCamera(scene->GetCamera((Uint32)camera_id));
-    }
+  if (m_tex && isAvailable()) {
+    glBindVertexArray(m_vao.id);
 
-    void DrawableStorage::SetCamera(Camera *camera)
-    {
-        m_camera = camera;
-    }
-    
-    void DrawableStorage::SetShader(ShaderProgram *shader)
-    {
-        m_shader = shader;
-    }
-    
-    void DrawableStorage::SetRenderSettingFun(const std::function<void(void)> &fun)
-    {
-        m_rendersetting = fun;
-    }
-    
-    Drawable *DrawableStorage::Register(Drawable *drawable)
-    {
-        for(Uint32 i=0; i<m_len; ++i)
-        {
-            if(!m_drawables[i])
-            {
-                m_drawables[i] = drawable;
-                return drawable;
-            }
-        }
-        fprintf(stderr, "there is no space in DrawableStorage\n");
-        exit(-1);
-        return nullptr;
-    }
+    if (!getGameObject()->isStatic())
+      updateVBO();
 
-    void DrawableStorage::DrawDrawables()
-    {
-        if(m_shader && m_camera)
-        {
-            glUseProgram(m_shader->GetProgram());
-            m_rendersetting();
-            
-            // set vp uniform
-            const glm::mat4 &proj = m_camera->GetProjectionMatrix();
-            const glm::mat4 &view = m_camera->GetViewMatrix();
-            glm::mat4 vp = proj * view;
-            glUniformMatrix4fv(m_shader->GetViewProjectionLocation(),
-                               1, GL_FALSE,
-                               glm::value_ptr(vp));
-            glUniform1i(m_shader->GetTextureLocation(), 0);
-            
-            for(Uint32 i=0; i<m_len; ++i)
-            {
-                if(m_drawables[i] 
-                && m_drawables[i]->isAvailable()
-                && m_drawables[i]->GetGameObject()->isAvailable())
-                {
-                    m_drawables[i]->Draw();
-                }
-            }
-        }
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_tex->id);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glBindVertexArray(0);
+  }
+}
+
+void Sprite::updateVBO() {
+  constexpr GLbitfield map_buffer_flag = GL_MAP_WRITE_BIT | GL_MAP_FLUSH_EXPLICIT_BIT | GL_MAP_UNSYNCHRONIZED_BIT;
+
+  if (needUpdateUV()) {
+    glBindBuffer(GL_ARRAY_BUFFER, m_vao.vbo[1]);
+    auto *uv_buffer = (glm::vec2 *) glMapBufferRange(GL_ARRAY_BUFFER, 0, sizeof(uvs), map_buffer_flag);
+    float32 right = m_uv.x + m_uv.w;
+    float32 top = m_uv.y + m_uv.h;
+    uv_buffer[0] = {m_uv.x, top};
+    uv_buffer[1] = {right, top};
+    uv_buffer[2] = {m_uv.x, m_uv.y};
+    uv_buffer[3] = {right, m_uv.y};
+    glFlushMappedBufferRange(GL_ARRAY_BUFFER, 0, sizeof(uvs));
+    glUnmapBuffer(GL_ARRAY_BUFFER);
+    setNeedUpdateUV(false);
+  }
+
+  glBindBuffer(GL_ARRAY_BUFFER, m_vao.vbo[0]);
+  glm::vec3 *vert_buffer = (glm::vec3 *) glMapBufferRange(GL_ARRAY_BUFFER, 0, sizeof(vertexes), map_buffer_flag);
+  glm::mat3x3 model(1.0f);
+  getGameObject()->getModel(&model);
+  for (Uint32 i = 0; i < 4; ++i) {
+    vert_buffer[i] = model * vertexes[i];
+  }
+  glFlushMappedBufferRange(GL_ARRAY_BUFFER, 0, sizeof(vertexes));
+  glUnmapBuffer(GL_ARRAY_BUFFER);
+}
+
+void Sprite::initVAO() {
+  if (0 != m_vao.id)
+    return;
+  glGenVertexArrays(1, &m_vao.id);
+  glBindVertexArray(m_vao.id);
+  glGenBuffers(2, m_vao.vbo);
+
+  // check static
+  GLenum usage = GL_DYNAMIC_DRAW;
+  if (getGameObject()->isStatic())
+    usage = GL_STATIC_DRAW;
+
+
+  // vertex buffer
+  glBindBuffer(GL_ARRAY_BUFFER, m_vao.vbo[0]);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertexes), vertexes, usage);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+  // texcoord buffer
+  glBindBuffer(GL_ARRAY_BUFFER, m_vao.vbo[1]);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(uvs), uvs, usage);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
+}
+
+void Sprite::releaseVAO() {
+  if (0 == m_vao.id)
+    return;
+  glDeleteBuffers(2, m_vao.vbo);
+  glDeleteVertexArrays(1, &m_vao.id);
+}
+
+const Math::Rect &Sprite::getUV() const {
+  return m_uv;
+}
+
+const Texture *Sprite::getTexture() const {
+  return m_tex;
+}
+
+void Sprite::setUV(const Math::Rect &rect) {
+  m_uv = rect;
+  setNeedUpdateUV(true);
+}
+
+void Sprite::setUV(const Math::IRect &rect) {
+  m_uv.x = (float32) rect.x / (m_tex->w);
+  m_uv.w = (float32) rect.w / (m_tex->w);
+  m_uv.y = (float32) rect.y / (m_tex->h);
+  m_uv.h = (float32) rect.h / (m_tex->h);
+  setNeedUpdateUV(true);
+}
+
+void Sprite::setTexture(const Texture *val) {
+  m_tex = val;
+}
+
+int32 Sprite::needUpdateUV() const {
+  return m_flags.getFlag(9);
+}
+
+void Sprite::setNeedUpdateUV(int32 val) {
+  m_flags.setFlag(9, val);
+}
+
+
+// SpriteDrawer class
+
+void DefaultRenderSettingFun() {
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+DrawableStorage::DrawableStorage()
+    : m_id(0), m_order(0), m_shader(nullptr), m_render_setting(DefaultRenderSettingFun),
+      m_len(0), m_drawables(nullptr) {
+  ;
+}
+
+DrawableStorage::~DrawableStorage() {
+  ;
+}
+
+void DrawableStorage::initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) {
+  assert(obj.HasMember("name"));
+  assert(obj.HasMember("shader"));
+  assert(obj.HasMember("camera"));
+  assert(obj.HasMember("order"));
+  assert(obj.HasMember("size"));
+  assert(obj["name"].IsString());
+  assert(obj["shader"].IsString());
+  assert(obj["camera"].IsString());
+  assert(obj["order"].IsUint());
+  assert(obj["size"].IsUint());
+
+  const char *storage_name = obj["name"].GetString();
+  const char *shader_name = obj["shader"].GetString();
+  const char *camera_name = obj["camera"].GetString();
+  StringID storage_id(storage_name), shader_id(shader_name), camera_id(camera_name);
+  m_id = (Uint32) storage_id;
+  m_order = obj["order"].GetUint();
+
+  m_len = obj["size"].GetUint();
+  m_drawables = allocator.alloc<Type>(m_len);
+  memset(m_drawables, 0, sizeof(Type) * m_len);
+
+  auto &app = Application::Get();
+  auto &shaders = app.getShaderStorage();
+  auto *scene = app.getScene();
+  assert(scene);
+  setShader(shaders[(Uint32) shader_id]);
+
+  setCamera(scene->getCamera((Uint32) camera_id));
+}
+
+void DrawableStorage::setCamera(Camera *camera) {
+  m_camera = camera;
+}
+
+void DrawableStorage::setShader(ShaderProgram *shader) {
+  m_shader = shader;
+}
+
+void DrawableStorage::setRenderSettingFun(const std::function<void(void)> &func) {
+  m_render_setting = func;
+}
+
+Drawable *DrawableStorage::add(Drawable *drawable) {
+  for (Uint32 i = 0; i < m_len; ++i) {
+    if (!m_drawables[i]) {
+      m_drawables[i] = drawable;
+      return drawable;
     }
-    
-    void DrawableStorage::CheckDeleted()
-    {
-        for(Uint32 i=0; i<m_len; ++i)
-            {
-                if(m_drawables[i] && m_drawables[i]->GetGameObject()->isDeleted())
-                {
-                    m_drawables[i] = nullptr;
-                }
-            }
+  }
+  fprintf(stderr, "there is no space in DrawableStorage\n");
+  exit(-1);
+}
+
+void DrawableStorage::drawDrawables() {
+  if (m_shader && m_camera) {
+    glUseProgram(m_shader->getProgram());
+    m_render_setting();
+
+    // set vp uniform
+    const glm::mat4 &proj = m_camera->getProjectionMatrix();
+    const glm::mat4 &view = m_camera->getViewMatrix();
+    glm::mat4 vp = proj * view;
+    glUniformMatrix4fv(m_shader->getViewProjectionLocation(),
+                       1, GL_FALSE,
+                       glm::value_ptr(vp));
+    glUniform1i(m_shader->getTextureLocation(), 0);
+
+    for (Uint32 i = 0; i < m_len; ++i) {
+      if (m_drawables[i]
+          && m_drawables[i]->isAvailable()
+          && m_drawables[i]->getGameObject()->isAvailable()) {
+        m_drawables[i]->draw();
+      }
     }
-    
-    Uint32 DrawableStorage::GetID()const
-    {
-        return m_id;
+  }
+}
+
+void DrawableStorage::checkDeleted() {
+  for (Uint32 i = 0; i < m_len; ++i) {
+    if (m_drawables[i] && m_drawables[i]->getGameObject()->isDeleted()) {
+      m_drawables[i] = nullptr;
     }
-    
-    Uint32 DrawableStorage::GetOrder()const
-    {
-        return m_order;
-    }
+  }
+}
+
+Uint32 DrawableStorage::getID() const {
+  return m_id;
+}
+
+Uint32 DrawableStorage::getOrder() const {
+  return m_order;
+}
 }
 
 

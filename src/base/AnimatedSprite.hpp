@@ -5,53 +5,50 @@
 #include "Math.hpp"
 #include "Animation.hpp"
 
-namespace Base
-{
-    class AnimatedSprite : public Sprite
-    {
-    public:
-        COMPONENT(AnimatedSprite);
+namespace Base {
+class AnimatedSprite : public Sprite {
+ public:
+  COMPONENT(AnimatedSprite);
 
-        AnimatedSprite();
-        
-        AnimatedSprite(const AnimatedSprite &other);
+  AnimatedSprite();
 
-        virtual ~AnimatedSprite();
-        
-        AnimatedSprite &operator=(const AnimatedSprite &other);
+  AnimatedSprite(const AnimatedSprite &other);
 
-        virtual void InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator);
+  ~AnimatedSprite() override;
 
-        virtual void Start();
-        
-        virtual void Update();
+  AnimatedSprite &operator=(const AnimatedSprite &other);
 
-        virtual void Release();
+  void initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) override;
 
-        // get
-        int32 isPlaying()const;
+  void start() override;
 
-        const Animation *GetAnimation()const;
+  void update() override;
 
-        // set
-        void SetPlaying(int32 val);
+  void release() override;
 
-        void SetAnimation(Animation *anim);
+  // get
+  int32 isPlaying() const;
 
-    private:
-        virtual void OnFinish();
-        void SetAnimationUV();
+  const Animation *getAnimation() const;
 
-    private:
-        float32 m_chage_remaintime;
-        int32 m_nowidx;
-        const Animation *m_animation;
-        /* flags
-         * Sprite's flags
-         * 10 : playing animation
-         */
-    };
+  // set
+  void setPlaying(int32 val);
+
+  void setAnimation(Animation *anim);
+
+ private:
+  virtual void onFinish();
+  void setAnimationUV();
+
+ private:
+  float32 m_change_remain_time;
+  int32 m_now_idx;
+  const Animation *m_animation;
+  /* flags
+   * Sprite's flags
+   * 10 : playing animation
+   */
+};
 }
-
 
 #endif

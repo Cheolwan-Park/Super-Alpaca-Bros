@@ -1,0 +1,2 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libGame.a  CMakeFiles/Game.dir/src/game/Alpaca.cpp.o CMakeFiles/Game.dir/src/game/AlpacaHead.cpp.o CMakeFiles/Game.dir/src/game/AlpacaAction.cpp.o CMakeFiles/Game.dir/src/game/Ground.cpp.o CMakeFiles/Game.dir/src/game/HitGauge.cpp.o CMakeFiles/Game.dir/src/game/AlpacaSpit.cpp.o CMakeFiles/Game.dir/src/game/GameManager.cpp.o CMakeFiles/Game.dir/src/game/CameraController.cpp.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libGame.a

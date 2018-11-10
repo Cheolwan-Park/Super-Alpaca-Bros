@@ -12,71 +12,68 @@
 #include "Physics.hpp"
 #include "Camera.hpp"
 
+namespace Base {
+class Scene {
+ public:
+  Scene();
 
-namespace Base
-{
-    class Scene
-    {
-    public:
-        Scene();
-        
-        Scene(const Scene &other) = delete;
-        
-        virtual ~Scene();
-        
-        Scene &operator=(const Scene &other) = delete;
-        
-        virtual int32 Init();
+  Scene(const Scene &other) = delete;
 
-        virtual GameObject *GetObject(Uint32 hash);
+  virtual ~Scene();
 
-        virtual GameObject *GetObject(Uint32 storage, Uint32 hash);
-        
-        virtual void Update();
-        
-        virtual void Render();
-        
-        virtual void CheckDeletedObjects();
+  Scene &operator=(const Scene &other) = delete;
 
-        void AddObjectStorage(ObjectStorage *storage);
-        
-        void AddDrawableStorage(DrawableStorage *storage);
-        
-        ObjectStorage *GetObjectStorage(Uint32 hash);
-        
-        DrawableStorage *GetDrawableStorage(Uint32 hash);
+  virtual int32 init();
 
-        Camera *GetCamera(Uint32 hash);
+  virtual GameObject *getObject(Uint32 hash);
 
-        Physics &GetPhysics();
+  virtual GameObject *getObject(Uint32 storage, Uint32 hash);
 
-        GameObject *AddGameObject(Uint32 storagehash, GameObject *gameobject);
+  virtual void update();
 
-        int32 RegisterDrawable(Uint32 storagehash, Drawable *drawable);
+  virtual void render();
 
-        void SetJsonFile(const FileIO &f);
+  virtual void checkDeletedObjects();
 
-        int32 SetJsonFile(const char *filename);
+  void addObjectStorage(ObjectStorage *storage);
 
-        GameObject *CreateGameObject(const rapidjson::Value::Object &obj);
-        
-    protected:
-        virtual int32 LoadPhysics();
-        virtual int32 LoadCameras();
-        virtual int32 LoadShaders();
-        virtual int32 LoadTextures();
-        virtual int32 LoadAnimations();
-        virtual int32 CreateObjectStorages();
-        virtual int32 CreateDrawableStorages();
-        virtual int32 CreateObjects();
+  void addDrawableStorage(DrawableStorage *storage);
 
-    private:
-        Array<ObjectStorage*> m_objstorages;
-        Array<DrawableStorage*> m_drawablestorages;
-        Array<Camera*> m_cameras;
-        Physics m_physics;
-        rapidjson::Document m_doc;
-    };
+  ObjectStorage *getObjectStorage(Uint32 hash);
+
+  DrawableStorage *getDrawableStorage(Uint32 hash);
+
+  Camera *getCamera(Uint32 hash);
+
+  Physics &getPhysics();
+
+  GameObject *addGameObject(Uint32 storagehash, GameObject *gameobject);
+
+  int32 addDrawable(Uint32 storagehash, Drawable *drawable);
+
+  void setJsonFile(const FileIO &f);
+
+  int32 setJsonFile(const char *filename);
+
+  GameObject *createGameObject(const rapidjson::Value::Object &obj);
+
+ protected:
+  virtual int32 loadPhysics();
+  virtual int32 loadCameras();
+  virtual int32 loadShaders();
+  virtual int32 loadTextures();
+  virtual int32 loadAnimations();
+  virtual int32 loadObjectStorages();
+  virtual int32 loadDrawableStorages();
+  virtual int32 loadGameObjects();
+
+ private:
+  Array<ObjectStorage *> m_object_storages;
+  Array<DrawableStorage *> m_drawable_storages;
+  Array<Camera *> m_cameras;
+  Physics m_physics;
+  rapidjson::Document m_doc;
+};
 }
 
 #endif

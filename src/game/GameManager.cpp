@@ -1,81 +1,72 @@
 #include "GameManager.hpp"
 
-namespace Game
-{
-    // GameManager class
-    GameManager::GameManager()
-    :Component(), m_alpacas(), 
-    m_respawntime(0.0f), m_lifecount(0), m_remainlife()
-    {
-        ;
-    }
+namespace Game {
+// GameManager class
+GameManager::GameManager()
+    : Component(), m_alpacas(),
+      m_respawn_time(0.0f), m_life_count(0), m_remain_life() {
+  ;
+}
 
-    GameManager::~GameManager()
-    {
-        ;
-    }
+GameManager::~GameManager() {
+  ;
+}
 
-    void GameManager::InitWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator)
-    {
-        Component::InitWithJson(obj, allocator);
+void GameManager::initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) {
+  Component::initWithJson(obj, allocator);
 
-        assert(obj.HasMember("respawntime"));
-        assert(obj.HasMember("lifecount"));
-        assert(obj.HasMember("alpaca0"));
-        assert(obj.HasMember("alpaca1"));
-        assert(obj["respawntime"].IsFloat());
-        assert(obj["lifecount"].IsInt());
-        assert(obj["alpaca0"].IsObject());
-        assert(obj["alpaca1"].IsObject());
+  assert(obj.HasMember("respawntime"));
+  assert(obj.HasMember("lifecount"));
+  assert(obj.HasMember("alpaca0"));
+  assert(obj.HasMember("alpaca1"));
+  assert(obj["respawntime"].IsFloat());
+  assert(obj["lifecount"].IsUint());
+  assert(obj["alpaca0"].IsObject());
+  assert(obj["alpaca1"].IsObject());
 
-        m_respawntime = obj["respawntime"].GetFloat();
-        m_lifecount = obj["lifecount"].GetInt();
-        m_remainlife[0] = m_remainlife[1] = m_lifecount;
-        auto alpaca0json = obj["alpaca0"].GetObject();
-        auto alpaca1json = obj["alpaca1"].GetObject();
+  m_respawn_time = obj["respawntime"].GetFloat();
+  m_life_count = obj["lifecount"].GetUint();
+  m_remain_life[0] = m_remain_life[1] = m_life_count;
+  auto alpaca0json = obj["alpaca0"].GetObject();
+  auto alpaca1json = obj["alpaca1"].GetObject();
 
-        Scene *scene = Application::Get().GetScene();
-        assert(scene);
+  Scene *scene = Application::Get().getScene();
+  assert(scene);
 
-        GameObject *newalpaca = nullptr;
-        newalpaca = scene->CreateGameObject(alpaca0json);
-        assert(newalpaca);
-        m_alpacas[0] = newalpaca->GetComponent<Alpaca::Alpaca>();
-        assert(m_alpacas[0]);
-        m_alpacas[0]->SetKeymap(Alpaca::Alpaca::Keymap::MAP1);
-        
-        newalpaca = scene->CreateGameObject(alpaca1json);
-        assert(newalpaca);
-        m_alpacas[1] = newalpaca->GetComponent<Alpaca::Alpaca>();
-        assert(m_alpacas[1]);
-        m_alpacas[1]->SetKeymap(Alpaca::Alpaca::Keymap::MAP2);
-    }
+  GameObject *newalpaca = nullptr;
+  newalpaca = scene->createGameObject(alpaca0json);
+  assert(newalpaca);
+  m_alpacas[0] = newalpaca->getComponent<Alpaca::Alpaca>();
+  assert(m_alpacas[0]);
+  m_alpacas[0]->setKeymap(Alpaca::Alpaca::Keymap::MAP1);
 
-    void GameManager::Start()
-    {
-        assert(!global);
-        global = this;
-    }
+  newalpaca = scene->createGameObject(alpaca1json);
+  assert(newalpaca);
+  m_alpacas[1] = newalpaca->getComponent<Alpaca::Alpaca>();
+  assert(m_alpacas[1]);
+  m_alpacas[1]->setKeymap(Alpaca::Alpaca::Keymap::MAP2);
+}
 
-    void GameManager::Update()
-    {
-        ;
-    }
+void GameManager::start() {
+  assert(!global);
+  global = this;
+}
 
-    void GameManager::Release()
-    {
-        ;
-    }
+void GameManager::update() {
+  ;
+}
 
-    Alpaca::Alpaca *GameManager::GetAlpaca(Uint32 idx)
-    {
-        assert(idx<2);
-        return m_alpacas[idx];
-    }
+void GameManager::release() {
+  ;
+}
 
-    GameManager *GameManager::global = nullptr;
-    GameManager *GameManager::GetGlobal()
-    {
-        return global;
-    }
+Alpaca::Alpaca *GameManager::getAlpaca(Uint32 idx) {
+  assert(idx < 2);
+  return m_alpacas[idx];
+}
+
+GameManager *GameManager::global = nullptr;
+GameManager *GameManager::GetGlobal() {
+  return global;
+}
 }
