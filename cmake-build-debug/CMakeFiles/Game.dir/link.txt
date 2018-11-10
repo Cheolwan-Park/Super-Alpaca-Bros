@@ -1,2 +1,0 @@
-C:\msys64\mingw64\bin\ar.exe qc libGame.a  CMakeFiles/Game.dir/src/game/Alpaca.cpp.obj CMakeFiles/Game.dir/src/game/AlpacaHead.cpp.obj CMakeFiles/Game.dir/src/game/AlpacaAction.cpp.obj CMakeFiles/Game.dir/src/game/Ground.cpp.obj CMakeFiles/Game.dir/src/game/HitGauge.cpp.obj CMakeFiles/Game.dir/src/game/AlpacaSpit.cpp.obj CMakeFiles/Game.dir/src/game/GameManager.cpp.obj CMakeFiles/Game.dir/src/game/CameraController.cpp.obj
-C:\msys64\mingw64\bin\ranlib.exe libGame.a
