@@ -109,6 +109,8 @@ void AddFactoryFuncs() {
   component_factory.addFunction<Game::Alpaca::Spit>();
   component_factory.addFunction<Game::GameManager>();
   component_factory.addFunction<Game::CameraController>();
+  component_factory.addFunction<Game::NumberViewer>();
+  component_factory.addFunction<Game::HitGaugeViewer>();
 
   // action factory
   auto &action_factory = Game::Alpaca::ActionFactory::getGlobal();

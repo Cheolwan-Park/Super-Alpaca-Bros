@@ -265,16 +265,16 @@ void Spitting::initWithJson(const rapidjson::Value::Object &obj, StackAllocator 
 
   m_circular_spits = obj["circularspits"].GetUint();
   m_max_spits = obj["maxspits"].GetUint();
-  auto spitjsonobj = obj["spit"].GetObject();
+  auto spit_json_object = obj["spit"].GetObject();
 
   m_spit_objects = allocator.alloc<GameObject*>(m_max_spits);
   m_spits = allocator.alloc<Spit*>(m_max_spits);
   memset(m_spit_objects, 0, sizeof(GameObject *) * m_max_spits);
   memset(m_spits, 0, sizeof(Spit *) * m_max_spits);
 
-  Scene *scene = Application::Get().getScene();
+  auto *scene = Application::Get().getScene();
   for (Uint32 i = 0; i < m_max_spits; ++i) {
-    m_spit_objects[i] = scene->createGameObject(spitjsonobj);
+    m_spit_objects[i] = scene->createGameObject(spit_json_object);
     m_spits[i] = m_spit_objects[i]->getComponent<Spit>();
     m_spit_objects[i]->setAvailable(false);
   }

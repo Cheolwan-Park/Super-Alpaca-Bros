@@ -45,11 +45,12 @@ void GameManager::initWithJson(const rapidjson::Value::Object &obj, StackAllocat
   m_alpacas[1] = newalpaca->getComponent<Alpaca::Alpaca>();
   assert(m_alpacas[1]);
   m_alpacas[1]->setKeymap(Alpaca::Alpaca::Keymap::MAP2);
+
+  assert(!global);
+  global = this;
 }
 
 void GameManager::start() {
-  assert(!global);
-  global = this;
 }
 
 void GameManager::update() {

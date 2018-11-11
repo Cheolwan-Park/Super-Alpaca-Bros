@@ -8,7 +8,7 @@ namespace Game {
 namespace Alpaca {
 #define ACTION(__TYPENAME__)    \
         MAKE_TYPE_ID(__TYPENAME__);         \
-        virtual Uint32 getTypeID()const { return ID; }
+        Uint32 getTypeID()const override { return ID; }
 
 class Action {
  public:

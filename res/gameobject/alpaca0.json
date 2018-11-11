@@ -1,75 +1,76 @@
 {
-    "Object": {
-        "storage": "global",
-        "id": "alpaca",
-        "tag": "player",
+  "Object": {
+    "storage": "global",
+    "id": "alpaca",
+    "tag": "player",
+    "available": true,
+    "static": false,
+    "position": {"x": -27.0, "y": 0.0, "z": 1.0},
+    "scale": {"x": 9.0, "y": 9.0},
+    "rotation": 0.0,
+    "components": [
+      {
+        "type": "AnimatedSprite",
         "available": true,
-        "static": false,
-        "position": {"x": -27.0, "y": 0.0, "z": 1.0},
-        "scale": {"x": 9.0, "y": 9.0},
-        "rotation": 0.0,
-        "components": [
+        "storage": "unlit",
+        "uv": {"x": 0, "y": 0, "w": 1024, "h": 1024},
+        "texture": "alpacas.png",
+        "default_anim": "idle0"
+      },
+      {
+        "type": "Alpaca",
+        "available": true,
+        "idleanim": "idle0",
+        "walkinganim": "walking0",
+        "head": {"file": "alpacahead0.json"},
+        "speed": 15.0,
+        "jumppower": 90.0,
+        "action_manager": {
+          "actions": [
             {
-                "type": "AnimatedSprite",
-                "available": true,
-                "storage": "unlit",
-                "uv": {"x": 0, "y": 0, "w": 1024, "h": 1024},
-                "texture": "alpacas.png",
-                "default_anim": "idle0"
+              "type": "Heading",
+              "cooltime": 3.0,
+              "time": 1.0,
+              "length": 3.0
             },
             {
-                "type": "Alpaca",
-                "available": true,
-                "idleanim": "idle0",
-                "walkinganim": "walking0",
-                "head": { "file": "alpacahead0.json" },
-                "speed": 15.0,
-                "jumppower": 90.0,
-                "action_manager": {
-                    "actions": [
-                        {
-                            "type": "Heading",
-                            "cooltime": 3.0,
-                            "time": 1.0, 
-                            "length": 3.0
-                        },
-                        {
-                            "type": "Spitting",
-                            "cooltime": 2.0,
-                            "circularspits": 10,
-                            "maxspits": 70,
-                            "spit": {"file":"alpacaspit.json"}
-                        },
-                        {
-                            "type": "Dash",
-                            "cooltime": 2.5,
-                            "force": 90.0
-                        }
-                    ],
-                    "resettime": 0.5
-                }
+              "type": "Spitting",
+              "cooltime": 2.0,
+              "circularspits": 10,
+              "maxspits": 70,
+              "spit": {"file": "alpacaspit.json"}
             },
             {
-                "type": "Rigidbody",
-                "available": true,
-                "mass": 1.0,
-                "drag": 2.0,
-                "isSimulated": true,
-                "isGravityActive": true
-            },
-            {
-                "type": "BoxCollider",
-                "available": true,
-                "isTrigger": true,
-                "box": {"x": 0.0, "y": 0.0, "w": 9.0, "h": 6.0}
-            },
-            {
-                "type": "HitGauge",
-                "available": true,
-                "maxgauge": 350.0,
-                "minfactor": 0.7,
-                "maxfactor": 3.0
+              "type": "Dash",
+              "cooltime": 2.5,
+              "force": 90.0
             }
-        ]
-    }
+          ],
+          "resettime": 0.5
+        }
+      },
+      {
+        "type": "Rigidbody",
+        "available": true,
+        "mass": 1.0,
+        "drag": 2.0,
+        "isSimulated": true,
+        "isGravityActive": true
+      },
+      {
+        "type": "BoxCollider",
+        "available": true,
+        "isTrigger": true,
+        "box": {"x": 0.0, "y": 0.0, "w": 9.0, "h": 6.3}
+      },
+      {
+        "type": "HitGauge",
+        "available": true,
+        "maxgauge": 350.0,
+        "minfactor": 0.7,
+        "maxfactor": 3.0,
+        "animationtime": 0.3
+      }
+    ]
+  }
 }

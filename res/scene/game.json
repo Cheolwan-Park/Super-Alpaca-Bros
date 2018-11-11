@@ -1,236 +1,280 @@
 {
-    "Physics": 
-    { 
-        "collider_count": 32,
-        "gravity": 110.0
+  "Physics": {
+    "collider_count": 32,
+    "gravity": 110.0
+  },
+
+  "Cameras": [
+    {
+      "name": "main",
+      "left_top_near": {"x": -48.0, "y": 32.0, "z": 0.1},
+      "right_bottom_far": {"x": 48.0, "y": -32.0, "z": 8.0}
+    },
+    {
+      "name": "ui",
+      "left_top_near": {"x": 0.0, "y": 720.0, "z": 0.1},
+      "right_bottom_far": {"x": 1280.0, "y": 0.0, "z": 8.0}
+    }
+  ],
+
+  "Shaders": [
+    {
+      "name": "default",
+      "vert": "default_vert.glsl",
+      "frag": "default_frag.glsl"
+    }
+  ],
+
+  "Textures": [
+    {"file": "alpacas.png"},
+    {"file": "ui.png"}
+  ],
+
+  "Animations": [
+    {
+      "name": "walking0",
+      "texture": "alpacas.png",
+      "range": {"x": 0, "y": 768, "w": 1024, "h": 256},
+      "count": {"w": 4, "h": 1},
+      "eachtime": 0.1,
+      "loop": true
+    },
+    {
+      "name": "idle0",
+      "texture": "alpacas.png",
+      "range": {"x": 384, "y": 512, "w": 512, "h": 256},
+      "count": {"w": 2, "h": 1},
+      "eachtime": 0.5,
+      "loop": true
+    },
+    {
+      "name": "walking1",
+      "texture": "alpacas.png",
+      "range": {"x": 0, "y": 256, "w": 1024, "h": 256},
+      "count": {"w": 4, "h": 1},
+      "eachtime": 0.1,
+      "loop": true
+    },
+    {
+      "name": "idle1",
+      "texture": "alpacas.png",
+      "range": {"x": 384, "y": 0, "w": 512, "h": 256},
+      "count": {"w": 2, "h": 1},
+      "eachtime": 0.5,
+      "loop": true
+    },
+    {
+      "name": "number_sheet",
+      "texture": "ui.png",
+      "range": {"x": 0, "y": 934, "w": 900, "h": 90},
+      "count": {"w": 10, "h": 1},
+      "eachtime": 0.0,
+      "loop": false
+    }
+  ],
+
+  "ObjectStorages": [
+    {
+      "name": "global",
+      "order": 512,
+      "size": 1024
+    },
+    {
+      "name": "ui",
+      "order": 1024,
+      "size": 1024
+    }
+  ],
+
+  "DrawableStorages": [
+    {
+      "name": "unlit",
+      "shader": "default",
+      "camera": "main",
+      "order": 1024,
+      "size": 512
+    },
+    {
+      "name": "ui",
+      "shader": "default",
+      "camera": "ui",
+      "order": 512,
+      "size": 512
+    }
+  ],
+
+  "GameObjects": [
+    {
+      "storage": "global",
+      "id": "GameManager",
+      "tag": "GameManager",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+      "scale": {"x": 1.0, "y": 1.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "GameManager",
+          "available": true,
+          "respawntime": 3.0,
+          "lifecount": 5,
+          "alpaca0": {"file": "alpaca0.json"},
+          "alpaca1": {"file": "alpaca1.json"}
+        },
+        {
+          "type": "CameraController",
+          "available": true,
+          "isSmooth": true,
+          "margin": 25.0,
+          "cammovespeed": 5.0,
+          "expandspeed": 0.3,
+          "viewratio": {"x": 16.0, "y": 9.0},
+          "min_camerarange": 4.0,
+          "max_camerarange": 8.0
+        }
+      ]
     },
 
-    "Cameras": [
+
+
+    {
+      "storage": "global",
+      "id": "ground0",
+      "tag": "ground",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": -13.5, "z": 1.0},
+      "scale": {"x": 72.0, "y": 3.0},
+      "rotation": 0.0,
+      "components": [
         {
-            "name": "main", 
-            "left_top_near": {"x": -48.0, "y": 32.0, "z": 0.1},
-            "right_bottom_far": {"x": 48.0, "y": -32.0, "z": 8.0}
+          "type": "Sprite",
+          "available": true,
+          "storage": "unlit",
+          "uv": {"x": 0, "y": 0, "w": 128, "h": 128},
+          "texture": "alpacas.png"
         },
         {
-            "name": "ui",
-            "left_top_near": {"x": 0.0, "y": 720.0, "z": 0.1},
-            "right_bottom_far": {"x": 1280.0, "y": 0.0, "z": 8.0}
+          "type": "Ground",
+          "available": true,
+          "isTrigger": true,
+          "box": {"x": 0.0, "y": 0.0, "w": 72.0, "h": 3.0},
+          "ignorelist_size": 8,
+          "isPassable": false
         }
-    ],
-
-    "Shaders": [
+      ]
+    },
+    {
+      "storage": "global",
+      "id": "ground1",
+      "tag": "ground",
+      "available": true,
+      "static": false,
+      "position": {"x": -18.0, "y": 0.0, "z": 1.0},
+      "scale": {"x": 18.0, "y": 3.0},
+      "rotation": 0.0,
+      "components": [
         {
-            "name": "default", 
-            "vert": "default_vert.glsl", 
-            "frag": "default_frag.glsl"
+          "type": "Sprite",
+          "available": true,
+          "storage": "unlit",
+          "uv": {"x": 0, "y": 0, "w": 128, "h": 128},
+          "texture": "alpacas.png"
+        },
+        {
+          "type": "Ground",
+          "available": true,
+          "isTrigger": true,
+          "box": {"x": 0.0, "y": 0.0, "w": 18.0, "h": 3.0},
+          "ignorelist_size": 8,
+          "isPassable": true
         }
-    ],
-
-    "Textures": [
-        { "file": "alpacas.png" }
-    ],
-
-    "Animations": [
-        { 
-            "name": "walking0", 
-            "texture": "alpacas.png",
-            "range": {"x": 0, "y": 768, "w": 1024, "h": 256},
-            "count": {"w": 4, "h": 1},
-            "eachtime": 0.1,
-            "loop": true
+      ]
+    },
+    {
+      "storage": "global",
+      "id": "ground2",
+      "tag": "ground",
+      "available": true,
+      "static": false,
+      "position": {"x": 18.0, "y": 0.0, "z": 1.0},
+      "scale": {"x": 18.0, "y": 3.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "unlit",
+          "uv": {"x": 0, "y": 0, "w": 128, "h": 128},
+          "texture": "alpacas.png"
         },
-        { 
-            "name": "idle0", 
-            "texture": "alpacas.png",
-            "range": {"x": 384, "y": 512, "w": 512, "h": 256},
-            "count": {"w": 2, "h": 1},
-            "eachtime": 0.5,
-            "loop": true
-        },
-        { 
-            "name": "walking1", 
-            "texture": "alpacas.png",
-            "range": {"x": 0, "y": 256, "w": 1024, "h": 256},
-            "count": {"w": 4, "h": 1},
-            "eachtime": 0.1,
-            "loop": true
-        },
-        { 
-            "name": "idle1", 
-            "texture": "alpacas.png",
-            "range": {"x": 384, "y": 0, "w": 512, "h": 256},
-            "count": {"w": 2, "h": 1},
-            "eachtime": 0.5,
-            "loop": true
+        {
+          "type": "Ground",
+          "available": true,
+          "isTrigger": true,
+          "box": {"x": 0.0, "y": 0.0, "w": 18.0, "h": 3.0},
+          "ignorelist_size": 8,
+          "isPassable": true
         }
-    ],
+      ]
+    },
 
-    "ObjectStorages": [
+
+    {
+      "storage": "ui",
+      "id": "gaugeviewer0",
+      "tag": "default",
+      "available": true,
+      "static": false,
+      "position": {"x": 200.0, "y": 50.0, "z": 1.0},
+      "scale": {"x": 70.0, "y": 70.0},
+      "rotation": 0.0,
+      "components": [
         {
-            "name": "global", 
-            "order": 512, 
-            "size": 1024
-        },
-        {
-            "name": "ui",
-            "order": 1024,
-            "size": 1024
+          "type": "HitGaugeViewer",
+          "available": true,
+          "alpacaindex": 0,
+          "numberviewer": {"file":"numberviewer.json"}
         }
-    ],
-
-    "DrawableStorages": [
+      ]
+    },
+    {
+      "storage": "ui",
+      "id": "gaugeviewer1",
+      "tag": "default",
+      "available": true,
+      "static": false,
+      "position": {"x": 1080.0, "y": 50.0, "z": 1.0},
+      "scale": {"x": 70.0, "y": 70.0},
+      "rotation": 0.0,
+      "components": [
         {
-            "name": "unlit", 
-            "shader": "default", 
-            "camera": "main", 
-            "order": 1024, 
-            "size": 512
-        },
-        {
-            "name": "ui",
-            "shader": "default",
-            "camera": "ui",
-            "order": 512,
-            "size": 512
+          "type": "HitGaugeViewer",
+          "available": true,
+          "alpacaindex": 1,
+          "numberviewer": {"file":"numberviewer.json"}
         }
-    ],
-
-    "GameObjects": [
+      ]
+    },
+    {
+      "storage": "ui",
+      "id": "test",
+      "tag": "default",
+      "available": true,
+      "static": true,
+      "position": {"x": 100.0, "y": 360.0, "z": 1.0},
+      "scale": {"x": 100.0, "y": 100.0},
+      "rotation": 0.0,
+      "components": [
         {
-            "storage": "global",
-            "id": "GameManager",
-            "tag": "GameManager",
-            "available": true,
-            "static": false,
-            "position": {"x": 0.0, "y": 0.0, "z": 1.0},
-            "scale": {"x":1.0, "y": 1.0},
-            "rotation": 0.0,
-            "components": [
-                {
-                    "type": "GameManager",
-                    "available": true,
-                    "respawntime": 3.0,
-                    "lifecount": 5,
-                    "alpaca0": {"file": "alpaca0.json"},
-                    "alpaca1": {"file": "alpaca1.json"}
-                },
-                {
-                    "type": "CameraController",
-                    "available": true,
-                    "isSmooth": true,
-                    "margin": 25.0,
-                    "cammovespeed": 5.0,
-                    "expandspeed": 0.3,
-                    "viewratio": {"x": 16.0, "y": 9.0},
-                    "min_camerarange": 4.0,
-                    "max_camerarange": 8.0
-                }
-            ]
-        },
-
-
-        {
-            "storage": "global",
-            "id": "ground0",
-            "tag": "ground",
-            "available": true,
-            "static": false,
-            "position": {"x": 0.0, "y": -13.5, "z": 1.0},
-            "scale": {"x": 72.0, "y": 3.0},
-            "rotation": 0.0,
-            "components": [
-                {
-                    "type": "Sprite",
-                    "available": true,
-                    "storage": "unlit",
-                    "uv": {"x": 0, "y": 0, "w": 128, "h": 128},
-                    "texture": "alpacas.png"
-                },
-                {
-                    "type": "Ground",
-                    "available": true,
-                    "isTrigger": true,
-                    "box": {"x": 0.0, "y": 0.0, "w": 72.0, "h": 3.0},
-                    "ignorelist_size": 8,
-                    "isPassable": false
-                }
-            ]
-        },
-        {
-            "storage": "global",
-            "id": "ground1",
-            "tag": "ground",
-            "available": true,
-            "static": false,
-            "position": {"x": -18.0, "y": 0.0, "z": 1.0},
-            "scale": {"x": 18.0, "y": 3.0},
-            "rotation": 0.0,
-            "components": [
-                {
-                    "type": "Sprite",
-                    "available": true,
-                    "storage": "unlit",
-                    "uv": {"x": 0, "y": 0, "w": 128, "h": 128},
-                    "texture": "alpacas.png"
-                },
-                {
-                    "type": "Ground",
-                    "available": true,
-                    "isTrigger": true,
-                    "box": {"x": 0.0, "y": 0.0, "w": 18.0, "h": 3.0},
-                    "ignorelist_size": 8,
-                    "isPassable": true
-                }
-            ]
-        },
-        {
-            "storage": "global",
-            "id": "ground2",
-            "tag": "ground",
-            "available": true,
-            "static": false,
-            "position": {"x": 18.0, "y": 0.0, "z": 1.0},
-            "scale": {"x": 18.0, "y": 3.0},
-            "rotation": 0.0,
-            "components": [
-                {
-                    "type": "Sprite",
-                    "available": true,
-                    "storage": "unlit",
-                    "uv": {"x": 0, "y": 0, "w": 128, "h": 128},
-                    "texture": "alpacas.png"
-                },
-                {
-                    "type": "Ground",
-                    "available": true,
-                    "isTrigger": true,
-                    "box": {"x": 0.0, "y": 0.0, "w": 18.0, "h": 3.0},
-                    "ignorelist_size": 8,
-                    "isPassable": true
-                }
-            ]
-        },
-
-
-
-        {
-            "storage": "ui",
-            "id": "test",
-            "tag": "default",
-            "available": true,
-            "static": true,
-            "position": {"x": 100.0, "y":360.0, "z": 1.0},
-            "scale": {"x": 100.0, "y": 100.0},
-            "rotation": 0.0,
-            "components": [
-                {
-                    "type": "Sprite",
-                    "available": true,
-                    "storage": "ui",
-                    "uv": {"x": 0, "y": 128, "w": 128, "h": 128},
-                    "texture": "alpacas.png"
-                }
-            ]
+          "type": "Sprite",
+          "available": true,
+          "storage": "ui",
+          "uv": {"x": 0, "y": 128, "w": 128, "h": 128},
+          "texture": "alpacas.png"
         }
-    ]
+      ]
+    }
+  ]
 }

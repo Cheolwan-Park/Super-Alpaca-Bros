@@ -107,7 +107,7 @@ void AnimatedSprite::setAnimationUV() {
   uv.w = sprites_range.w / sprites_count.w;
   uv.h = sprites_range.h / sprites_count.h;
   uv.x = sprites_range.x + x * uv.w;
-  uv.y = sprites_range.y + y * uv.h;
+  uv.y = sprites_range.y + (sprites_count.h-y-1) * uv.h;
   setUV(uv);
 }
 }
