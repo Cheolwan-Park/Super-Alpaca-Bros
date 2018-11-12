@@ -80,6 +80,11 @@
       "size": 1024
     },
     {
+      "name": "particle",
+      "order": 512,
+      "size": 512
+    },
+    {
       "name": "ui",
       "order": 1024,
       "size": 1024
@@ -89,6 +94,13 @@
   "DrawableStorages": [
     {
       "name": "unlit",
+      "shader": "default",
+      "camera": "main",
+      "order": 1024,
+      "size": 512
+    },
+    {
+      "name": "particle",
       "shader": "default",
       "camera": "main",
       "order": 1024,
@@ -120,7 +132,8 @@
           "respawntime": 3.0,
           "lifecount": 5,
           "alpaca0": {"file": "alpaca0.json"},
-          "alpaca1": {"file": "alpaca1.json"}
+          "alpaca1": {"file": "alpaca1.json"},
+          "effect": {"file": "outsidedeffect.json"}
         },
         {
           "type": "CameraController",

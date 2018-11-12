@@ -25,7 +25,7 @@ add_library(
     src/game/AlpacaSpit.cpp
     src/game/GameManager.cpp
     src/game/CameraController.cpp
-)
+    src/game/OutsidedEffect.cpp)
 include_directories( src/game )
 target_link_libraries( Game Base )
 target_link_libraries( alpacas Game )

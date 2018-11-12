@@ -8,5 +8,6 @@
 #include "AlpacaSpit.hpp"
 #include "GameManager.hpp"
 #include "CameraController.hpp"
+#include "OutsidedEffect.h"
 
 #endif

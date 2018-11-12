@@ -119,8 +119,9 @@ void Sprite::initWithJson(const rapidjson::Value::Object &obj, StackAllocator &a
 
   Application &app = Application::Get();
   auto &textures = app.getTextureStorage();
-  const char *texture_id = obj["texture"].GetString();
-  m_tex = textures[CompileTimeHash::runtime_hash(texture_id, strlen(texture_id))];
+  const char *str_texture_id = obj["texture"].GetString();
+  StringID texture_id(str_texture_id);
+  m_tex = textures[(Uint32)texture_id];
 
   Math::IRect rect({0, 0, 0, 0});
   JsonParseMethods::ReadIRect(obj["uv"].GetObject(), &rect);
@@ -146,8 +147,6 @@ void Sprite::release() {
 }
 
 void Sprite::draw() {
-  static const glm::vec3 zbias(0.0f, 0.0f, 1.0f);
-
   if (m_tex && isAvailable()) {
     glBindVertexArray(m_vao.id);
 
@@ -156,7 +155,6 @@ void Sprite::draw() {
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_tex->id);
-
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glBindVertexArray(0);
   }

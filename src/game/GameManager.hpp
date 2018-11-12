@@ -3,6 +3,7 @@
 
 #include "base.hpp"
 #include "Alpaca.hpp"
+#include "OutsidedEffect.h"
 
 using namespace Base;
 
@@ -27,6 +28,8 @@ class GameManager : public Component {
 
   void release() override;
 
+  void gameOver(Uint32 idx);
+
   Alpaca::Alpaca *getAlpaca(Uint32 idx);
 
  private:
@@ -37,9 +40,12 @@ class GameManager : public Component {
 
  private:
   Alpaca::Alpaca *m_alpacas[2];
-  float32 m_respawn_time;
   Uint32 m_life_count;
   Uint32 m_remain_life[2];
+  glm::vec3 m_alpaca_spawn_position[2];
+  glm::vec2 m_alpaca_spawn_scale[2];
+
+  OutsidedEffect *m_effects[2];
 };
 }
 

@@ -88,7 +88,7 @@ class Sprite : public Drawable {
  private:
   struct VAO {
     GLuint id;
-    GLuint vbo[4];
+    GLuint vbo[2];
   };
   void initVAO();
 
