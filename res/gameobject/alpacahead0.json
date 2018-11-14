@@ -11,7 +11,7 @@
     "components": [
       {
         "type": "Head",
-        "storage": "unlit",
+        "storage": "global",
         "available": true,
         "uv": {"x": 0, "y": 640, "w": 128, "h": 128},
         "texture": "alpacas.png",

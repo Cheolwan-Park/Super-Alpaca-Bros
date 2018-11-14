@@ -4,7 +4,7 @@
 
 namespace Game {
 CameraController::CameraController()
-    : Component(), m_game_manager(nullptr),
+    : Component(), m_game_manager(nullptr), m_camera_id(0),
       m_margin(0.0f), m_camera_speed(0.0f), m_expand_speed(0.0f), m_expanded(0.0f),
       m_view_ratio(), m_min_camera_size(0.0f), m_max_camera_size(0.0f) {
   ;
@@ -17,6 +17,7 @@ CameraController::~CameraController() {
 void CameraController::initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) {
   Component::initWithJson(obj, allocator);
 
+  assert(obj.HasMember("camera"));
   assert(obj.HasMember("isSmooth"));
   assert(obj.HasMember("margin"));
   assert(obj.HasMember("cammovespeed"));
@@ -24,6 +25,7 @@ void CameraController::initWithJson(const rapidjson::Value::Object &obj, StackAl
   assert(obj.HasMember("viewratio"));
   assert(obj.HasMember("min_camerarange"));
   assert(obj.HasMember("max_camerarange"));
+  assert(obj["camera"].IsString());
   assert(obj["isSmooth"].IsBool());
   assert(obj["margin"].IsFloat());
   assert(obj["expandspeed"].IsFloat());
@@ -31,6 +33,10 @@ void CameraController::initWithJson(const rapidjson::Value::Object &obj, StackAl
   assert(obj["viewratio"].IsObject());
   assert(obj["min_camerarange"].IsFloat());
   assert(obj["max_camerarange"].IsFloat());
+
+  const char *str_camera_id = obj["camera"].GetString();
+  StringID camera_id(str_camera_id);
+  m_camera_id = (Uint32)camera_id;
 
   setSmooth(obj["isSmooth"].GetBool());
   m_margin = obj["margin"].GetFloat();
@@ -42,15 +48,16 @@ void CameraController::initWithJson(const rapidjson::Value::Object &obj, StackAl
 }
 
 void CameraController::start() {
-  m_game_manager = getGameObject()->getComponent<GameManager>();
+  m_game_manager = GameManager::GetGlobal();
+  assert(m_game_manager);
 }
 
 void CameraController::update() {
-  assert(m_game_manager);
+  Component::update();
 
   // fitting camera
   auto *scene = Application::Get().getScene();
-  Camera *camera = scene->getCamera("main"_hash);
+  Camera *camera = scene->getCamera(m_camera_id);
   Time &t = Time::Get();
   const glm::vec3 &ltn = camera->getLeftTopNear();
   const glm::vec3 &rbf = camera->getRightBottomFar();

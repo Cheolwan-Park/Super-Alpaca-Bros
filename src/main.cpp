@@ -1,5 +1,8 @@
 #include "base.hpp"
 #include "game.hpp"
+#include "title.h"
+#include "Title/TitleBanner.h"
+
 using namespace Base;
 
 int32 JsonAppInit(const char *filename);
@@ -112,6 +115,17 @@ void AddFactoryFuncs() {
   component_factory.addFunction<Game::NumberViewer>();
   component_factory.addFunction<Game::HitGaugeViewer>();
   component_factory.addFunction<Game::OutsidedEffect>();
+  component_factory.addFunction<Game::LifeViewer>();
+  component_factory.addFunction<Game::CooltimeViewer>();
+  component_factory.addFunction<Game::Button>();
+  component_factory.addFunction<Game::RestartButton>();
+  component_factory.addFunction<Game::ResumeButton>();
+  component_factory.addFunction<Game::BannerMover>();
+  component_factory.addFunction<Game::WinnerBanner>();
+  component_factory.addFunction<Title::TitleBanner>();
+  component_factory.addFunction<Title::Rotator>();
+  component_factory.addFunction<Title::ScaleRepeater>();
+  component_factory.addFunction<Title::ZoomTransition>();
 
   // action factory
   auto &action_factory = Game::Alpaca::ActionFactory::getGlobal();

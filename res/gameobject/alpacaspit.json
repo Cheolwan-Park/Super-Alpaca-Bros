@@ -12,7 +12,7 @@
       {
         "type": "Sprite",
         "available": true,
-        "storage": "unlit",
+        "storage": "global",
         "uv": {"x": 0, "y": 512, "w": 128, "h": 128},
         "texture": "alpacas.png"
       },
@@ -22,7 +22,7 @@
         "lifetime": 10.0,
         "speed": 70.0,
         "force": 9.0,
-        "gaugeup": 5.0
+        "gaugeup": 8.0
       },
       {
         "type": "CircleCollider",

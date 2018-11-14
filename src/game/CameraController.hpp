@@ -34,6 +34,7 @@ class CameraController : public Component {
 
  private:
   GameManager *m_game_manager;
+  Uint32 m_camera_id;
   float32 m_margin;
   float32 m_camera_speed;
   float32 m_expand_speed;

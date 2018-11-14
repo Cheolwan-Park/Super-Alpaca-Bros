@@ -1,0 +1,241 @@
+{
+  "Physics": {
+    "collider_count": 0,
+    "gravity": 0.0
+  },
+  "Cameras": [
+    {
+      "name": "main",
+      "left_top_near": {
+        "x": -48.0,
+        "y": 27.0,
+        "z": 0.1
+      },
+      "right_bottom_far": {
+        "x": 48.0,
+        "y": -27.0,
+        "z": 8.0
+      }
+    }
+  ],
+  "Shaders": [
+    {
+      "name": "default",
+      "vert": "default_vert.glsl",
+      "frag": "default_frag.glsl"
+    }
+  ],
+  "Textures": [
+    { "file": "title.png" }
+  ],
+  "Animations": [ ],
+  "ObjectStorages": [
+    {
+      "name": "global",
+      "order": 512,
+      "size": 1024
+    }
+  ],
+  "DrawableStorages": [
+    {
+      "name": "background",
+      "shader": "default",
+      "camera": "main",
+      "order": 1024,
+      "size": 64
+    },
+    {
+      "name": "banner",
+      "shader": "default",
+      "camera": "main",
+      "order": 512,
+      "size": 64
+    }
+  ],
+  "GameObjects": [
+    {
+      "storage": "global",
+      "id": "title_banner",
+      "tag": "default",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": 5.0, "z": 1.0},
+      "scale": {"x": 84.0, "y": 30.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "banner",
+          "uv": {"x": 128, "y": 704, "w": 896, "h": 310},
+          "texture": "title.png"
+        },
+        {
+          "type": "TitleBanner",
+          "available": true,
+          "waittime": 2.5,
+          "duration": 1.5,
+          "rotate": 0.14,
+          "scale": 0.15
+        },
+        {
+          "type": "ZoomTransition",
+          "available": true,
+          "loadscene": "game.json",
+          "duration": 0.5,
+          "target_ltn": {"x": -1.5, "y": 1.0, "z": 0.1},
+          "target_rbf": {"x": 1.5, "y": -1.0, "z": 8.0}
+        }
+      ]
+    },
+    {
+      "storage": "global",
+      "id": "press_anykey",
+      "tag": "default",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": -20.0, "z": 1.0},
+      "scale": {"x": 63.0, "y": 9.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "banner",
+          "uv": {"x": 128, "y": 576, "w": 896, "h": 128},
+          "texture": "title.png"
+        },
+        {
+          "type": "ScaleRepeater",
+          "available": true,
+          "duration": 0.7,
+          "scale": 0.1
+        }
+      ]
+    },
+
+
+
+
+    {
+      "storage": "global",
+      "id": "background",
+      "tag": "default",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+      "scale": {"x": 96.0, "y": 54.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x": 0, "y": 0, "w": 480, "h": 270},
+          "texture": "title.png"
+        },
+        {
+          "type": "Rotator",
+          "available": true,
+          "speed": -0.03
+        }
+      ]
+    },
+    {
+      "storage": "global",
+      "id": "head0",
+      "tag": "default",
+      "available": true,
+      "static": false,
+      "position": {"x": -40.0, "y": 18.0, "z": 1.0},
+      "scale": {"x": 10.0, "y": 10.0},
+      "rotation": 0.11,
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x": 0, "y": 768, "w": 128, "h": 128},
+          "texture": "title.png"
+        },
+        {
+          "type": "Rotator",
+          "available": true,
+          "speed": -1.3
+        }
+      ]
+    },
+    {
+      "storage": "global",
+      "id": "head1",
+      "tag": "default",
+      "available": true,
+      "static": false,
+      "position": {"x": 35.0, "y": -20.0, "z": 1.0},
+      "scale": {"x": 10.0, "y": 10.0},
+      "rotation": 0.2,
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x": 0, "y": 768, "w": 128, "h": 128},
+          "texture": "title.png"
+        },
+        {
+          "type": "Rotator",
+          "available": true,
+          "speed": 1.5
+        }
+      ]
+    },
+    {
+      "storage": "global",
+      "id": "alpaca0",
+      "tag": "default",
+      "available": true,
+      "static": false,
+      "position": {"x": 32.0, "y": 13.0, "z": 1.0},
+      "scale": {"x": 10.0, "y": 10.0},
+      "rotation": 0.05,
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x": 0, "y": 640, "w": 128, "h": 128},
+          "texture": "title.png"
+        },
+        {
+          "type": "Rotator",
+          "available": true,
+          "speed": -1.0
+        }
+      ]
+    },
+    {
+      "storage": "global",
+      "id": "alpaca1",
+      "tag": "default",
+      "available": true,
+      "static": false,
+      "position": {"x": -36.0, "y": -18.0, "z": 1.0},
+      "scale": {"x": 10.0, "y": 10.0},
+      "rotation": 0.24,
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x": 0, "y": 640, "w": 128, "h": 128},
+          "texture": "title.png"
+        },
+        {
+          "type": "Rotator",
+          "available": true,
+          "speed": 1.6
+        }
+      ]
+    }
+  ]
+}

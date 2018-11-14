@@ -10,7 +10,7 @@ namespace Base {
 // Application class
 
 Application::Application()
-    : m_window(), m_scene(nullptr), m_release_marker(0), m_quit(false),
+    : m_window(), m_scene(nullptr), m_release_marker(0), m_quit(false), m_scene_changed(false),
       m_allocator(), m_texture_storage(), m_shader_storage(), m_animation_storage() {
   m_texture_storage.setFreeFunc(FreeTexture);
   m_shader_storage.setFreeFunc(FreeShader);
@@ -50,8 +50,10 @@ void Application::run() {
     glClear(GL_COLOR_BUFFER_BIT);
     if (m_scene) {
       m_scene->checkDeletedObjects();
+      m_scene_changed = false;
       m_scene->update();
-      m_scene->render();
+      if(!m_scene_changed)
+        m_scene->render();
     }
     m_window.swap();
     time.update();
@@ -65,7 +67,6 @@ void Application::quit() {
 
 void Application::release(AppReleaseFun fun) {
   m_scene->~Scene();
-  m_release_marker = m_allocator.getTopMarker();
   m_texture_storage.clear();
   m_shader_storage.clear();
   if (fun)
@@ -86,6 +87,7 @@ int32 Application::setScene(const FileIO &f) {
   m_scene = new(m_allocator.alloc<Scene>()) Scene();
   assert(m_scene);
   m_scene->setJsonFile(f);
+  m_scene_changed = true;
   return m_scene->init();
 }
 
@@ -102,6 +104,7 @@ int32 Application::setScene(const char *filename) {
   m_scene = new(m_allocator.alloc<Scene>()) Scene();
   assert(m_scene);
   m_scene->setJsonFile(filename);
+  m_scene_changed = true;
   return m_scene->init();
 }
 

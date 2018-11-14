@@ -63,6 +63,7 @@ class Application {
   Scene *m_scene;
   StackAllocator::Marker m_release_marker;
   int32 m_quit;
+  int32 m_scene_changed;
   StackAllocator m_allocator;
   Storage<Texture> m_texture_storage;
   Storage<ShaderProgram> m_shader_storage;

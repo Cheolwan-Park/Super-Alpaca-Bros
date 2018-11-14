@@ -12,7 +12,7 @@
       {
         "type": "AnimatedSprite",
         "available": true,
-        "storage": "unlit",
+        "storage": "global",
         "uv": {"x": 0, "y": 0, "w": 1024, "h": 1024},
         "texture": "alpacas.png",
         "default_anim": "idle1"

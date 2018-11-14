@@ -41,6 +41,11 @@ void Component::start() {
   m_flags.setFlag(1, true);
 }
 
+void Component::update() {
+  if(!isStarted())
+    start();
+}
+
 void Component::onColliderEnter(Collider *other) {
   ;
 }

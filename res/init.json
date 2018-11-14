@@ -7,5 +7,5 @@
     "texturestorage_size": 16,
     "animationstorage_size": 16,
 
-    "default_scene" : "game.json"
+    "default_scene" : "title.json"
 }

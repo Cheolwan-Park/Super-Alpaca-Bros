@@ -41,17 +41,17 @@ void Collider::initWithJson(const rapidjson::Value::Object &obj, StackAllocator 
 }
 
 void Collider::start() {
-  Component::start();
-
   m_rigidbody = getGameObject()->getComponent<Rigidbody>();
 
   Scene *scene = Application::Get().getScene();
   assert(scene);
   scene->getPhysics().add(this);
+
+  Component::start();
 }
 
 void Collider::update() {
-  ;
+  Component::update();
 }
 
 void Collider::release() {

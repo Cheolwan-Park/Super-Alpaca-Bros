@@ -56,6 +56,8 @@ void HitGauge::start() {
 }
 
 void HitGauge::update() {
+  Component::update();
+
   if(m_remain_time > 0.0f)
   {
     Time &t = Time::Get();
@@ -205,6 +207,7 @@ void HitGaugeViewer::start() {
   auto *game_manager = GameManager::GetGlobal();
   auto *alpaca = game_manager->getAlpaca(m_alpaca_index);
   m_alpaca_hit_gauge = (alpaca->getGameObject())->getComponent<HitGauge>();
+  assert(m_alpaca_hit_gauge);
 
   for(Uint32 i=0; i<m_number_viewers.getMaxSize(); ++i) {
     m_number_viewers[i]->setNumber(0);
@@ -214,7 +217,8 @@ void HitGaugeViewer::start() {
 }
 
 void HitGaugeViewer::update() {
-  assert(m_alpaca_hit_gauge);
+  Component::update();
+
   auto gauge = (Uint32)m_alpaca_hit_gauge->getGauge();
   size_t viewer_count = m_number_viewers.getMaxSize();
   Uint32 n=0, a=1;

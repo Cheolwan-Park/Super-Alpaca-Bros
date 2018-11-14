@@ -164,6 +164,19 @@ void Heading::hooking() {
   }
 }
 
+void Heading::stopHooking() {
+  Alpaca *alpaca = getAlpaca();
+  Head *head = alpaca->getHeadObject();
+  if (isHeadHooking()) {
+    alpaca->getRigidbody()->setGravityActive(true);
+    SetHooking(false);
+  }
+  SetHeading(false);
+  head->resetPosition();
+  head->getGameObject()->getComponent<CircleCollider>()->setAvailable(false);
+  alpaca->getActionManager().countResetTime();
+}
+
 int32 Heading::isHeading() const {
   return m_flags.getFlag(0);
 }

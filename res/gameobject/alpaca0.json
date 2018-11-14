@@ -6,13 +6,13 @@
     "available": true,
     "static": false,
     "position": {"x": -27.0, "y": 0.0, "z": 1.0},
-    "scale": {"x": 9.0, "y": 9.0},
+    "scale": {"x": -9.0, "y": 9.0},
     "rotation": 0.0,
     "components": [
       {
         "type": "AnimatedSprite",
         "available": true,
-        "storage": "unlit",
+        "storage": "global",
         "uv": {"x": 0, "y": 0, "w": 1024, "h": 1024},
         "texture": "alpacas.png",
         "default_anim": "idle0"

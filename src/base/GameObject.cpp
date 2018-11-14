@@ -144,10 +144,6 @@ void GameObject::start() {
   m_model = glm::rotate(m_model, getRotation());
   m_model = glm::scale(m_model, getScale());
 
-  for (int i = 0; i < m_component_count; ++i) {
-    m_components[i]->start();
-  }
-
   m_flags.setFlag(2, true);
 }
 
@@ -165,14 +161,14 @@ void GameObject::update() {
   }
 
   for (int i = 0; i < m_component_count; ++i) {
-    m_components[i]->update();
+    if(m_components[i]->isAvailable())
+      m_components[i]->update();
   }
 }
 
 void GameObject::release() {
   for (int i = 0; i < m_component_count; ++i) {
     m_components[i]->release();
-    m_components[i]->~Component();
     m_components[i] = nullptr;
   }
 }
@@ -279,7 +275,16 @@ int32 GameObject::isDeleted() const {
 }
 
 int32 GameObject::isAvailable() const {
-  return m_flags.getFlag(1);
+  if(!m_parent)
+    return m_flags.getFlag(1);
+  const GameObject *now = this;
+  while(now->m_flags.getFlag(1)) {
+    if(now->m_parent)
+      now = now->m_parent;
+    else
+      return true;
+  }
+  return false;
 }
 
 int32 GameObject::isStarted() const {
@@ -291,7 +296,7 @@ int32 GameObject::isStatic() const {
 }
 
 void GameObject::setID(Uint32 id) {
-  if (false == m_flags.getFlag(4)) {
+  if (!m_flags.getFlag(4)) {
     m_id = id;
     m_flags.setFlag(4, true);
   }

@@ -33,6 +33,8 @@ class ActionManager {
 
   Action *getAction(ActionType type);
 
+  Action *getAction(Uint32 idx);
+
   int32 isAbleToAction(ActionType type);
 
   int32 isAbleToAction(Uint32 idx);
@@ -41,7 +43,13 @@ class ActionManager {
 
   int32 isActing(Uint32 idx);
 
+  float32 getRemainTime(ActionType type);
+
+  float32 getRemainTime(Uint32 idx);
+
   int32 doingAnyAction();
+
+  void resetRemainTimes();
 
   void doAction(ActionType type);
 

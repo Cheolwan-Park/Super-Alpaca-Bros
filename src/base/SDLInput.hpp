@@ -20,6 +20,7 @@ class Input {
     GLchar key_down_buf[KEYBOARD_BUFFER_SIZE];
     GLchar key_pressed_buf[KEYBOARD_BUFFER_SIZE];
     Mouse mouse_info;
+    SDL::Window *window;
   };
 
   Input();
@@ -34,6 +35,8 @@ class Input {
   void clear();
 
   void pollEvents();
+
+  GLint isAnyKeyPressed() const;
 
   GLint isKeyDown(GLint key) const;
 

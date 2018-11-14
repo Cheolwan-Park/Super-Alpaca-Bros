@@ -59,7 +59,7 @@ void Drawable::start() {
 }
 
 void Drawable::update() {
-  ;
+  Component::update();
 }
 
 void Drawable::release() {
@@ -272,7 +272,7 @@ DrawableStorage::DrawableStorage()
 }
 
 DrawableStorage::~DrawableStorage() {
-  ;
+  
 }
 
 void DrawableStorage::initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) {

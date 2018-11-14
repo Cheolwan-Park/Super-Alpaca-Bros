@@ -50,7 +50,7 @@ class Component {
 
   virtual void start();
 
-  virtual void update() = 0;
+  virtual void update();
 
   virtual void release() = 0;
 

@@ -28,6 +28,14 @@ void Input::pollEvents() {
   }
 }
 
+GLint Input::isAnyKeyPressed() const {
+  for(Uint32 i=0; i<KEYBOARD_BUFFER_SIZE; ++i) {
+    if(m_data.key_pressed_buf[i])
+      return true;
+  }
+  return false;
+}
+
 GLint Input::isKeyDown(GLint key) const {
   return m_data.key_down_buf[key];
 }
@@ -45,8 +53,12 @@ GLint Input::isButtonPressed(GLint button) const {
 }
 
 void Input::getMousePos(GLdouble *x, GLdouble *y) const {
+  auto &app = Base::Application::Get();
+  auto window = app.getWindow();
+  GLint h = 0;
+  window.getSize(0, &h);
   *x = m_data.mouse_info.x;
-  *y = m_data.mouse_info.y;
+  *y = h-m_data.mouse_info.y;
 }
 
 const Input::Mouse &Input::getMouseInfo() const {

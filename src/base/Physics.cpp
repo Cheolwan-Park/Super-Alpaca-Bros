@@ -43,7 +43,7 @@ void Physics::update() {
 
     // apply gravity
     rigidbody = m_colliders[i]->getRigidbody();
-    if (rigidbody && rigidbody->isGravityActive()) {
+    if (rigidbody && rigidbody->isAvailable() && rigidbody->isGravityActive()) {
       rigidbody->accelerate(0.0f, -m_gravity * t.getDeltatime(), 0.0f);
     }
 

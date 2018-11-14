@@ -84,6 +84,8 @@ class Heading : public Action {
 
   void hooking();
 
+  void stopHooking();
+
   // get
   int32 isHeading() const;
 

@@ -56,6 +56,7 @@ void Spit::start() {
 }
 
 void Spit::update() {
+  Component::update();
   if (isShot()) {
     Time &t = Time::Get();
     move(m_direction * (float32) (m_speed * t.getDeltatime()));

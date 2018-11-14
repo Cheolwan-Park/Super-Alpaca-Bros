@@ -86,7 +86,7 @@ void OutsidedEffect::initWithJson(const rapidjson::Value::Object &obj, StackAllo
   auto *scene = Application::Get().getScene();
   for(Uint32 i=0; i<m_max_particle_count; ++i) {
     new_object = scene->createGameObject(particle_json_object);
-    new_object-a>setParent(getGameObject());
+    new_object->setParent(getGameObject());
     m_particle_sprites[i] = new_object->getComponent<Sprite>();
     m_particle_sprites[i]->setTexture(tex);
     m_particle_sprites[i]->setUV(m_uvs[uv_type++]);
@@ -101,6 +101,8 @@ void OutsidedEffect::start() {
 }
 
 void OutsidedEffect::update() {
+  Component::update();
+
   Time &t = Time::Get();
   float32 delta_time = t.getDeltatime();
   float32 scale = 0.0f;

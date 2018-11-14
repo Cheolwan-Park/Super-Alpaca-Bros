@@ -32,7 +32,7 @@ void ActionManager::initWithJson(const rapidjson::Value::Object &obj) {
   const char *action_type = nullptr;
   Uint32 action_type_id = 0;
 
-  for (int i = 0; i < actions.Size(); ++i) {
+  for (Uint32 i = 0; i < actions.Size(); ++i) {
     assert(actions[i].IsObject());
     auto action = actions[i].GetObject();
 
@@ -51,8 +51,11 @@ void ActionManager::initWithJson(const rapidjson::Value::Object &obj) {
 
 void ActionManager::update() {
   auto &t = Time::Get();
-  for (int i = 0; i < NUM_ACTIONS; ++i) {
-    m_remain[i] -= t.getDeltatime();
+  for (Uint32 i = 0; i < NUM_ACTIONS; ++i) {
+    if (m_remain[i] > 0.0) {
+      m_remain[i] -= t.getDeltatime();
+      m_remain[i] = m_remain[i] < 0.0f ? 0.0f : m_remain[i];
+    }
     if (m_actions[i])
       m_actions[i]->update();
   }
@@ -66,15 +69,20 @@ void ActionManager::update() {
 }
 
 Action *ActionManager::getAction(ActionManager::ActionType type) {
-  for (int i = 0; i < NUM_ACTIONS; ++i) {
+  for (Uint32 i = 0; i < NUM_ACTIONS; ++i) {
     if (m_actions[i] && type == m_actions[i]->getType())
       return m_actions[i];
   }
   return nullptr;
 }
 
+Action *ActionManager::getAction(Uint32 idx) {
+  assert(idx < NUM_ACTIONS);
+  return m_actions[idx];
+}
+
 int32 ActionManager::isAbleToAction(ActionManager::ActionType type) {
-  for (int i = 0; i < NUM_ACTIONS; ++i) {
+  for (Uint32 i = 0; i < NUM_ACTIONS; ++i) {
     if (m_actions[i] && type == m_actions[i]->getType())
       return (m_remain[i] < 0.0f);
   }
@@ -87,7 +95,7 @@ int32 ActionManager::isAbleToAction(Uint32 idx) {
 }
 
 int32 ActionManager::isActing(ActionManager::ActionType type) {
-  for (int i = 0; i < NUM_ACTIONS; ++i) {
+  for (Uint32 i = 0; i < NUM_ACTIONS; ++i) {
     if (m_actions[i] && type == m_actions[i]->getType())
       return m_actions[i]->isActing();
   }
@@ -101,18 +109,36 @@ int32 ActionManager::isActing(Uint32 idx) {
   return false;
 }
 
+float32 ActionManager::getRemainTime(ActionType type) {
+  for(Uint32 i = 0; i < NUM_ACTIONS; ++i) {
+    if(m_actions[i] && type == m_actions[i]->getType())
+      return m_remain[i];
+  }
+  return 0.0f;
+}
+
+float32 ActionManager::getRemainTime(Uint32 idx) {
+  assert(idx < NUM_ACTIONS);
+  return m_remain[idx];
+}
+
 int32 ActionManager::doingAnyAction() {
-  for (int i = 0; i < NUM_ACTIONS; ++i) {
+  for (Uint32 i = 0; i < NUM_ACTIONS; ++i) {
     if (m_actions[i] && m_actions[i]->isActing())
       return true;
   }
   return false;
 }
 
+void ActionManager::resetRemainTimes() {
+  for(Uint32 i=0; i<NUM_ACTIONS; ++i)
+    m_remain[i] = 0.0f;
+}
+
 void ActionManager::doAction(ActionManager::ActionType type) {
-  for (int i = 0; i < NUM_ACTIONS; ++i) {
+  for (Uint32 i = 0; i < NUM_ACTIONS; ++i) {
     if (m_actions[i] && type == m_actions[i]->getType()) {
-      if (m_remain[i] < 0.0f) {
+      if (m_remain[i] <= 0.0f) {
         m_actions[i]->act();
         m_remain[i] = m_actions[i]->getCooltime();
         m_last_action = type;
@@ -123,7 +149,7 @@ void ActionManager::doAction(ActionManager::ActionType type) {
 
 void ActionManager::doAction(Uint32 idx) {
   assert(idx < NUM_ACTIONS);
-  if (m_actions[idx] && m_remain[idx] < 0.0f) {
+  if (m_actions[idx] && m_remain[idx] <= 0.0f) {
     m_actions[idx]->act();
     m_remain[idx] = m_actions[idx]->getCooltime();
     m_last_action = m_actions[idx]->getType();
@@ -215,14 +241,16 @@ void Alpaca::initWithJson(const rapidjson::Value::Object &obj, StackAllocator &a
 }
 
 void Alpaca::start() {
-  Component::start();
   auto *gameobject = getGameObject();
   m_animator = gameobject->getComponent<AnimatedSprite>();
   m_rigidbody = gameobject->getComponent<Rigidbody>();
   m_hit_gauge = gameobject->getComponent<HitGauge>();
+
+  Component::start();
 }
 
 void Alpaca::update() {
+  Component::update();
   controlledMove();
   checkActions();
   m_action_manager.update();

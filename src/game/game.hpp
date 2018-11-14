@@ -9,5 +9,8 @@
 #include "GameManager.hpp"
 #include "CameraController.hpp"
 #include "OutsidedEffect.h"
+#include "CooltimeViewer.h"
+#include "Button.h"
+#include "Banner.h"
 
 #endif
