@@ -61,7 +61,7 @@
         "type": "BoxCollider",
         "available": true,
         "isTrigger": true,
-        "box": {"x": 0.0, "y": 0.0, "w": 9.0, "h": 6.3}
+        "box": {"x": 0.0, "y": 0.0, "w": 9.0, "h": 7.5}
       },
       {
         "type": "HitGauge",

@@ -2,6 +2,7 @@
 #include "Time.hpp"
 #include "types.hpp"
 #include "SDLInput.hpp"
+#include "SDLMixer.h"
 #include "Sprite.hpp"
 #include "Scene.hpp"
 
@@ -11,10 +12,11 @@ namespace Base {
 
 Application::Application()
     : m_window(), m_scene(nullptr), m_release_marker(0), m_quit(false), m_scene_changed(false),
-      m_allocator(), m_texture_storage(), m_shader_storage(), m_animation_storage() {
+      m_allocator(), m_texture_storage(), m_shader_storage(), m_animation_storage(), m_chunk_storage() {
   m_texture_storage.setFreeFunc(FreeTexture);
   m_shader_storage.setFreeFunc(FreeShader);
   m_animation_storage.setFreeFunc(FreeAnimation);
+  m_chunk_storage.setFreeFunc(SDL::FreeChunk);
 }
 
 Application::~Application() {
@@ -83,6 +85,8 @@ int32 Application::setScene(const FileIO &f) {
   m_release_marker = m_allocator.getTopMarker();
   m_texture_storage.clear();
   m_shader_storage.clear();
+  m_animation_storage.clear();
+  m_chunk_storage.clear();
 
   m_scene = new(m_allocator.alloc<Scene>()) Scene();
   assert(m_scene);
@@ -100,6 +104,8 @@ int32 Application::setScene(const char *filename) {
   m_release_marker = m_allocator.getTopMarker();
   m_texture_storage.clear();
   m_shader_storage.clear();
+  m_animation_storage.clear();
+  m_chunk_storage.clear();
 
   m_scene = new(m_allocator.alloc<Scene>()) Scene();
   assert(m_scene);
@@ -130,6 +136,10 @@ Storage<ShaderProgram> &Application::getShaderStorage() {
 
 Storage<Animation> &Application::getAnimationStorage() {
   return m_animation_storage;
+}
+
+Storage<Mix_Chunk> &Application::getChunkStorage() {
+  return m_chunk_storage;
 }
 
 int32 Application::isQuit() {

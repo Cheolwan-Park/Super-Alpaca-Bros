@@ -18,6 +18,7 @@
 #include "Schedule.hpp"
 #include "SDL.hpp"
 #include "SDLInput.hpp"
+#include "SDLMixer.h"
 #include "SDLWindow.hpp"
 #include "ShaderProgram.hpp"
 #include "Sprite.hpp"

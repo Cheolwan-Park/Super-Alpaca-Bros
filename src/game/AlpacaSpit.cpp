@@ -85,6 +85,11 @@ void Spit::onTriggerEnter(Collider *other) {
     hit_gauge->gaugeUp(m_gauge_up);
 
     getGameObject()->setAvailable(false);
+
+    // sound effect
+    auto &mixer = SDL::Mixer::Get();
+    auto &chunks = Application::Get().getChunkStorage();
+    mixer.playChunk(chunks["hit.wav"_hash]);
   }
 }
 

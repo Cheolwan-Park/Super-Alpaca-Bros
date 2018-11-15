@@ -1,11 +1,12 @@
 {
-    "title": "Alpaca's Head",
-    "windowsize": {"w": 1280, "h": 720},
+    "title": "Super Alpaca Bros",
+    "windowsize": {"w": 1600, "h": 900},
 
     "allocator_size" : 16777216,
     "shaderstorage_size": 8,
     "texturestorage_size": 16,
-    "animationstorage_size": 16,
+    "animationstorage_size": 64,
+    "chunkstorage_size": 128,
 
     "default_scene" : "title.json"
 }

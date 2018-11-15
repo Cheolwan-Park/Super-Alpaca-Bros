@@ -42,6 +42,9 @@ int32 Scene::init() {
   if (RET_SUCC != loadAnimations())
     return RET_FAILED;
 
+  if (RET_SUCC != loadSounds())
+    return RET_FAILED;
+
   if (RET_SUCC != loadObjectStorages())
     return RET_FAILED;
 

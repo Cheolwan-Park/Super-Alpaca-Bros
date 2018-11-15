@@ -1,4 +1,5 @@
 #include "Scene.hpp"
+#include "SDLMixer.h"
 
 namespace Base {
 void Scene::setJsonFile(const FileIO &f) {
@@ -176,6 +177,58 @@ int32 Scene::loadAnimations() {
 
   return RET_SUCC;
 }
+
+int32 Scene::loadSounds() {
+  Application &app = Application::Get();
+  auto &chunks = app.getChunkStorage();
+  auto &mixer = SDL::Mixer::Get();
+
+  assert(m_doc.HasMember("Sounds"));
+  assert(m_doc["Sounds"].IsArray());
+  auto load_list = m_doc["Sounds"].GetArray();
+
+  Mix_Chunk *new_chunk;
+  for(auto iter = load_list.begin();
+      load_list.end() != iter;
+      ++iter) {
+    assert(iter->IsObject());
+    auto obj = iter->GetObject();
+
+    assert(obj.HasMember("type"));
+    assert(obj.HasMember("file"));
+    assert(obj.HasMember("volume"));
+    assert(obj["type"].IsString());
+    assert(obj["file"].IsString());
+    assert(obj["volume"].IsUint());
+
+    const char *str_type = obj["type"].GetString();
+    StringID type_id(str_type);
+    const char *filename = obj["file"].GetString();
+    Uint32 volume = obj["volume"].GetUint();
+
+    if("Music"_hash == (Uint32)type_id) {
+      mixer.changeMusic(filename);
+      mixer.setMusicVolume(volume);
+#ifndef NDEBUG
+      printf("music : %s\n", filename);
+#endif
+    } else if("Chunk"_hash == (Uint32)type_id) {
+      new_chunk = mixer.loadChunk(filename);
+      mixer.setVolume(new_chunk, volume);
+      StringID filename_id(filename);
+      chunks.add(new_chunk, (Uint32)filename_id);
+#ifndef NDEBUG
+      printf("chunk : %s\n", filename);
+#endif
+    } else {
+      fprintf(stderr, "Invalid Sound Type\n");
+      return false;
+    }
+  }
+
+  return RET_SUCC;
+}
+
 
 int32 Scene::loadObjectStorages() {
   Application &app = Application::Get();

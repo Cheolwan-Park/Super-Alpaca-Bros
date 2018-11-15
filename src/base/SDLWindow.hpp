@@ -24,7 +24,7 @@ class Window {
 
   GLint setCurrentContext();
 
-  void setSize(GLuint width, GLuint height);
+  void setSize(GLint width, GLint height);
 
   void setFullscreen(Uint32 flag);
 

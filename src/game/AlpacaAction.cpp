@@ -126,6 +126,11 @@ void Heading::act() {
   head->getGameObject()->getComponent<CircleCollider>()->setAvailable(true);
   m_elapsed_time = 0.0f;
   SetHeading(true);
+
+  // sound effect
+  auto &mixer = SDL::Mixer::Get();
+  auto &chunks = Application::Get().getChunkStorage();
+  mixer.playChunk(chunks["heading.wav"_hash]);
 }
 
 Action::Type Heading::getType() const {
@@ -245,6 +250,11 @@ void Dash::act() {
     }
   }
   actions.countResetTime();
+
+  // sound effect
+  auto &mixer = SDL::Mixer::Get();
+  auto &chunks = Application::Get().getChunkStorage();
+  mixer.playChunk(chunks["dash.wav"_hash]);
 }
 
 Action::Type Dash::getType() const {
@@ -335,7 +345,13 @@ void Spitting::act() {
     game_manager->getAlpaca(alpaca_num)->getWorldPosition(&opponent_position);
     newspit->shoot(opponent_position - pos, alpaca);
   }
+
   actions.countResetTime();
+
+  // sound effect
+  auto &mixer = SDL::Mixer::Get();
+  auto &chunks = Application::Get().getChunkStorage();
+  mixer.playChunk(chunks["shoot.wav"_hash]);
 }
 
 Action::Type Spitting::getType() const {

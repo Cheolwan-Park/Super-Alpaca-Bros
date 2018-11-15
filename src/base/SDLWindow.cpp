@@ -24,8 +24,8 @@ Window &Window::operator=(const Window &other) {
 
 GLint Window::create(GLuint w, GLuint h,
                      const GLchar *title) {
-  m_window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h,
-                              SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+  m_window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w, h,
+                              SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL );
   assert(m_window);
 
   return true;
@@ -48,12 +48,19 @@ GLint Window::setCurrentContext() {
   if (isAvailable()) {
     SDL::gl_context = SDL_GL_CreateContext(m_window);
     assert(SDL::gl_context);
+
+    // to fix temporaily https://bugzilla.libsdl.org/show_bug.cgi?id=4272
+    SDL_PumpEvents();
+    GLint w=0, h=0;
+    getSize(&w, &h);
+    setSize(w, h);
+
     return SDL_TRUE;
   } else
     return SDL_FALSE;
 }
 
-void Window::setSize(GLuint width, GLuint height) {
+void Window::setSize(GLint width, GLint height) {
   if (isAvailable()) {
     SDL_SetWindowSize(m_window, width, height);
   }

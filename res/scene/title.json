@@ -3,6 +3,7 @@
     "collider_count": 0,
     "gravity": 0.0
   },
+
   "Cameras": [
     {
       "name": "main",
@@ -18,6 +19,7 @@
       }
     }
   ],
+
   "Shaders": [
     {
       "name": "default",
@@ -25,10 +27,23 @@
       "frag": "default_frag.glsl"
     }
   ],
+
   "Textures": [
     { "file": "title.png" }
   ],
-  "Animations": [ ],
+
+  "Animations": [
+
+  ],
+
+  "Sounds": [
+    {
+      "type": "Music",
+      "file": "love's joy 8bit.ogg",
+      "volume": 70
+    }
+  ],
+
   "ObjectStorages": [
     {
       "name": "global",
@@ -36,6 +51,7 @@
       "size": 1024
     }
   ],
+
   "DrawableStorages": [
     {
       "name": "background",
@@ -52,6 +68,7 @@
       "size": 64
     }
   ],
+
   "GameObjects": [
     {
       "storage": "global",

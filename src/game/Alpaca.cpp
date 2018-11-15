@@ -175,22 +175,22 @@ void ActionManager::setAlpaca(Alpaca *alpaca) {
 const SDL_Scancode Alpaca::keymap[2][7] =
     {
         {
-            SDL_SCANCODE_W,         // up
-            SDL_SCANCODE_A,         // left
-            SDL_SCANCODE_S,         // down
-            SDL_SCANCODE_D,         // right
+            SDL_SCANCODE_E,         // up
+            SDL_SCANCODE_S,         // left
+            SDL_SCANCODE_D,         // down
+            SDL_SCANCODE_F,         // right
             SDL_SCANCODE_1,         // heading
             SDL_SCANCODE_2,         // spit
             SDL_SCANCODE_3          // dash
         },
         {
-            SDL_SCANCODE_I,         // up
-            SDL_SCANCODE_J,         // left
-            SDL_SCANCODE_K,         // down
-            SDL_SCANCODE_L,         // right
-            SDL_SCANCODE_8,         // heading
-            SDL_SCANCODE_9,         // spit
-            SDL_SCANCODE_0          // dash
+            SDL_SCANCODE_UP,        // up
+            SDL_SCANCODE_LEFT,      // left
+            SDL_SCANCODE_DOWN,      // down
+            SDL_SCANCODE_RIGHT,     // right
+            SDL_SCANCODE_M,         // heading
+            SDL_SCANCODE_COMMA,     // spit
+            SDL_SCANCODE_PERIOD     // dash
         }
     };
 
@@ -337,6 +337,11 @@ void Alpaca::controlledMove() {
         && isGrounded()
         && (m_rigidbody->getVelocity().y) <= 0.0f) {
       m_rigidbody->addForce(0.0f, m_jump_power, 0.0f);
+
+      // sound effect
+      auto &mixer = SDL::Mixer::Get();
+      auto &chunks = Application::Get().getChunkStorage();
+      mixer.playChunk(chunks["jump.wav"_hash]);
     }
     if (input.isKeyPressed(keys[(int32) Key::DOWN]) && isGrounded()
         && m_ground) {
@@ -355,14 +360,16 @@ void Alpaca::controlledMove() {
     }
   }
 
+  auto &mixer = SDL::Mixer::Get();
   if (isMoving() != hasMoved) {
     auto &animations = Application::Get().getAnimationStorage();
-    if (isMoving())
+    if (isMoving()) {
       m_animator->setAnimation(animations[m_animations[1]]);
-    else
+    }
+    else {
       m_animator->setAnimation(animations[m_animations[0]]);
+    }
   }
-
   delta *= t.getDeltatime();
   move(delta);
 }

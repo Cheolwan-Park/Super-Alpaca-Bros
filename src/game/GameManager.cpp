@@ -119,9 +119,17 @@ void GameManager::update() {
       m_alpacas[i]->setWorldPosition(m_alpaca_spawn_position[i]);
       m_alpacas[i]->getGameObject()->setAvailable(false);
 
+      // sound effect
+      auto &mixer = SDL::Mixer::Get();
+      auto &chunks = Application::Get().getChunkStorage();
       if(!m_remain_life[i]) {
+        // sound effect
+        mixer.playChunk(chunks["end_explosion.wav"_hash], 2);
         gameOver(i);
         break;
+      } else {
+        // sound effect
+        mixer.playChunk(chunks["explosion.wav"_hash], 3);
       }
 
       m_respawn_remain_time[i] = m_respawn_time;

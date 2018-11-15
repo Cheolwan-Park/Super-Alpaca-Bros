@@ -61,23 +61,28 @@ int32 JsonAppInit(const char *filename) {
   assert(doc.HasMember("shaderstorage_size"));
   assert(doc.HasMember("texturestorage_size"));
   assert(doc.HasMember("animationstorage_size"));
+  assert(doc.HasMember("chunkstorage_size"));
   assert(doc["allocator_size"].IsUint());
   assert(doc["shaderstorage_size"].IsUint());
   assert(doc["texturestorage_size"].IsUint());
   assert(doc["animationstorage_size"].IsUint());
+  assert(doc["chunkstorage_size"].IsUint());
 
   StackAllocator &allocator = app.getAllocator();
   auto &shaders = app.getShaderStorage();
   auto &textures = app.getTextureStorage();
   auto &animations = app.getAnimationStorage();
+  auto &chunks = app.getChunkStorage();
   Uint32 shaders_size = doc["shaderstorage_size"].GetUint();
   Uint32 textures_size = doc["texturestorage_size"].GetUint();
   Uint32 animations_size = doc["animationstorage_size"].GetUint();
+  Uint32 chunks_size = doc["chunkstorage_size"].GetUint();
 
   allocator.reallocBuffer(doc["allocator_size"].GetUint());
   shaders.assignMemory(allocator.alloc<Storage<ShaderProgram>::Type>(shaders_size), shaders_size);
   textures.assignMemory(allocator.alloc<Storage<Texture>::Type>(textures_size), textures_size);
   animations.assignMemory(allocator.alloc<Storage<Animation>::Type>(animations_size), animations_size);
+  chunks.assignMemory(allocator.alloc<Storage<Mix_Chunk>::Type>(chunks_size), chunks_size);
 
   // add factory funcs
   AddFactoryFuncs();
@@ -126,6 +131,7 @@ void AddFactoryFuncs() {
   component_factory.addFunction<Title::Rotator>();
   component_factory.addFunction<Title::ScaleRepeater>();
   component_factory.addFunction<Title::ZoomTransition>();
+  component_factory.addFunction<Game::Alpaca::WalkSound>();
 
   // action factory
   auto &action_factory = Game::Alpaca::ActionFactory::getGlobal();

@@ -4,6 +4,7 @@
 #include "Alpaca.hpp"
 #include "AlpacaHead.hpp"
 #include "AlpacaAction.hpp"
+#include "AlpacaWalkSound.h"
 #include "Ground.hpp"
 #include "AlpacaSpit.hpp"
 #include "GameManager.hpp"

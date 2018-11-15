@@ -1,15 +1,32 @@
 #include "SDL.hpp"
 #include <stdio.h>
+#include <stdio.h>
 
 namespace SDL {
 SDL_GLContext gl_context = nullptr;
 
 GLint InitSDL(SDL_setting_func setting_fun) {
   Uint32 flags = SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS;
-  if (SDL_Init(flags) < 0)
+  if (SDL_Init(flags) < 0) {
+    fprintf(stderr, "Failed SDL_Init() : %s\n", SDL_GetError());
     return SDL_FALSE;
-  if (IMG_Init(IMG_INIT_PNG) < 0)
+  }
+  flags = IMG_INIT_PNG;
+  if ((IMG_Init(flags)&flags) != flags) {
+    fprintf(stderr, "Failed IMG_Init() : %s\n", IMG_GetError());
     return SDL_FALSE;
+  }
+
+  flags = MIX_INIT_OGG;
+  if((Mix_Init(flags)&flags) != flags) {
+    fprintf(stderr, "Failed Mix_Init() : %s\n", Mix_GetError());
+    return SDL_FALSE;
+  }
+
+  if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0) {
+    fprintf(stderr, "Failed Mix_OpenAudio() : %s\n", Mix_GetError());
+    return SDL_FALSE;
+  }
 
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);

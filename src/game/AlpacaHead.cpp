@@ -82,6 +82,11 @@ void Head::onTriggerEnter(Collider *other) {
     rigid->addForce(0.0f, force * m_force_ratio.y, 0.0f);
 
     hitgauge->gaugeUp(m_gauge_up);
+
+    // sound effect
+    auto &mixer = SDL::Mixer::Get();
+    auto &chunks = Application::Get().getChunkStorage();
+    mixer.playChunk(chunks["hit.wav"_hash]);
   }
 }
 

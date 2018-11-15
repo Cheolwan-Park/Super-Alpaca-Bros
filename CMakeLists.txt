@@ -7,59 +7,63 @@ message(STATUS "module path: ${CMAKE_MODULE_PATH}")
 
 add_compile_options( -Os )
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17" )
-set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG" )
+set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -Os" )
 set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g" )
 
 add_executable(
-    alpacas 
-    src/main.cpp
+        alpacas
+        src/main.cpp
 )
 
 add_library(
-    Game STATIC
-    src/game/Alpaca.cpp
-    src/game/AlpacaHead.cpp
-    src/game/AlpacaAction.cpp
-    src/game/Ground.cpp
-    src/game/HitGauge.cpp
-    src/game/AlpacaSpit.cpp
-    src/game/GameManager.cpp
-    src/game/CameraController.cpp
-    src/game/OutsidedEffect.cpp
-    src/game/CooltimeViewer.cpp
-    src/game/Button.cpp src/game/Banner.cpp
-    src/title/TitleBanner.cpp )
+        Game STATIC
+        src/game/Alpaca.cpp
+        src/game/AlpacaHead.cpp
+        src/game/AlpacaAction.cpp
+        src/game/AlpacaWalkSound.cpp
+        src/game/Ground.cpp
+        src/game/HitGauge.cpp
+        src/game/AlpacaSpit.cpp
+        src/game/GameManager.cpp
+        src/game/CameraController.cpp
+        src/game/OutsidedEffect.cpp
+        src/game/CooltimeViewer.cpp
+        src/game/Button.cpp
+        src/game/Banner.cpp
+        src/title/TitleBanner.cpp )
 include_directories( src/title )
 include_directories( src/game )
 target_link_libraries( Game Base )
 target_link_libraries( alpacas Game )
 
 add_library(
-    Base STATIC
-    src/base/Allocator.cpp
-    src/base/Application.cpp
-    src/base/Camera.cpp
-    src/base/FileIO.cpp
-    src/base/GameObject.cpp
-    src/base/GameObject.cpp
-    src/base/SDL.cpp
-    src/base/SDLInput.cpp
-    src/base/SDLWindow.cpp
-    src/base/Math.cpp
-    src/base/Scene.cpp
-    src/base/Schedule.cpp
-    src/base/ShaderProgram.cpp
-    src/base/Sprite.cpp
-    src/base/TextureStorage.cpp
-    src/base/Time.cpp
-    src/base/Vector.cpp
-    src/base/SceneLoadFunctions.cpp
-    src/base/Json.cpp
-    src/base/Animation.cpp
-    src/base/AnimatedSprite.cpp
-    src/base/Component.cpp
-    src/base/Collider.cpp
-    src/base/Physics.cpp
+        Base STATIC
+        src/base/Allocator.cpp
+
+        src/base/Application.cpp
+        src/base/Camera.cpp
+        src/base/FileIO.cpp
+        src/base/GameObject.cpp
+        src/base/GameObject.cpp
+        src/base/SDL.cpp
+        src/base/SDLInput.cpp
+        src/base/SDLWindow.cpp
+        src/base/SDLMixer.cpp
+        src/base/Math.cpp
+        src/base/Scene.cpp
+        src/base/Schedule.cpp
+        src/base/ShaderProgram.cpp
+        src/base/Sprite.cpp
+        src/base/TextureStorage.cpp
+        src/base/Time.cpp
+        src/base/Vector.cpp
+        src/base/SceneLoadFunctions.cpp
+        src/base/Json.cpp
+        src/base/Animation.cpp
+        src/base/AnimatedSprite.cpp
+        src/base/Component.cpp
+        src/base/Collider.cpp
+        src/base/Physics.cpp
 )
 include_directories( src/base )
 target_link_libraries( alpacas Base )

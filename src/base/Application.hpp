@@ -54,6 +54,8 @@ class Application {
 
   Storage<Animation> &getAnimationStorage();
 
+  Storage<Mix_Chunk> &getChunkStorage();
+
   int32 isQuit();
 
   static Application &Get();
@@ -68,6 +70,7 @@ class Application {
   Storage<Texture> m_texture_storage;
   Storage<ShaderProgram> m_shader_storage;
   Storage<Animation> m_animation_storage;
+  Storage<Mix_Chunk> m_chunk_storage;
 };
 }
 

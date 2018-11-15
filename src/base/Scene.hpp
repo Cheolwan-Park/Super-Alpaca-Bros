@@ -63,6 +63,7 @@ class Scene {
   virtual int32 loadShaders();
   virtual int32 loadTextures();
   virtual int32 loadAnimations();
+  virtual int32 loadSounds();
   virtual int32 loadObjectStorages();
   virtual int32 loadDrawableStorages();
   virtual int32 loadGameObjects();
