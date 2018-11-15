@@ -35,7 +35,7 @@
               "type": "Sprite",
               "available": true,
               "storage": "none",
-              "uv": {"x": 128, "y": 640, "w": 128, "h": 128},
+              "uv": {"x": 128, "y": 128, "w": 128, "h": 128},
               "texture": "alpacas.png"
             }
           ]

@@ -77,7 +77,7 @@ int32 ShaderProgram::init(const FileIO &vert, const FileIO &frag) {
   return RET_SUCC;
 }
 
-int32 ShaderProgram::initWithJson(const rapidjson::Value::Object &obj, void *vertex_mem, void *fragment_mem) {
+int32 ShaderProgram::initWithJson(const rapidjson::Value::Object &obj) {
   assert(obj.HasMember("name"));
   assert(obj.HasMember("vert"));
   assert(obj.HasMember("frag"));
@@ -108,28 +108,32 @@ int32 ShaderProgram::initWithJson(const rapidjson::Value::Object &obj, void *ver
   size_vert = GetFileSize(vert);
   size_frag = GetFileSize(frag);
 
-  if (nullptr == vertex_mem && nullptr == fragment_mem) {
-    vertex_mem = malloc(size_vert + 1);
-    fragment_mem = malloc(size_frag + 1);
-  } else {
-    vertex_mem = realloc(vertex_mem, size_vert + 1);
-    fragment_mem = realloc(fragment_mem, size_frag + 1);
-  }
+  void *vertex_mem = malloc(size_vert + 1);
+  void *fragment_mem = malloc(size_frag + 1);
+
   memset(vertex_mem, 0, size_vert + 1);
   memset(fragment_mem, 0, size_frag + 1);
 
   if (RET_SUCC != vert_io.open(vert, vertex_mem, size_vert)) {
+    free(vertex_mem);
+    free(fragment_mem);
     return RET_FAILED;
   }
 
   if (RET_SUCC != frag_io.open(frag, fragment_mem, size_frag)) {
+    free(vertex_mem);
+    free(fragment_mem);
     return RET_FAILED;
   }
 
   if (RET_SUCC != init(vert_io, frag_io)) {
+    free(vertex_mem);
+    free(fragment_mem);
     return RET_FAILED;
   }
 
+  free(vertex_mem);
+  free(fragment_mem);
   return RET_SUCC;
 }
 

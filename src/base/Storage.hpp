@@ -7,7 +7,7 @@ namespace Base {
 template<typename T>
 class Storage {
  public:
-  typedef T *Type;
+  typedef T* Type;
   typedef void (*Func)(Type *val);
 
   Storage()

@@ -156,9 +156,14 @@
           "available": true,
           "lifecount": 3,
           "respawntime": 2.0,
-          "alpaca0": {"file": "alpaca0.json"},
-          "alpaca1": {"file": "alpaca1.json"},
-          "effect": {"file": "outsidedeffect.json"}
+          "alpaca": [
+            {"file": "alpaca0.json"},
+            {"file": "alpaca1.json"}
+          ],
+          "effect": [
+            {"file": "outsidedeffect0.json"},
+            {"file": "outsidedeffect1.json"}
+          ]
         },
         {
           "type": "CameraController",
@@ -178,81 +183,81 @@
 
 
     {
-      "storage": "global",
+      "storage": "ground",
       "id": "ground0",
       "tag": "ground",
       "available": true,
       "static": false,
       "position": {"x": 0.0, "y": -13.5, "z": 1.0},
-      "scale": {"x": 72.0, "y": 3.0},
+      "scale": {"x": 72.0, "y": 8.0},
       "rotation": 0.0,
       "components": [
         {
           "type": "Sprite",
           "available": true,
           "storage": "ground",
-          "uv": {"x": 0, "y": 0, "w": 128, "h": 128},
-          "texture": "alpacas.png"
+          "uv": {"x": 0, "y": 128, "w": 1024, "h": 107},
+          "texture": "background.png"
         },
         {
           "type": "Ground",
           "available": true,
           "isTrigger": true,
-          "box": {"x": 0.0, "y": 0.0, "w": 72.0, "h": 3.0},
+          "box": {"x": 0.0, "y": 0.0, "w": 68.0, "h": 5.0},
           "ignorelist_size": 8,
           "isPassable": false
         }
       ]
     },
     {
-      "storage": "global",
+      "storage": "ground",
       "id": "ground1",
       "tag": "ground",
       "available": true,
       "static": false,
-      "position": {"x": -18.0, "y": 0.0, "z": 1.0},
-      "scale": {"x": 18.0, "y": 3.0},
+      "position": {"x": -18.0, "y": 3.0, "z": 1.0},
+      "scale": {"x": 18.0, "y": 6.0},
       "rotation": 0.0,
       "components": [
         {
           "type": "Sprite",
           "available": true,
           "storage": "ground",
-          "uv": {"x": 0, "y": 0, "w": 128, "h": 128},
-          "texture": "alpacas.png"
+          "uv": {"x": 0, "y": 0, "w": 384, "h": 123},
+          "texture": "background.png"
         },
         {
           "type": "Ground",
           "available": true,
           "isTrigger": true,
-          "box": {"x": 0.0, "y": 0.0, "w": 18.0, "h": 3.0},
+          "box": {"x": 0.0, "y": 0.0, "w": 16.0, "h": 4.0},
           "ignorelist_size": 8,
           "isPassable": true
         }
       ]
     },
     {
-      "storage": "global",
+      "storage": "ground",
       "id": "ground2",
       "tag": "ground",
       "available": true,
       "static": false,
-      "position": {"x": 18.0, "y": 0.0, "z": 1.0},
-      "scale": {"x": 18.0, "y": 3.0},
+      "position": {"x": 18.0, "y": 3.0, "z": 1.0},
+      "scale": {"x": 18.0, "y": 6.0},
       "rotation": 0.0,
       "components": [
         {
           "type": "Sprite",
           "available": true,
           "storage": "ground",
-          "uv": {"x": 0, "y": 0, "w": 128, "h": 128},
-          "texture": "alpacas.png"
+          "uv": {"x": 0, "y": 0, "w": 384, "h": 123},
+          "texture": "background.png"
         },
         {
           "type": "Ground",
           "available": true,
           "isTrigger": true,
-          "box": {"x": 0.0, "y": 0.0, "w": 18.0, "h": 3.0},
+          "box": {"x": 0.0, "y": 0.0, "w": 16.0, "h": 4.0},
           "ignorelist_size": 8,
           "isPassable": true
         }
@@ -274,7 +279,7 @@
           "type": "Sprite",
           "available": true,
           "storage": "background",
-          "uv": {"x": 0, "y": 0, "w": 480, "h": 270},
+          "uv": {"x": 0, "y": 754, "w": 480, "h": 270},
           "texture": "background.png"
         },
         {

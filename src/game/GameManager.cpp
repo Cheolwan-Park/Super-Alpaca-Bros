@@ -23,46 +23,40 @@ void GameManager::initWithJson(const rapidjson::Value::Object &obj, StackAllocat
 
   assert(obj.HasMember("lifecount"));
   assert(obj.HasMember("respawntime"));
-  assert(obj.HasMember("alpaca0"));
-  assert(obj.HasMember("alpaca1"));
+  assert(obj.HasMember("alpaca"));
   assert(obj.HasMember("effect"));
   assert(obj["respawntime"].IsFloat());
   assert(obj["lifecount"].IsUint());
-  assert(obj["alpaca0"].IsObject());
-  assert(obj["alpaca1"].IsObject());
-  assert(obj["effect"].IsObject());
+  assert(obj["alpaca"].IsArray());
+  assert(obj["effect"].IsArray());
 
   m_life_count = obj["lifecount"].GetUint();
   m_remain_life[0] = m_remain_life[1] = m_life_count;
   m_respawn_time = obj["respawntime"].GetFloat();
   m_respawn_remain_time[0] = m_respawn_remain_time[1] = 0.0f;
-  auto alpaca0json = obj["alpaca0"].GetObject();
-  auto alpaca1json = obj["alpaca1"].GetObject();
-  auto effect_json = obj["effect"].GetObject();
+  auto alpaca_list = obj["alpaca"].GetArray();
+  auto effect_list = obj["effect"].GetArray();
+  assert(2 == alpaca_list.Size());
+  assert(2 == effect_list.Size());
 
   Scene *scene = Application::Get().getScene();
   assert(scene);
 
   GameObject *newalpaca = nullptr;
-  newalpaca = scene->createGameObject(alpaca0json);
-  assert(newalpaca);
-  m_alpacas[0] = newalpaca->getComponent<Alpaca::Alpaca>();
-  assert(m_alpacas[0]);
-  m_alpacas[0]->setKeymap(Alpaca::Alpaca::Keymap::MAP1);
-  m_alpacas[0]->getWorldPosition(&m_alpaca_spawn_position[0]);
-  m_alpaca_spawn_scale[0] = m_alpacas[0]->getScale();
+  for(Uint32 i=0; i<2; ++i) {
+    newalpaca = scene->createGameObject(alpaca_list[i].GetObject());
+    assert(newalpaca);
+    m_alpacas[i] = newalpaca->getComponent<Alpaca::Alpaca>();
+    assert(m_alpacas[i]);
+    m_alpacas[i]->setKeymap((Alpaca::Alpaca::Keymap)i);
+    m_alpacas[i]->getWorldPosition(&m_alpaca_spawn_position[i]);
+    m_alpaca_spawn_scale[i] = m_alpacas[i]->getScale();
 
-  newalpaca = scene->createGameObject(alpaca1json);
-  assert(newalpaca);
-  m_alpacas[1] = newalpaca->getComponent<Alpaca::Alpaca>();
-  assert(m_alpacas[1]);
-  m_alpacas[1]->setKeymap(Alpaca::Alpaca::Keymap::MAP2);
-  m_alpacas[1]->getWorldPosition(&m_alpaca_spawn_position[1]);
-  m_alpaca_spawn_scale[1] = m_alpacas[1]->getScale();
+  }
 
   GameObject *new_object = nullptr;
   for(Uint32 i=0; i<2; ++i) {
-    new_object = scene->createGameObject(effect_json);
+    new_object = scene->createGameObject(effect_list[i].GetObject());
     m_effects[i] = new_object->getComponent<OutsidedEffect>();
   }
 

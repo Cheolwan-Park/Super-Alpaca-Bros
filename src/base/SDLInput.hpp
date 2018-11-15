@@ -28,9 +28,9 @@ class Input {
  public:
   Input(const Input &other) = delete;
 
-  Input &operator=(const Input &other) = delete;
-
   ~Input();
+
+  Input &operator=(const Input &other) = delete;
 
   void clear();
 

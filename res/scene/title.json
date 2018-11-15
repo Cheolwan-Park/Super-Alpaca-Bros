@@ -73,7 +73,7 @@
         {
           "type": "TitleBanner",
           "available": true,
-          "waittime": 2.5,
+          "waittime": 1.0,
           "duration": 1.5,
           "rotate": 0.14,
           "scale": 0.15
@@ -179,7 +179,7 @@
           "type": "Sprite",
           "available": true,
           "storage": "background",
-          "uv": {"x": 0, "y": 768, "w": 128, "h": 128},
+          "uv": {"x": 0, "y": 512, "w": 128, "h": 128},
           "texture": "title.png"
         },
         {
@@ -196,7 +196,7 @@
       "available": true,
       "static": false,
       "position": {"x": 32.0, "y": 13.0, "z": 1.0},
-      "scale": {"x": 10.0, "y": 10.0},
+      "scale": {"x": 17.0, "y": 17.0},
       "rotation": 0.05,
       "components": [
         {
@@ -220,14 +220,14 @@
       "available": true,
       "static": false,
       "position": {"x": -36.0, "y": -18.0, "z": 1.0},
-      "scale": {"x": 10.0, "y": 10.0},
+      "scale": {"x": 17.0, "y": 17.0},
       "rotation": 0.24,
       "components": [
         {
           "type": "Sprite",
           "available": true,
           "storage": "background",
-          "uv": {"x": 0, "y": 640, "w": 128, "h": 128},
+          "uv": {"x": 0, "y": 384, "w": 128, "h": 128},
           "texture": "title.png"
         },
         {

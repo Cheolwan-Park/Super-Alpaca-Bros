@@ -88,8 +88,6 @@ int32 Scene::loadShaders() {
   auto &shaders = app.getShaderStorage();
   auto &allocator = app.getAllocator();
 
-  void *mem_vertex = nullptr, *mem_fragment = nullptr;
-
   ShaderProgram *program = nullptr;
 
   assert(m_doc.HasMember("Shaders"));
@@ -103,9 +101,7 @@ int32 Scene::loadShaders() {
     auto obj = itr->GetObject();
 
     program = new(allocator.alloc<ShaderProgram>()) ShaderProgram();
-    if (RET_SUCC != program->initWithJson(obj, mem_vertex, mem_fragment)) {
-      free(mem_vertex);
-      free(mem_fragment);
+    if (RET_SUCC != program->initWithJson(obj)) {
       return RET_FAILED;
     }
     shaders.add(program, program->getID());
@@ -117,9 +113,6 @@ int32 Scene::loadShaders() {
            obj["frag"].GetString());
 #endif
   }
-
-  free(mem_vertex);
-  free(mem_fragment);
 
   return RET_SUCC;
 }

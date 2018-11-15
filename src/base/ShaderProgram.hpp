@@ -30,7 +30,7 @@ class ShaderProgram {
 
   int32 init(const FileIO &vert, const FileIO &frag);
 
-  int32 initWithJson(const rapidjson::Value::Object &obj, void *vertex_mem, void *fragment_mem);
+  int32 initWithJson(const rapidjson::Value::Object &obj);
 
   void release();
 
