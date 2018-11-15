@@ -3,6 +3,7 @@ build/
 .vscode/
 *.psd
 .idea/
+*.band
 cmake-build-debug/
 cmake-build-release/
 dll/
