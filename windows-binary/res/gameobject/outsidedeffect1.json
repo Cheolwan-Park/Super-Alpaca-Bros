@@ -1,0 +1,47 @@
+{
+  "Object": {
+    "storage": "global",
+    "id": "outsided_effect",
+    "tag": "default",
+    "available": true,
+    "static": false,
+    "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+    "scale": {"x": 1.0, "y": 1.0},
+    "rotation": 0.0,
+    "components": [
+      {
+        "type": "OutsidedEffect",
+        "available": true,
+        "texture": "alpacas.png",
+        "max_particlecount": 64,
+        "radius": 5.0,
+        "generatespeed": 100.0,
+        "lifetime": 0.3,
+        "scale": 5.0,
+        "velocity_range": {"x": 100.0, "y": 130.0},
+        "uvs": [
+          {"x": 128, "y": 0, "w": 128, "h": 128}
+        ],
+        "particle": {
+          "storage": "particle",
+          "id": "particle",
+          "tag": "particle",
+          "available": true,
+          "static": false,
+          "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+          "scale": {"x": 1.0, "y": 1.0},
+          "rotation": 0.0,
+          "components": [
+            {
+              "type": "Sprite",
+              "available": true,
+              "storage": "particle",
+              "uv": {"x": 0, "y": 0, "w": 1024, "h": 1024},
+              "texture": "alpacas.png"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

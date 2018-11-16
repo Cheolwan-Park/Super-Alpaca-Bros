@@ -1,0 +1,1131 @@
+{
+  "Physics": {
+    "collider_count": 32,
+    "gravity": 110.0
+  },
+
+  "Cameras": [
+    {
+      "name": "main",
+      "left_top_near": {"x": -48.0, "y": 27.0, "z": 0.1},
+      "right_bottom_far": {"x": 48.0, "y": -27.0, "z": 8.0}
+    },
+    {
+      "name": "background",
+      "left_top_near": {"x": -48.0, "y": 27.0, "z": 0.1},
+      "right_bottom_far": {"x": 48.0, "y": -27.0, "z": 8.0}
+    },
+    {
+      "name": "ui",
+      "left_top_near": {"x": 0.0, "y": 720.0, "z": 0.1},
+      "right_bottom_far": {"x": 1280.0, "y": 0.0, "z": 8.0}
+    }
+  ],
+
+  "Shaders": [
+    {
+      "name": "default",
+      "vert": "default_vert.glsl",
+      "frag": "default_frag.glsl"
+    }
+  ],
+
+  "Textures": [
+    {"file": "alpacas.png"},
+    {"file": "ui.png"},
+    {"file": "background.png"}
+  ],
+
+  "Animations": [
+    {
+      "name": "star",
+      "texture": "background.png",
+      "range": {"x": 0, "y": 256, "w": 512, "h": 128},
+      "count": {"w": 4, "h": 1},
+      "eachtime": 0.3,
+      "loop": true
+    },
+    {
+      "name": "walking0",
+      "texture": "alpacas.png",
+      "range": {"x": 0, "y": 768, "w": 1024, "h": 256},
+      "count": {"w": 4, "h": 1},
+      "eachtime": 0.1,
+      "loop": true
+    },
+    {
+      "name": "idle0",
+      "texture": "alpacas.png",
+      "range": {"x": 384, "y": 512, "w": 512, "h": 256},
+      "count": {"w": 2, "h": 1},
+      "eachtime": 0.5,
+      "loop": true
+    },
+    {
+      "name": "walking1",
+      "texture": "alpacas.png",
+      "range": {"x": 0, "y": 256, "w": 1024, "h": 256},
+      "count": {"w": 4, "h": 1},
+      "eachtime": 0.1,
+      "loop": true
+    },
+    {
+      "name": "idle1",
+      "texture": "alpacas.png",
+      "range": {"x": 384, "y": 0, "w": 512, "h": 256},
+      "count": {"w": 2, "h": 1},
+      "eachtime": 0.5,
+      "loop": true
+    },
+    {
+      "name": "number_sheet",
+      "texture": "ui.png",
+      "range": {"x": 0, "y": 934, "w": 900, "h": 90},
+      "count": {"w": 10, "h": 1},
+      "eachtime": 0.0,
+      "loop": false
+    }
+  ],
+
+  "Sounds": [
+    {
+      "type": "Chunk",
+      "file": "hit.wav",
+      "volume": 80
+    },
+    {
+      "type": "Chunk",
+      "file": "jump.wav",
+      "volume": 40
+    },
+    {
+      "type": "Chunk",
+      "file": "explosion.wav",
+      "volume": 20
+    },
+    {
+      "type": "Chunk",
+      "file": "end_explosion.wav",
+      "volume": 20
+    },
+    {
+      "type": "Chunk",
+      "file": "shoot.wav",
+      "volume": 30
+    },
+    {
+      "type": "Chunk",
+      "file": "heading.wav",
+      "volume": 30
+    },
+    {
+      "type": "Chunk",
+      "file": "dash.wav",
+      "volume": 45
+    },
+    {
+      "type": "Chunk",
+      "file": "walk.wav",
+      "volume": 60
+    }
+  ],
+
+  "ObjectStorages": [
+    {
+      "name": "background",
+      "order": 512,
+      "size": 128
+    },
+    {
+      "name": "global",
+      "order": 512,
+      "size": 1024
+    },
+    {
+      "name": "ground",
+      "order": 256,
+      "size": 32
+    },
+    {
+      "name": "particle",
+      "order": 128,
+      "size": 512
+    },
+    {
+      "name": "ui",
+      "order": 1,
+      "size": 64
+    }
+  ],
+
+  "DrawableStorages": [
+    {
+      "name": "background",
+      "shader": "default",
+      "camera": "background",
+      "order": 1024,
+      "size": 128
+    },
+    {
+      "name": "global",
+      "shader": "default",
+      "camera": "main",
+      "order": 512,
+      "size": 1024
+    },
+    {
+      "name": "ground",
+      "shader": "default",
+      "camera": "main",
+      "order": 256,
+      "size": 128
+    },
+    {
+      "name": "particle",
+      "shader": "default",
+      "camera": "main",
+      "order": 128,
+      "size": 512
+    },
+    {
+      "name": "ui",
+      "shader": "default",
+      "camera": "ui",
+      "order": 1,
+      "size": 128
+    }
+  ],
+
+  "GameObjects": [
+    {
+      "storage": "global",
+      "id": "GameManager",
+      "tag": "GameManager",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+      "scale": {"x": 1.0, "y": 1.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "GameManager",
+          "available": true,
+          "lifecount": 3,
+          "respawntime": 2.0,
+          "alpaca": [
+            {"file": "alpaca0.json"},
+            {"file": "alpaca1.json"}
+          ],
+          "effect": [
+            {"file": "outsidedeffect0.json"},
+            {"file": "outsidedeffect1.json"}
+          ]
+        },
+        {
+          "type": "CameraController",
+          "available": true,
+          "camera": "main",
+          "isSmooth": true,
+          "margin": 25.0,
+          "cammovespeed": 5.0,
+          "expandspeed": 0.35,
+          "viewratio": {"x": 16.0, "y": 9.0},
+          "min_camerarange": 4.0,
+          "max_camerarange": 7.0
+        },
+        {
+          "type": "WalkSound",
+          "available": true,
+          "chunk": "walk.wav"
+        }
+      ]
+    },
+
+
+
+    {
+      "storage": "ground",
+      "id": "ground0",
+      "tag": "ground",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": -13.5, "z": 1.0},
+      "scale": {"x": 72.0, "y": 8.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "ground",
+          "uv": {"x": 0, "y": 128, "w": 1024, "h": 107},
+          "texture": "background.png"
+        },
+        {
+          "type": "Ground",
+          "available": true,
+          "isTrigger": true,
+          "box": {"x": 0.0, "y": 0.0, "w": 68.0, "h": 4.3},
+          "ignorelist_size": 8,
+          "isPassable": false
+        }
+      ]
+    },
+    {
+      "storage": "ground",
+      "id": "ground1",
+      "tag": "ground",
+      "available": true,
+      "static": false,
+      "position": {"x": -18.0, "y": 3.0, "z": 1.0},
+      "scale": {"x": 18.0, "y": 6.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "ground",
+          "uv": {"x": 0, "y": 0, "w": 384, "h": 123},
+          "texture": "background.png"
+        },
+        {
+          "type": "Ground",
+          "available": true,
+          "isTrigger": true,
+          "box": {"x": 0.0, "y": 0.0, "w": 16.0, "h": 3.4},
+          "ignorelist_size": 8,
+          "isPassable": true
+        }
+      ]
+    },
+    {
+      "storage": "ground",
+      "id": "ground2",
+      "tag": "ground",
+      "available": true,
+      "static": false,
+      "position": {"x": 18.0, "y": 3.0, "z": 1.0},
+      "scale": {"x": 18.0, "y": 6.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "ground",
+          "uv": {"x": 0, "y": 0, "w": 384, "h": 123},
+          "texture": "background.png"
+        },
+        {
+          "type": "Ground",
+          "available": true,
+          "isTrigger": true,
+          "box": {"x": 0.0, "y": 0.0, "w": 16.0, "h": 3.4},
+          "ignorelist_size": 8,
+          "isPassable": true
+        }
+      ]
+    },
+
+
+    {
+      "storage": "background",
+      "id": "background_image",
+      "tag": "background",
+      "available": true,
+      "static": true,
+      "position": {"x": 0.0, "y": -5.0, "z": 1.0},
+      "scale": {"x":168.0, "y": 94.5},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x": 0, "y": 754, "w": 480, "h": 270},
+          "texture": "background.png"
+        },
+        {
+          "type": "CameraController",
+          "available": true,
+          "camera": "background",
+          "isSmooth": true,
+          "margin": 25.0,
+          "cammovespeed": 2.5,
+          "expandspeed": 0.175,
+          "viewratio": {"x": 16.0, "y": 9.0},
+          "min_camerarange": 4.0,
+          "max_camerarange": 7.0
+        }
+      ]
+    },
+    {
+      "storage": "background",
+      "id": "star0",
+      "tag": "background",
+      "available": true,
+      "static": false,
+      "position": {"x": 10.0, "y": 20.0, "z": 1.0},
+      "scale": {"x": 3.0, "y": 3.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "AnimatedSprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x":0, "y": 0, "w": 1024, "h": 1024},
+          "texture": "background.png",
+          "default_anim": "star"
+        }
+      ]
+    },
+    {
+      "storage": "background",
+      "id": "star1",
+      "tag": "background",
+      "available": true,
+      "static": false,
+      "position": {"x": 30.0, "y": 18.0, "z": 1.0},
+      "scale": {"x": 2.0, "y": 2.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "AnimatedSprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x":0, "y": 0, "w": 1024, "h": 1024},
+          "texture": "background.png",
+          "default_anim": "star"
+        }
+      ]
+    },
+    {
+      "storage": "background",
+      "id": "star2",
+      "tag": "background",
+      "available": true,
+      "static": false,
+      "position": {"x": -20.0, "y": -2.0, "z": 1.0},
+      "scale": {"x": 4.0, "y": 4.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "AnimatedSprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x":0, "y": 0, "w": 1024, "h": 1024},
+          "texture": "background.png",
+          "default_anim": "star"
+        }
+      ]
+    },
+    {
+      "storage": "background",
+      "id": "star3",
+      "tag": "background",
+      "available": true,
+      "static": false,
+      "position": {"x": 40.0, "y": 6.0, "z": 1.0},
+      "scale": {"x": 2.0, "y": 2.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "AnimatedSprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x":0, "y": 0, "w": 1024, "h": 1024},
+          "texture": "background.png",
+          "default_anim": "star"
+        }
+      ]
+    },
+    {
+      "storage": "background",
+      "id": "star4",
+      "tag": "background",
+      "available": true,
+      "static": false,
+      "position": {"x": -5.0, "y": -20.0, "z": 1.0},
+      "scale": {"x": 2.0, "y": 2.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "AnimatedSprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x":0, "y": 0, "w": 1024, "h": 1024},
+          "texture": "background.png",
+          "default_anim": "star"
+        }
+      ]
+    },
+    {
+      "storage": "background",
+      "id": "star5",
+      "tag": "background",
+      "available": true,
+      "static": false,
+      "position": {"x": 13.0, "y": -23.0, "z": 1.0},
+      "scale": {"x": 4.0, "y": 4.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "AnimatedSprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x":0, "y": 0, "w": 1024, "h": 1024},
+          "texture": "background.png",
+          "default_anim": "star"
+        }
+      ]
+    },
+    {
+      "storage": "background",
+      "id": "star6",
+      "tag": "background",
+      "available": true,
+      "static": false,
+      "position": {"x": 34.0, "y": -8.0, "z": 1.0},
+      "scale": {"x": 3.0, "y": 3.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "AnimatedSprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x":0, "y": 0, "w": 1024, "h": 1024},
+          "texture": "background.png",
+          "default_anim": "star"
+        }
+      ]
+    },
+    {
+      "storage": "background",
+      "id": "star7",
+      "tag": "background",
+      "available": true,
+      "static": false,
+      "position": {"x": -37.0, "y": -13.0, "z": 1.0},
+      "scale": {"x": 3.0, "y": 3.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "AnimatedSprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x":0, "y": 0, "w": 1024, "h": 1024},
+          "texture": "background.png",
+          "default_anim": "star"
+        }
+      ]
+    },
+    {
+      "storage": "background",
+      "id": "star8",
+      "tag": "background",
+      "available": true,
+      "static": false,
+      "position": {"x": -42.0, "y": -30.0, "z": 1.0},
+      "scale": {"x": 2.0, "y": 2.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "AnimatedSprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x":0, "y": 0, "w": 1024, "h": 1024},
+          "texture": "background.png",
+          "default_anim": "star"
+        }
+      ]
+    },
+    {
+      "storage": "background",
+      "id": "star9",
+      "tag": "background",
+      "available": true,
+      "static": false,
+      "position": {"x": -18.0, "y": -31.0, "z": 1.0},
+      "scale": {"x": 2.0, "y": 2.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "AnimatedSprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x":0, "y": 0, "w": 1024, "h": 1024},
+          "texture": "background.png",
+          "default_anim": "star"
+        }
+      ]
+    },
+    {
+      "storage": "background",
+      "id": "star10",
+      "tag": "background",
+      "available": true,
+      "static": false,
+      "position": {"x": -36.0, "y": 21.0, "z": 1.0},
+      "scale": {"x": 3.0, "y": 3.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "AnimatedSprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x":0, "y": 0, "w": 1024, "h": 1024},
+          "texture": "background.png",
+          "default_anim": "star"
+        }
+      ]
+    },
+    {
+      "storage": "background",
+      "id": "star11",
+      "tag": "background",
+      "available": true,
+      "static": false,
+      "position": {"x": 41.0, "y": -25.0, "z": 1.0},
+      "scale": {"x": 2.0, "y": 2.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "AnimatedSprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x":0, "y": 0, "w": 1024, "h": 1024},
+          "texture": "background.png",
+          "default_anim": "star"
+        }
+      ]
+    },
+    {
+      "storage": "background",
+      "id": "star12",
+      "tag": "background",
+      "available": true,
+      "static": false,
+      "position": {"x": 51.0, "y": 10.0, "z": 1.0},
+      "scale": {"x": 2.0, "y": 2.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "AnimatedSprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x":0, "y": 0, "w": 1024, "h": 1024},
+          "texture": "background.png",
+          "default_anim": "star"
+        }
+      ]
+    },
+    {
+      "storage": "background",
+      "id": "star13",
+      "tag": "background",
+      "available": true,
+      "static": false,
+      "position": {"x": 55.0, "y": -10.0, "z": 1.0},
+      "scale": {"x": 2.0, "y": 2.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "AnimatedSprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x":0, "y": 0, "w": 1024, "h": 1024},
+          "texture": "background.png",
+          "default_anim": "star"
+        }
+      ]
+    },
+    {
+      "storage": "background",
+      "id": "star14",
+      "tag": "background",
+      "available": true,
+      "static": false,
+      "position": {"x": 10.0, "y": -3.0, "z": 1.0},
+      "scale": {"x": 2.0, "y": 2.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "AnimatedSprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x":0, "y": 0, "w": 1024, "h": 1024},
+          "texture": "background.png",
+          "default_anim": "star"
+        }
+      ]
+    },
+
+
+    {
+      "storage": "ui",
+      "id": "UI_Player0",
+      "tag": "UI",
+      "available": true,
+      "static": true,
+      "position": {"x": 150.0, "y": 100.0, "z": 1.0},
+      "scale": {"x":0.7, "y": 0.7},
+      "rotation": 0.0,
+      "components": []
+    },
+    {
+      "storage": "ui",
+      "id": "skillviewer0_0",
+      "tag": "UI",
+      "available": true,
+      "static": false,
+      "position": {"x": 155.0, "y": -30.0, "z": 1.0},
+      "scale": {"x": 55.0, "y": 55.0},
+      "rotation": 0.0,
+      "parent": {"storage": "ui", "id": "UI_Player0"},
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "ui",
+          "uv": {"x": 128, "y": 0, "w": 128, "h": 128},
+          "texture": "ui.png"
+        },
+        {
+          "type": "CooltimeViewer",
+          "available": true,
+          "alpacaindex": 0,
+          "actionindex": 0
+        }
+      ]
+    },
+    {
+      "storage": "ui",
+      "id": "skillviewer0_1",
+      "tag": "UI",
+      "available": true,
+      "static": false,
+      "position": {"x": 235.0, "y": -30.0, "z": 1.0},
+      "scale": {"x": 55.0, "y": 55.0},
+      "rotation": 0.0,
+      "parent": {"storage": "ui", "id": "UI_Player0"},
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "ui",
+          "uv": {"x": 256, "y": 0, "w": 128, "h": 128},
+          "texture": "ui.png"
+        },
+        {
+          "type": "CooltimeViewer",
+          "available": true,
+          "alpacaindex": 0,
+          "actionindex": 1
+        }
+      ]
+    },
+    {
+      "storage": "ui",
+      "id": "skillviewer0_2",
+      "tag": "UI",
+      "available": true,
+      "static": false,
+      "position": {"x": 315.0, "y": -30.0, "z": 1.0},
+      "scale": {"x": 55.0, "y": 55.0},
+      "rotation": 0.0,
+      "parent": {"storage": "ui", "id": "UI_Player0"},
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "ui",
+          "uv": {"x": 384, "y": 0, "w": 128, "h": 128},
+          "texture": "ui.png"
+        },
+        {
+          "type": "CooltimeViewer",
+          "available": true,
+          "alpacaindex": 0,
+          "actionindex": 2
+        }
+      ]
+    },
+    {
+      "storage": "ui",
+      "id": "UI_LifeViewer0",
+      "tag": "UI",
+      "available": true,
+      "static": true,
+      "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+      "scale": {"x": 1.0, "y": 1.0},
+      "rotation": -0.3,
+      "parent": {"storage": "ui", "id": "UI_Player0"},
+      "components": []
+    },
+    {
+      "storage": "ui",
+      "id": "gaugeviewer0",
+      "tag": "UI",
+      "available": true,
+      "static": true,
+      "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+      "scale": {"x": 70.0, "y": 70.0},
+      "rotation": 0.0,
+      "parent": {"storage": "ui", "id": "UI_LifeViewer0"},
+      "components": [
+        {
+          "type": "HitGaugeViewer",
+          "available": true,
+          "alpacaindex": 0,
+          "numberviewer": {"file":"numberviewer.json"}
+        }
+      ]
+    },
+    {
+      "storage": "ui",
+      "id": "heartviewer0",
+      "tag": "UI",
+      "available": true,
+      "static": true,
+      "position": {"x": 0.0, "y": -60.0, "z": 1.0},
+      "scale": {"x": 40.0, "y": 40.0},
+      "rotation": 0.0,
+      "parent": {"storage": "ui", "id": "UI_LifeViewer0"},
+      "components": [
+        {
+          "type": "LifeViewer",
+          "available": true,
+          "alpacaindex": 0,
+          "lifecount": 3,
+          "heart": {
+            "storage": "ui",
+            "id": "heart",
+            "tag": "UI",
+            "available": true,
+            "static": true,
+            "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+            "scale": {"x": 1.0, "y": 1.0},
+            "rotation": 0.0,
+            "components": [
+              {
+                "type": "Sprite",
+                "available": true,
+                "storage": "ui",
+                "uv": {"x": 0, "y": 0, "w": 128, "h": 128},
+                "texture": "ui.png"
+              }
+            ]
+          }
+        }
+      ]
+    },
+
+
+    {
+      "storage": "ui",
+      "id": "UI_Player1",
+      "tag": "UI",
+      "available": true,
+      "static": true,
+      "position": {"x": 1130.0, "y": 100.0, "z": 1.0},
+      "scale": {"x":0.7, "y": 0.7},
+      "rotation": 0.0,
+      "components": []
+    },
+    {
+      "storage": "ui",
+      "id": "skillviewer1_0",
+      "tag": "UI",
+      "available": true,
+      "static": false,
+      "position": {"x": -315.0, "y": -30.0, "z": 1.0},
+      "scale": {"x": 55.0, "y": 55.0},
+      "rotation": 0.0,
+      "parent": {"storage": "ui", "id": "UI_Player1"},
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "ui",
+          "uv": {"x": 128, "y": 0, "w": 128, "h": 128},
+          "texture": "ui.png"
+        },
+        {
+          "type": "CooltimeViewer",
+          "available": true,
+          "alpacaindex": 1,
+          "actionindex": 0
+        }
+      ]
+    },
+    {
+      "storage": "ui",
+      "id": "skillviewer1_1",
+      "tag": "UI",
+      "available": true,
+      "static": false,
+      "position": {"x": -235.0, "y": -30.0, "z": 1.0},
+      "scale": {"x": 55.0, "y": 55.0},
+      "rotation": 0.0,
+      "parent": {"storage": "ui", "id": "UI_Player1"},
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "ui",
+          "uv": {"x": 256, "y": 0, "w": 128, "h": 128},
+          "texture": "ui.png"
+        },
+        {
+          "type": "CooltimeViewer",
+          "available": true,
+          "alpacaindex": 1,
+          "actionindex": 1
+        }
+      ]
+    },
+    {
+      "storage": "ui",
+      "id": "skillviewer1_2",
+      "tag": "UI",
+      "available": true,
+      "static": false,
+      "position": {"x": -155.0, "y": -30.0, "z": 1.0},
+      "scale": {"x": 55.0, "y": 55.0},
+      "rotation": 0.0,
+      "parent": {"storage": "ui", "id": "UI_Player1"},
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "ui",
+          "uv": {"x": 384, "y": 0, "w": 128, "h": 128},
+          "texture": "ui.png"
+        },
+        {
+          "type": "CooltimeViewer",
+          "available": true,
+          "alpacaindex": 1,
+          "actionindex": 2
+        }
+      ]
+    },
+    {
+      "storage": "ui",
+      "id": "UI_LifeViewer1",
+      "tag": "UI",
+      "available": true,
+      "static": true,
+      "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+      "scale": {"x": 1.0, "y": 1.0},
+      "rotation": 0.3,
+      "parent": {"storage": "ui", "id": "UI_Player1"},
+      "components": []
+    },
+    {
+      "storage": "ui",
+      "id": "gaugeviewer1",
+      "tag": "UI",
+      "available": true,
+      "static": true,
+      "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+      "scale": {"x": 70.0, "y": 70.0},
+      "rotation": 0.0,
+      "parent": {"storage": "ui", "id": "UI_LifeViewer1"},
+      "components": [
+        {
+          "type": "HitGaugeViewer",
+          "available": true,
+          "alpacaindex": 1,
+          "numberviewer": {"file":"numberviewer.json"}
+        }
+      ]
+    },
+    {
+      "storage": "ui",
+      "id": "heartviewer1",
+      "tag": "UI",
+      "available": true,
+      "static": true,
+      "position": {"x": 0.0, "y": -60.0, "z": 1.0},
+      "scale": {"x": 40.0, "y": 40.0},
+      "rotation": 0.0,
+      "parent": {"storage": "ui", "id": "UI_LifeViewer1"},
+      "components": [
+        {
+          "type": "LifeViewer",
+          "available": true,
+          "alpacaindex": 1,
+          "lifecount": 3,
+          "heart": {
+            "storage": "ui",
+            "id": "heart",
+            "tag": "UI",
+            "available": true,
+            "static": true,
+            "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+            "scale": {"x": 1.0, "y": 1.0},
+            "rotation": 0.0,
+            "components": [
+              {
+                "type": "Sprite",
+                "available": true,
+                "storage": "ui",
+                "uv": {"x": 0, "y": 0, "w": 128, "h": 128},
+                "texture": "ui.png"
+              }
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "storage": "ui",
+      "id": "winner_banner",
+      "tag": "UI",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+      "scale": {"x": 1000.0, "y": 120.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "BannerMover",
+          "available": true,
+          "duration": 0.5,
+          "hideposition": {"x": 1780.0, "y": 460.0, "z": 1.0},
+          "showposition": {"x": 640.0, "y": 460.0, "z": 1.0}
+        },
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "ui",
+          "uv": {"x": 0, "y": 0, "w": 1024, "h": 1024},
+          "texture": "ui.png"
+        },
+        {
+          "type": "WinnerBanner",
+          "available": true,
+          "waittime": 1.0,
+          "duration": 1.0,
+          "rotate": 0.17,
+          "scale": 0.2,
+          "banneruv": [
+            {"x": 0, "y": 128, "w": 1024, "h": 128},
+            {"x": 0, "y": 256, "w": 1024, "h": 128}
+          ]
+        }
+      ]
+    },
+    {
+      "storage": "ui",
+      "id": "press_any_key",
+      "tag": "UI",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": -1.0, "z": 1.0},
+      "scale": {"x": 0.8, "y": 0.83},
+      "rotation": 0.0,
+      "parent": {"storage": "ui", "id": "winner_banner"},
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "ui",
+          "uv": {"x": 0, "y": 640, "w": 1024, "h": 128},
+          "texture": "ui.png"
+        }
+      ]
+    },
+
+
+    {
+      "storage": "ui",
+      "id": "UI_Pause",
+      "tag": "UI",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+      "scale": {"x": 1.0, "y": 1.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "BannerMover",
+          "available": true,
+          "duration": 0.5,
+          "hideposition": {"x": 1920.0, "y": 360.0, "z": 1.0},
+          "showposition": {"x": 640.0, "y": 360.0, "z": 1.0}
+        }
+      ]
+    },
+    {
+      "storage": "ui",
+      "id": "pause_background",
+      "tag": "UI",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+      "scale": {"x": 1280.0, "y": 720.0},
+      "rotation": 0.0,
+      "parent": {"storage": "ui", "id": "UI_Pause"},
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "ui",
+          "uv": {"x": 896, "y": 0, "w": 128, "h": 128},
+          "texture": "ui.png"
+        }
+      ]
+    },
+    {
+      "storage": "ui",
+      "id": "restart_button",
+      "tag": "UI",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": 100.0, "z": 1.0},
+      "scale": {"x": 450.0, "y": 90.0},
+      "rotation": 0.0,
+      "parent": {"storage": "ui", "id": "UI_Pause"},
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "ui",
+          "uv": {"x": 0, "y": 384, "w": 640, "h": 128},
+          "texture": "ui.png"
+        },
+        {
+          "type": "RestartButton",
+          "available": true,
+          "presseduv": {"x": 0, "y": 512, "w": 640, "h": 128}
+        }
+      ]
+    },
+    {
+      "storage": "ui",
+      "id": "resume_button",
+      "tag": "UI",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": -100.0, "z": 1.0},
+      "scale": {"x": 360.0, "y": 90.0},
+      "rotation": 0.0,
+      "parent": {"storage": "ui", "id": "UI_Pause"},
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "ui",
+          "uv": {"x": 0, "y": 768, "w": 512, "h": 128},
+          "texture": "ui.png"
+        },
+        {
+          "type": "ResumeButton",
+          "available": true,
+          "presseduv": {"x": 512, "y": 768, "w": 512, "h": 128}
+        }
+      ]
+    }
+  ]
+}
