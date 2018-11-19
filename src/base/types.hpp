@@ -6,13 +6,13 @@
 
 namespace Base {
 namespace Directories {
-constexpr char root[] = "../";
-constexpr char res[] = "../res/";
-constexpr char Shader[] = "../res/shader/";
-constexpr char Scene[] = "../res/scene/";
-constexpr char GameObject[] = "../res/gameobject/";
-constexpr char Texture[] = "../res/texture/";
-constexpr char Sound[] = "../res/sound/";
+constexpr char root[] = "./";
+constexpr char res[] = "./res/";
+constexpr char Shader[] = "./res/shader/";
+constexpr char Scene[] = "./res/scene/";
+constexpr char GameObject[] = "./res/gameobject/";
+constexpr char Texture[] = "./res/texture/";
+constexpr char Sound[] = "./res/sound/";
 }
 
 typedef char byte;
