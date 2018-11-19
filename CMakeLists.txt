@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 3.0 )
 
-project( alpacas )
+project( super-alpaca-bros )
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 message(STATUS "module path: ${CMAKE_MODULE_PATH}")
@@ -11,7 +11,7 @@ set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -Os" )
 set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g" )
 
 add_executable(
-        alpacas
+        super-alpaca-bros
         src/main.cpp
 )
 
@@ -34,7 +34,7 @@ add_library(
 include_directories( src/title )
 include_directories( src/game )
 target_link_libraries( Game Base )
-target_link_libraries( alpacas Game )
+target_link_libraries( super-alpaca-bros Game )
 
 add_library(
         Base STATIC
@@ -66,7 +66,7 @@ add_library(
         src/base/Physics.cpp
 )
 include_directories( src/base )
-target_link_libraries( alpacas Base )
+target_link_libraries( super-alpaca-bros Base )
 
 # header only libraries
 include_directories("include")
@@ -74,18 +74,13 @@ include_directories("include")
 # sdl
 find_package( SDL2 REQUIRED )
 find_package( SDL2_image REQUIRED )
-find_package( SDL2_ttf REQUIRED )
 find_package( SDL2_mixer REQUIRED ) 
 include_directories( ${SDL2_INCLUDE_DIR}
                      ${SDL2_IMAGE_INCLUDE_DIR}
-                     ${SDL2_TTF_INCLUDE_DIR}
-
-
                      ${SDL2_MIXER_INCLUDE_DIR} )
 target_link_libraries( Base ${SDL2_LIBRARY}
-                                ${SDL2_IMAGE_LIBRARIES}
-                                ${SDL2_TTF_LIBRARIES}
-                                ${SDL2_MIXER_LIBRARIES} )
+                            ${SDL2_IMAGE_LIBRARIES}
+                            ${SDL2_MIXER_LIBRARIES} )
 
 # opengl
 find_package ( OpenGL REQUIRED )
