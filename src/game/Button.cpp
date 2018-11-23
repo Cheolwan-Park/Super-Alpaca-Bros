@@ -1,6 +1,7 @@
 #include "Button.h"
 #include "GameManager.hpp"
 #include "Banner.h"
+#include "TitleBanner.h"
 
 namespace Game {
 // Button class
@@ -46,6 +47,18 @@ void Button::update() {
   GLdouble x=0.0, y=0.0;
   input.getMousePos(&x, &y);
 
+  auto &app = Application::Get();
+  auto window = app.getWindow();
+  auto *scene = app.getScene();
+  auto *ui_camera = scene->getCamera("ui"_hash);
+  const glm::vec3 &ltn = ui_camera->getLeftTopNear();
+  const glm::vec3 &rbf = ui_camera->getRightBottomFar();
+
+  GLint w=0, h=0;
+  window.getSize(&w, &h);
+  x = x*abs(ltn.x-rbf.x)/(GLdouble)w;
+  y = y*abs(ltn.y-rbf.y)/(GLdouble)h;
+
   if(vertexes[0].x < x && vertexes[1].x > x
   && vertexes[0].y > y && vertexes[1].y < y) {
     if(input.isButtonDown(SDL_BUTTON_LEFT)) {
@@ -68,11 +81,11 @@ void Button::onClicked() {
   ;
 }
 
-int32 Button::isButtonDowned() {
+int32_t Button::isButtonDowned() {
   return m_flags.getFlag(2);
 }
 
-void Button::setButtonDown(int32 val) {
+void Button::setButtonDown(int32_t val) {
   m_flags.setFlag(2, val);
 }
 
@@ -116,6 +129,23 @@ void ResumeButton::onClicked() {
 
   auto *game_manager = GameManager::GetGlobal();
   game_manager->resume();
+}
+
+
+// SceneTransitionButton class
+SceneTransitionButton::SceneTransitionButton()
+  :Button() {
+  ;
+}
+
+SceneTransitionButton::~SceneTransitionButton() {
+  ;
+}
+
+void SceneTransitionButton::onClicked() {
+  auto *zoom_transition = getGameObject()->getComponent<Title::ZoomTransition>();
+  if (!zoom_transition->isTransitioning())
+    zoom_transition->transition();
 }
 
 

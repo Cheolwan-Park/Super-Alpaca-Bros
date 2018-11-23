@@ -40,8 +40,8 @@ void Time::update() {
   }
 }
 
-int32 Time::addTimer(float64 time, std::function<int32()> &func) {
-  for (int32 i = 0; i < m_data.timers.getMaxSize(); ++i) {
+int32_t Time::addTimer(float64 time, std::function<int32_t()> &func) {
+  for (int32_t i = 0; i < m_data.timers.getMaxSize(); ++i) {
     if (nullptr == m_data.timers[i]) {
       Timer *new_timer = new Timer(time, func);
       m_data.timers[i] = new_timer;
@@ -52,7 +52,7 @@ int32 Time::addTimer(float64 time, std::function<int32()> &func) {
   return RET_FAILED;
 }
 
-void Time::removeTimer(int32 index) {
+void Time::removeTimer(int32_t index) {
   if (nullptr != m_data.timers[index]) {
     delete m_data.timers[index];
     m_data.timers[index] = nullptr;
@@ -80,11 +80,11 @@ float32 Time::getElapsedtime() const {
   return m_data.now_time.time_since_epoch().count()/1000.0f;
 }
 
-Uint32 Time::getIDeltatime() const {
+uint32_t Time::getIDeltatime() const {
   return m_data.deltatime.count();
 }
 
-Uint32 Time::getIElapsedtime() const {
+uint32_t Time::getIElapsedtime() const {
   using std::chrono::duration_cast;
   return duration_cast<milliseconds>(m_data.now_time.time_since_epoch()).count();
 }
@@ -117,7 +117,7 @@ void Timer::update(float32 deltatime) {
   }
 }
 
-void Timer::setIndex(int32 index) {
+void Timer::setIndex(int32_t index) {
   m_index = index;
 }
 

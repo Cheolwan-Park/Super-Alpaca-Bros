@@ -86,7 +86,7 @@ target_link_libraries( Base ${SDL2_LIBRARY}
 find_package ( OpenGL REQUIRED )
 if (OPENGL_FOUND )
     target_link_libraries ( Base ${OPENGL_LIBRARY} )
-    target_link_libraries ( Base ${OPENGL_gl_LIBRARY} )
+    target_link_libraries ( Base ${OPENGiL_gl_LIBRARY} )
     target_link_libraries ( Base ${OPENGL_glu_LIBRARY} )
 endif()
 
@@ -108,4 +108,11 @@ find_package( rapidjson REQUIRED )
 if( RAPIDJSON_FOUND )
     include_directories( ${RAPIDJSON_INCLUDE_DIRS} )
     # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RAPIDJSON_CXX_FLAGS}")
+endif()
+
+# steamworks
+find_package( STEAMWORKS REQUIRED )
+if( STEAMWORKS_FOUND )
+    include_directories( ${STEAMWORKS_INCLUDE_DIRS} )
+    target_link_libraries( Base ${STEAMWORKS_LIBRARY} )
 endif()

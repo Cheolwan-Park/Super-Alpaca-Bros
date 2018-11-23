@@ -94,9 +94,9 @@ class Sprite : public Drawable {
 
   void releaseVAO();
 
-  int32 needUpdateUV() const;
+  int32_t needUpdateUV() const;
 
-  void setNeedUpdateUV(int32 val);
+  void setNeedUpdateUV(int32_t val);
 
  private:
   VAO m_vao;
@@ -135,17 +135,17 @@ class DrawableStorage {
   void checkDeleted();
 
   // get
-  Uint32 getID() const;
+  uint32_t getID() const;
 
-  Uint32 getOrder() const;
+  uint32_t getOrder() const;
 
  private:
-  Uint32 m_id;
-  Uint32 m_order;
+  uint32_t m_id;
+  uint32_t m_order;
   Camera *m_camera;
   ShaderProgram *m_shader;
   std::function<void(void)> m_render_setting;
-  Uint32 m_len;
+  uint32_t m_len;
   Type *m_drawables;
 };
 }

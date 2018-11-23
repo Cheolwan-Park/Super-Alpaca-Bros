@@ -141,12 +141,12 @@ class String {
     return (*this);
   }
 
-  char &operator[](Uint32 idx) {
+  char &operator[](uint32_t idx) {
     assert(idx < m_size);
     return m_str[idx];
   }
 
-  const char &operator[](Uint32 idx) const {
+  const char &operator[](uint32_t idx) const {
     assert(idx < m_size);
     return m_str[idx];
   }
@@ -157,7 +157,7 @@ class String {
     return result;
   }
 
-  int32 operator==(const String &other) {
+  int32_t operator==(const String &other) {
     if (this->m_size != other.m_size) {
       return false;
     } else {
@@ -170,7 +170,7 @@ class String {
     }
   }
 
-  int32 operator!=(const String &other) {
+  int32_t operator!=(const String &other) {
     if (this->m_size != other.m_size) {
       return true;
     } else {
@@ -192,18 +192,18 @@ class String {
 // compile time hash function
 // https://gist.github.com/Lee-R/3839813
 namespace CompileTimeHash {
-constexpr Uint32 val_const = 0x811c9dc5;
-constexpr Uint32 prime_const = 0x1000193;
-inline constexpr Uint32 fnv1a_32(const char *const str, size_t count = val_const) {
+constexpr uint32_t val_const = 0x811c9dc5;
+constexpr uint32_t prime_const = 0x1000193;
+inline constexpr uint32_t fnv1a_32(const char *const str, size_t count = val_const) {
   return ((count ? fnv1a_32(str, count - 1) : val_const) ^ str[count]) * prime_const;
 }
 
-inline const Uint32 runtime_hash(const char *str, size_t count = val_const) {
+inline const uint32_t runtime_hash(const char *str, size_t count = val_const) {
   return ((count ? runtime_hash(str, count - 1) : val_const) ^ str[count]) * prime_const;
 }
 }
 
-inline constexpr Uint32 operator ""_hash(const char *const str, size_t count) {
+inline constexpr uint32_t operator ""_hash(const char *const str, size_t count) {
   return CompileTimeHash::fnv1a_32(str, count);
 }
 
@@ -238,15 +238,15 @@ class StringID {
     ;
   }
 
-  explicit operator Uint32() const {
+  explicit operator uint32_t() const {
     return m_id;
   }
 
-  int32 operator!=(const StringID &other) const {
+  int32_t operator!=(const StringID &other) const {
     return ((this->m_id) != other.m_id);
   }
 
-  int32 operator==(const StringID &other) const {
+  int32_t operator==(const StringID &other) const {
     return ((this->m_id) == other.m_id);
   }
 
@@ -256,7 +256,7 @@ class StringID {
   }
 
  private:
-  Uint32 m_id;
+  uint32_t m_id;
 };
 
 typedef String<16> String16;

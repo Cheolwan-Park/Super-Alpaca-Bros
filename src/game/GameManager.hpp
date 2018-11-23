@@ -28,7 +28,7 @@ class GameManager : public Component {
 
   void release() override;
 
-  void gameOver(Uint32 idx);
+  void gameOver(uint32_t idx);
 
   void pause();
 
@@ -36,9 +36,9 @@ class GameManager : public Component {
 
   void restart();
 
-  Alpaca::Alpaca *getAlpaca(Uint32 idx);
+  Alpaca::Alpaca *getAlpaca(uint32_t idx);
 
-  Uint32 getRemainLife(Uint32 idx);
+  uint32_t getRemainLife(uint32_t idx);
 
  private:
   static GameManager *global;
@@ -48,8 +48,8 @@ class GameManager : public Component {
 
  private:
   Alpaca::Alpaca *m_alpacas[2];
-  Uint32 m_life_count;
-  Uint32 m_remain_life[2];
+  uint32_t m_life_count;
+  uint32_t m_remain_life[2];
   float32 m_respawn_time;
   float32 m_respawn_remain_time[2];
   glm::vec3 m_alpaca_spawn_position[2];
@@ -81,8 +81,8 @@ class LifeViewer : public Component {
 
  private:
   GameManager *m_game_manager;
-  Uint32 m_alpaca_index;
-  Uint32 m_life_count;
+  uint32_t m_alpaca_index;
+  uint32_t m_life_count;
   GameObject **m_life_hearts;
 };
 }

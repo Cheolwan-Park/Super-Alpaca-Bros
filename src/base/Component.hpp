@@ -10,13 +10,13 @@
 
 #ifndef MAKE_TYPE_ID
 #define MAKE_TYPE_ID(__TYPENAME__)  \
-static constexpr Uint32 ID = ::Base::CompileTimeHash::fnv1a_32(#__TYPENAME__, sizeof(#__TYPENAME__)-1);
+static constexpr uint32_t ID = ::Base::CompileTimeHash::fnv1a_32(#__TYPENAME__, sizeof(#__TYPENAME__)-1);
 #endif
 
 #ifndef COMPONENT
 #define COMPONENT(__TYPENAME__)     \
 MAKE_TYPE_ID(__TYPENAME__);         \
-Uint32 getTypeID()const override  { return ID; }
+uint32_t getTypeID()const override  { return ID; }
 #endif
 
 namespace Base {
@@ -34,7 +34,7 @@ class Component {
 
  public:
   MAKE_TYPE_ID(Component);
-  virtual Uint32 getTypeID()const { return ID; }
+  virtual uint32_t getTypeID()const { return ID; }
 
   Component();
 
@@ -69,17 +69,17 @@ class Component {
 
   const GameObject *getGameObject()const;
 
-  int32 isAvailable() const;
+  int32_t isAvailable() const;
 
-  int32 isStarted() const;
+  int32_t isStarted() const;
 
   // set
   void setGameObject(GameObject *gameobject);
 
-  void setAvailable(int32 val);
+  void setAvailable(int32_t val);
 
   // gameobject functions wrapping
-  Uint32 getTag() const;
+  uint32_t getTag() const;
 
   const glm::vec3 &getLocalPosition() const;
 
@@ -95,7 +95,7 @@ class Component {
 
   void getModel(glm::mat3x3 *mat) const;
 
-  void setTag(Uint32 tag);
+  void setTag(uint32_t tag);
 
   void setLocalPosition(const glm::vec3 &position);
 
@@ -178,7 +178,7 @@ class ComponentFactory : public Storage<Component::FactoryFunc> {
     return (get(T::ID));
   }
 
-  Component::FactoryFunc *getFunction(Uint32 id) {
+  Component::FactoryFunc *getFunction(uint32_t id) {
     return (get(id));
   }
 

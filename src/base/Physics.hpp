@@ -29,16 +29,16 @@ class Physics {
 
   void setGravity(float32 a);
 
-  Uint32 getColliderCount() const;
+  uint32_t getColliderCount() const;
 
-  Uint32 getMaxColliderCount() const;
+  uint32_t getMaxColliderCount() const;
 
  private:
   float32 m_gravity;
-  Uint32 m_collider_count;
-  Uint32 m_max_collider_count;
+  uint32_t m_collider_count;
+  uint32_t m_max_collider_count;
   Collider **m_colliders;
-  byte *m_collide_map;
+  int8_t *m_collide_map;
 };
 
 class Rigidbody : public Component {
@@ -76,9 +76,9 @@ class Rigidbody : public Component {
 
   const glm::vec3 &getVelocity() const;
 
-  int32 isSimulated() const;
+  int32_t isSimulated() const;
 
-  int32 isGravityActive() const;
+  int32_t isGravityActive() const;
 
   // set
   void setMass(float32 m);
@@ -87,9 +87,9 @@ class Rigidbody : public Component {
 
   void setVelocity(float32 x, float32 y, float32 z);
 
-  void setSimulated(int32 val);
+  void setSimulated(int32_t val);
 
-  void setGravityActive(int32 val);
+  void setGravityActive(int32_t val);
 
  private:
   float32 m_mass;

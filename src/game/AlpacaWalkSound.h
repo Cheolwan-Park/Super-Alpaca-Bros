@@ -29,8 +29,8 @@ class WalkSound : public Component {
   void release() override;
 
  private:
-  Uint32 m_walk_chunk_id;
-  int32 m_walk_chunk_channel;
+  uint32_t m_walk_chunk_id;
+  int32_t m_walk_chunk_channel;
   Alpaca *m_alpacas[2];
 };
 }

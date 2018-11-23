@@ -6,24 +6,15 @@
 
 namespace Base {
 namespace Directories {
-constexpr char root[] = "./";
-constexpr char res[] = "./res/";
-constexpr char Shader[] = "./res/shader/";
-constexpr char Scene[] = "./res/scene/";
-constexpr char GameObject[] = "./res/gameobject/";
-constexpr char Texture[] = "./res/texture/";
-constexpr char Sound[] = "./res/sound/";
+constexpr char root[] = "../";
+constexpr char res[] = "../res/";
+constexpr char Shader[] = "../res/shader/";
+constexpr char Scene[] = "../res/scene/";
+constexpr char GameObject[] = "../res/gameobject/";
+constexpr char Texture[] = "../res/texture/";
+constexpr char Sound[] = "../res/sound/";
 }
 
-typedef char byte;
-typedef unsigned char Uint8;
-typedef unsigned short Uint16;
-typedef unsigned int Uint32;
-typedef unsigned long Uint64;
-typedef char int8;
-typedef short int16;
-typedef int int32;
-typedef long int64;
 typedef float float32;
 typedef double float64;
 
@@ -41,8 +32,8 @@ enum {
   LOG_ALL = 1000
 };
 
-const Uint32 LOG_MAXLEVEL = LOG_ALL;
-const Uint32 ASSERT_LEVEL = LOG_NONE;
+const uint32_t LOG_MAXLEVEL = LOG_ALL;
+const uint32_t ASSERT_LEVEL = LOG_NONE;
 
 }
 

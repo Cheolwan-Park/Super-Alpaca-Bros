@@ -15,22 +15,22 @@ class FileIO {
 
   void open(void *memory, size_t size);
 
-  int32 open(FILE *file, void *memory, size_t size);
+  int32_t open(FILE *file, void *memory, size_t size);
 
-  int32 write(FILE *file) const;
+  int32_t write(FILE *file) const;
 
-  int32 isAvailable() const;
+  int32_t isAvailable() const;
 
-  byte *getBuffer();
+  char *getBuffer();
 
-  const byte *getBuffer() const;
+  const char *getBuffer() const;
 
-  const byte *const *getBufferPointer() const;
+  const char *const *getBufferPointer() const;
 
   size_t getSize() const;
 
  private:
-  byte *m_buffer;
+  char *m_buffer;
   size_t m_size;
 };
 
@@ -38,7 +38,7 @@ class FileIO {
 // File class
 
 FILE *OpenFile(const char *filename, const char *mode);
-int64 GetFileSize(FILE *file);     // this function call rewind()
+int64_t GetFileSize(FILE *file);     // this function call rewind()
 }
 
 #endif

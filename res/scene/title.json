@@ -17,6 +17,17 @@
         "y": -27.0,
         "z": 8.0
       }
+    },
+    {
+      "name": "ui",
+      "left_top_near": {
+        "x": 0.0,
+        "y": 900.0,
+        "z": 0.1},
+      "right_bottom_far": {
+        "x": 1600.0,
+        "y": 0.0,
+        "z": 8.0}
     }
   ],
 
@@ -66,6 +77,13 @@
       "camera": "main",
       "order": 512,
       "size": 64
+    },
+    {
+      "name": "ui",
+      "shader": "default",
+      "camera": "ui",
+      "order": 1,
+      "size": 128
     }
   ],
 
@@ -251,6 +269,40 @@
           "type": "Rotator",
           "available": true,
           "speed": 1.6
+        }
+      ]
+    },
+
+
+    {
+      "storage": "global",
+      "id": "help_button",
+      "tag": "UI",
+      "available": true,
+      "static": false,
+      "position": {"x": 1530.0, "y": 830.0, "z": 1.0},
+      "scale": {"x": 100.0, "y": 100.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "ui",
+          "uv": {"x": 896, "y": 0, "w": 128, "h": 128},
+          "texture": "title.png"
+        },
+        {
+          "type": "SceneTransitionButton",
+          "available": true,
+          "presseduv": {"x": 896, "y": 128, "w": 128, "h": 128}
+        },
+        {
+          "type": "ZoomTransition",
+          "available": true,
+          "loadscene": "tutorial.json",
+          "duration": 0.5,
+          "target_ltn": {"x": -1.5, "y": 1.0, "z": 0.1},
+          "target_rbf": {"x": 1.5, "y": -1.0, "z": 8.0}
         }
       ]
     }

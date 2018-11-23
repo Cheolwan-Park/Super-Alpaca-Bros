@@ -43,7 +43,7 @@ void GameManager::initWithJson(const rapidjson::Value::Object &obj, StackAllocat
   assert(scene);
 
   GameObject *newalpaca = nullptr;
-  for(Uint32 i=0; i<2; ++i) {
+  for(uint32_t i=0; i<2; ++i) {
     newalpaca = scene->createGameObject(alpaca_list[i].GetObject());
     assert(newalpaca);
     m_alpacas[i] = newalpaca->getComponent<Alpaca::Alpaca>();
@@ -55,12 +55,11 @@ void GameManager::initWithJson(const rapidjson::Value::Object &obj, StackAllocat
   }
 
   GameObject *new_object = nullptr;
-  for(Uint32 i=0; i<2; ++i) {
+  for(uint32_t i=0; i<2; ++i) {
     new_object = scene->createGameObject(effect_list[i].GetObject());
     m_effects[i] = new_object->getComponent<OutsidedEffect>();
   }
 
-  assert(!global);
   global = this;
 }
 
@@ -80,7 +79,7 @@ void GameManager::update() {
   const glm::vec3 &rbf = camera->getRightBottomFar();
 
   glm::vec3 position(0.0f);
-  for(Uint32 i=0; i<2; ++i) {
+  for(uint32_t i=0; i<2; ++i) {
     // check respawn
     if(m_respawn_remain_time[i] > 0.0f) {
       Time &t = Time::Get();
@@ -95,7 +94,7 @@ void GameManager::update() {
 
     // check alpaca out of screen (KO)
     m_alpacas[i]->getWorldPosition(&position);
-    int32 is_out_of_screen = position.x < ltn.x || position.x > rbf.x
+    int32_t is_out_of_screen = position.x < ltn.x || position.x > rbf.x
                           || position.y < rbf.y || position.y > ltn.y;
     if((m_alpacas[i]->getGameObject()->isAvailable())
     && is_out_of_screen) {
@@ -155,7 +154,7 @@ void GameManager::release() {
   ;
 }
 
-void GameManager::gameOver(Uint32 idx) {
+void GameManager::gameOver(uint32_t idx) {
   auto *winner_banner = WinnerBanner::GetGlobal();
   assert(winner_banner);
   winner_banner->show(idx ? 0 : 1);
@@ -163,21 +162,21 @@ void GameManager::gameOver(Uint32 idx) {
 }
 
 void GameManager::pause() {
-  for(Uint32 i=0; i<2; ++i) {
+  for(uint32_t i=0; i<2; ++i) {
     m_alpacas[i]->getRigidbody()->setAvailable(false);
     m_alpacas[i]->setAvailable(false);
   }
 }
 
 void GameManager::resume() {
-  for(Uint32 i=0; i<2; ++i) {
+  for(uint32_t i=0; i<2; ++i) {
     m_alpacas[i]->getRigidbody()->setAvailable(true);
     m_alpacas[i]->setAvailable(true);
   }
 }
 
 void GameManager::restart() {
-  for(Uint32 i=0; i<2; ++i) {
+  for(uint32_t i=0; i<2; ++i) {
     m_alpacas[i]->getGameObject()->setAvailable(true);
     m_alpacas[i]->setAvailable(true);
     m_alpacas[i]->getRigidbody()->setAvailable(true);
@@ -194,12 +193,12 @@ void GameManager::restart() {
   }
 }
 
-Alpaca::Alpaca *GameManager::getAlpaca(Uint32 idx) {
+Alpaca::Alpaca *GameManager::getAlpaca(uint32_t idx) {
   assert(idx < 2);
   return m_alpacas[idx];
 }
 
-Uint32 GameManager::getRemainLife(Uint32 idx) {
+uint32_t GameManager::getRemainLife(uint32_t idx) {
   assert(idx < 2);
   return m_remain_life[idx];
 }
@@ -238,10 +237,10 @@ void LifeViewer::initWithJson(const rapidjson::Value::Object &obj, StackAllocato
 
   auto *scene = Application::Get().getScene();
   glm::vec3 position(0.0f, 0.0f, 1.0f);
-  for(int32 i=0; i<m_life_count; ++i) {
+  for(int32_t i=0; i<m_life_count; ++i) {
     m_life_hearts[i] = scene->createGameObject(heart_json_object);
     const glm::vec2 &scale = m_life_hearts[i]->getScale();
-    position.x = (i - (int32)m_life_count/2)*scale.x;
+    position.x = (i - (int32_t)m_life_count/2)*scale.x;
     position.x -= m_life_count&1 ? 0.0f : scale.x/2.0f;
     m_life_hearts[i]->setLocalPosition(position);
     m_life_hearts[i]->setParent(getGameObject());
@@ -254,7 +253,7 @@ void LifeViewer::start() {
 
 void LifeViewer::update() {
   Component::update();
-  Uint32 i=0, remain = m_game_manager->getRemainLife(m_alpaca_index);
+  uint32_t i=0, remain = m_game_manager->getRemainLife(m_alpaca_index);
   for(i=0; i<remain; ++i) {
     m_life_hearts[i]->setAvailable(true);
   }

@@ -29,8 +29,8 @@ class CooltimeViewer : public Component {
   void release() override;
 
  private:
-  Uint32 m_alpaca_index;
-  Uint32 m_action_index;
+  uint32_t m_alpaca_index;
+  uint32_t m_action_index;
   Sprite *m_sprite;
   Math::Rect m_default_uv;
   glm::vec3 m_default_position;

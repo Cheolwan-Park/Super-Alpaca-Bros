@@ -27,12 +27,12 @@ class Ground : public BoxCollider {
 
   void pass(GameObject *obj);
 
-  int32 isPassable() const;
+  int32_t isPassable() const;
 
-  void setPassable(int32 val);
+  void setPassable(int32_t val);
 
  private:
-  Uint32 m_ignore_list_size;
+  uint32_t m_ignore_list_size;
   Collider **m_ignore_list;
   /*
    * m_flags

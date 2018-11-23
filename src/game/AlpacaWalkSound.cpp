@@ -20,7 +20,7 @@ void WalkSound::initWithJson(const rapidjson::Value::Object &obj, StackAllocator
 
   const char *str_walk_chunk = obj["chunk"].GetString();
   StringID walk_chunk_id(str_walk_chunk);
-  m_walk_chunk_id = (Uint32)walk_chunk_id;
+  m_walk_chunk_id = (uint32_t)walk_chunk_id;
 }
 
 void WalkSound::start() {
@@ -37,8 +37,8 @@ void WalkSound::start() {
 void WalkSound::update() {
   Component::update();
 
-  int32 play = false;
-  for(Uint32 i=0; i<2; ++i) {
+  int32_t play = false;
+  for(uint32_t i=0; i<2; ++i) {
     if(m_alpacas[i]->isGrounded() && (m_alpacas[i]->isMoving())) {
       play = true;
     }

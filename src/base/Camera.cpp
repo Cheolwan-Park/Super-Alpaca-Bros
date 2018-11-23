@@ -42,7 +42,7 @@ void Camera::initWithJson(const rapidjson::Value::Object &obj) {
 
   const char *name = obj["name"].GetString();
   StringID id(name, strlen(name));
-  m_id = (Uint32) id;
+  m_id = (uint32_t) id;
   JsonParseMethods::ReadVector(obj["left_top_near"].GetObject(), &m_left_top_near);
   JsonParseMethods::ReadVector(obj["right_bottom_far"].GetObject(), &m_right_bottom_far);
 
@@ -65,7 +65,7 @@ void Camera::setProjection(float32 left, float32 right,
   m_right_bottom_far.z = f;
 }
 
-Uint32 Camera::getID() const {
+uint32_t Camera::getID() const {
   return m_id;
 }
 

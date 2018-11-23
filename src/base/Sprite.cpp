@@ -43,7 +43,7 @@ void Drawable::initWithJson(const rapidjson::Value::Object &obj, StackAllocator 
   assert(obj["storage"].IsString());
 
   const char *storage_name = obj["storage"].GetString();
-  Uint32 storage_id = CompileTimeHash::runtime_hash(storage_name, strlen(storage_name));
+  uint32_t storage_id = CompileTimeHash::runtime_hash(storage_name, strlen(storage_name));
 
   if ("none"_hash != storage_id) {
     Scene *scene = Application::Get().getScene();
@@ -121,7 +121,7 @@ void Sprite::initWithJson(const rapidjson::Value::Object &obj, StackAllocator &a
   auto &textures = app.getTextureStorage();
   const char *str_texture_id = obj["texture"].GetString();
   StringID texture_id(str_texture_id);
-  m_tex = textures[(Uint32)texture_id];
+  m_tex = textures[(uint32_t)texture_id];
 
   Math::IRect rect({0, 0, 0, 0});
   JsonParseMethods::ReadIRect(obj["uv"].GetObject(), &rect);
@@ -181,7 +181,7 @@ void Sprite::updateVBO() {
   glm::vec3 *vert_buffer = (glm::vec3 *) glMapBufferRange(GL_ARRAY_BUFFER, 0, sizeof(vertexes), map_buffer_flag);
   glm::mat3x3 model(1.0f);
   getGameObject()->getModel(&model);
-  for (Uint32 i = 0; i < 4; ++i) {
+  for (uint32_t i = 0; i < 4; ++i) {
     vert_buffer[i] = model * vertexes[i];
   }
   glFlushMappedBufferRange(GL_ARRAY_BUFFER, 0, sizeof(vertexes));
@@ -249,11 +249,11 @@ void Sprite::setTexture(const Texture *val) {
   m_tex = val;
 }
 
-int32 Sprite::needUpdateUV() const {
+int32_t Sprite::needUpdateUV() const {
   return m_flags.getFlag(9);
 }
 
-void Sprite::setNeedUpdateUV(int32 val) {
+void Sprite::setNeedUpdateUV(int32_t val) {
   m_flags.setFlag(9, val);
 }
 
@@ -291,7 +291,7 @@ void DrawableStorage::initWithJson(const rapidjson::Value::Object &obj, StackAll
   const char *shader_name = obj["shader"].GetString();
   const char *camera_name = obj["camera"].GetString();
   StringID storage_id(storage_name), shader_id(shader_name), camera_id(camera_name);
-  m_id = (Uint32) storage_id;
+  m_id = (uint32_t) storage_id;
   m_order = obj["order"].GetUint();
 
   m_len = obj["size"].GetUint();
@@ -302,9 +302,9 @@ void DrawableStorage::initWithJson(const rapidjson::Value::Object &obj, StackAll
   auto &shaders = app.getShaderStorage();
   auto *scene = app.getScene();
   assert(scene);
-  setShader(shaders[(Uint32) shader_id]);
+  setShader(shaders[(uint32_t) shader_id]);
 
-  setCamera(scene->getCamera((Uint32) camera_id));
+  setCamera(scene->getCamera((uint32_t) camera_id));
 }
 
 void DrawableStorage::setCamera(Camera *camera) {
@@ -320,7 +320,7 @@ void DrawableStorage::setRenderSettingFun(const std::function<void(void)> &func)
 }
 
 Drawable *DrawableStorage::add(Drawable *drawable) {
-  for (Uint32 i = 0; i < m_len; ++i) {
+  for (uint32_t i = 0; i < m_len; ++i) {
     if (!m_drawables[i]) {
       m_drawables[i] = drawable;
       return drawable;
@@ -344,7 +344,7 @@ void DrawableStorage::drawDrawables() {
                        glm::value_ptr(vp));
     glUniform1i(m_shader->getTextureLocation(), 0);
 
-    for (Uint32 i = 0; i < m_len; ++i) {
+    for (uint32_t i = 0; i < m_len; ++i) {
       if (m_drawables[i]
           && m_drawables[i]->isAvailable()
           && m_drawables[i]->getGameObject()->isAvailable()) {
@@ -355,18 +355,18 @@ void DrawableStorage::drawDrawables() {
 }
 
 void DrawableStorage::checkDeleted() {
-  for (Uint32 i = 0; i < m_len; ++i) {
+  for (uint32_t i = 0; i < m_len; ++i) {
     if (m_drawables[i] && m_drawables[i]->getGameObject()->isDeleted()) {
       m_drawables[i] = nullptr;
     }
   }
 }
 
-Uint32 DrawableStorage::getID() const {
+uint32_t DrawableStorage::getID() const {
   return m_id;
 }
 
-Uint32 DrawableStorage::getOrder() const {
+uint32_t DrawableStorage::getOrder() const {
   return m_order;
 }
 }

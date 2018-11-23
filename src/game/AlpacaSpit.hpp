@@ -33,7 +33,7 @@ class Spit : public Component {
 
   void shoot(const glm::vec3 &direction, Alpaca *owner);
 
-  int32 isShot() const;
+  int32_t isShot() const;
 
  private:
   float32 m_elapsed_time;

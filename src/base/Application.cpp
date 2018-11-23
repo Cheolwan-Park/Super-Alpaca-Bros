@@ -23,7 +23,7 @@ Application::~Application() {
   ;
 }
 
-int32 Application::create(SDL::Window window, GLSettingFun gl_setting) {
+int32_t Application::create(SDL::Window window, GLSettingFun gl_setting) {
   if (!window.isAvailable())
     return RET_FAILED;
   m_window = window;
@@ -76,7 +76,7 @@ void Application::release(AppReleaseFun fun) {
   SDL::Quit();
 }
 
-int32 Application::setScene(const FileIO &f) {
+int32_t Application::setScene(const FileIO &f) {
   if (m_scene) {
     m_scene->~Scene();
     m_allocator.freeWithMarker(m_release_marker);
@@ -88,14 +88,14 @@ int32 Application::setScene(const FileIO &f) {
   m_animation_storage.clear();
   m_chunk_storage.clear();
 
-  m_scene = new(m_allocator.alloc<Scene>()) Scene();
+  m_scene = new (m_allocator.alloc<Scene>()) Scene();
   assert(m_scene);
   m_scene->setJsonFile(f);
   m_scene_changed = true;
   return m_scene->init();
 }
 
-int32 Application::setScene(const char *filename) {
+int32_t Application::setScene(const char *filename) {
   if (m_scene) {
     m_scene->~Scene();
     m_allocator.freeWithMarker(m_release_marker);
@@ -107,7 +107,7 @@ int32 Application::setScene(const char *filename) {
   m_animation_storage.clear();
   m_chunk_storage.clear();
 
-  m_scene = new(m_allocator.alloc<Scene>()) Scene();
+  m_scene = new (m_allocator.alloc<Scene>()) Scene();
   assert(m_scene);
   m_scene->setJsonFile(filename);
   m_scene_changed = true;
@@ -142,8 +142,12 @@ Storage<Mix_Chunk> &Application::getChunkStorage() {
   return m_chunk_storage;
 }
 
-int32 Application::isQuit() {
+int32_t Application::isQuit() {
   return m_quit;
+}
+
+int32_t Application::isSceneChanged() {
+  return m_scene_changed;
 }
 
 Application &Application::Get() {

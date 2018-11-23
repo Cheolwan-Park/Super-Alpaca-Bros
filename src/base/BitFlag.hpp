@@ -18,12 +18,12 @@ class BitFlag {
     return (*this);
   }
 
-  int32 getFlag(Uint32 idx) const {
+  int32_t getFlag(uint32_t idx) const {
     assert(idx < 32);
     return (m_flag >> idx) & 1U;
   }
 
-  void setFlag(Uint32 idx, int32 value) {
+  void setFlag(uint32_t idx, int32_t value) {
     assert(idx < 32);
     if (value)
       m_flag = m_flag | (1U << idx);
@@ -31,15 +31,15 @@ class BitFlag {
       m_flag = m_flag & (~(1U << idx));
   }
 
-  void reverseFlag(Uint32 idx) {
+  void reverseFlag(uint32_t idx) {
     assert(idx < 32);
     m_flag = m_flag ^ (1 << idx);
   }
 
   // count 1 bit in Uint (in the book, hackers delight)
-  Uint32 countUpBit() const
+  uint32_t countUpBit() const
   {
-    Uint32 tmp = m_flag;
+    uint32_t tmp = m_flag;
     tmp = tmp - ((tmp >> 1) & 0x55555555);
     tmp = (tmp & 0x33333333) + ((tmp >> 2) & 0x33333333);
     tmp = tmp + (tmp >> 8);
@@ -47,23 +47,23 @@ class BitFlag {
     return tmp & 0x0000003F;
   }
 
-  Uint32 countDownBit() const {
+  uint32_t countDownBit() const {
     return (32 - countUpBit());
   }
 
-  Uint32 getUIntValue() const {
+  uint32_t getUIntValue() const {
     return m_flag;
   }
 
   void printBits() {
-    for (Uint32 i = 0; i < 32; ++i) {
+    for (uint32_t i = 0; i < 32; ++i) {
       printf("%s", getFlag(31 - i) ? "1" : "0");
     }
     printf("\n");
   }
 
  private:
-  Uint32 m_flag;
+  uint32_t m_flag;
 };
 }
 

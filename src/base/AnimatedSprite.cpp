@@ -73,7 +73,7 @@ void AnimatedSprite::release() {
   Sprite::release();
 }
 
-int32 AnimatedSprite::isPlaying() const {
+int32_t AnimatedSprite::isPlaying() const {
   return m_flags.getFlag(10);
 }
 
@@ -81,7 +81,7 @@ const Animation *AnimatedSprite::getAnimation() const {
   return m_animation;
 }
 
-void AnimatedSprite::setPlaying(int32 val) {
+void AnimatedSprite::setPlaying(int32_t val) {
   m_flags.setFlag(10, val);
 }
 
@@ -100,7 +100,7 @@ void AnimatedSprite::onFinish() {
 void AnimatedSprite::setAnimationUV() {
   const Math::IRect &sprites_range = m_animation->getSpritesRange();
   const Math::Size &sprites_count = m_animation->getSpritesCount();
-  int32 x = 0, y = 0;
+  int32_t x = 0, y = 0;
   Math::IRect uv = {0, 0, 0, 0};
   y = m_now_idx / sprites_count.w;
   x = m_now_idx % sprites_count.w;

@@ -90,22 +90,22 @@ class Array {
     m_count += len;
   }
 
-  ValueType &at(Uint64 idx) {
+  ValueType &at(uint64_t idx) {
     assert(idx < m_maxsize);
     return m_arr[idx];
   }
 
-  const ValueType &at(Uint64 idx) const {
+  const ValueType &at(uint64_t idx) const {
     assert(idx < m_maxsize);
     return m_arr[idx];
   }
 
-  ValueType &operator[](Uint64 idx) {
+  ValueType &operator[](uint64_t idx) {
     assert(idx < m_maxsize);
     return m_arr[idx];
   }
 
-  const ValueType &operator[](Uint64 idx) const {
+  const ValueType &operator[](uint64_t idx) const {
     assert(idx < m_maxsize);
     return m_arr[idx];
   }
@@ -174,22 +174,22 @@ class FixedArray {
     memset(m_array, 0, sizeof(m_array));
   }
 
-  ValueType &at(Uint64 idx) {
+  ValueType &at(uint64_t idx) {
     assert(idx < MaxSize);
     return m_array[idx];
   }
 
-  const ValueType &at(Uint64 idx) const {
+  const ValueType &at(uint64_t idx) const {
     assert(idx < MaxSize);
     return m_array[idx];
   }
 
-  ValueType &operator[](Uint64 idx) {
+  ValueType &operator[](uint64_t idx) {
     assert(idx < MaxSize);
     return m_array[idx];
   }
 
-  const ValueType &operator[](Uint64 idx) const {
+  const ValueType &operator[](uint64_t idx) const {
     assert(idx < MaxSize);
     return m_array[idx];
   }

@@ -60,7 +60,7 @@ void TitleBanner::update() {
   // check input
   if(m_elapsed_time > m_wait_time) {
     SDL::Input &input = SDL::Input::Get();
-    if (input.isAnyKeyPressed() || input.isButtonPressed(SDL_BUTTON_LEFT)) {
+    if (input.isAnyKeyPressed()) {
       auto *zoom_transition = getGameObject()->getComponent<ZoomTransition>();
       if(!zoom_transition->isTransitioning())
         zoom_transition->transition();
@@ -70,6 +70,80 @@ void TitleBanner::update() {
 
 void TitleBanner::release() {
   ;
+}
+
+
+// TutorialBanner
+TutorialBanner::TutorialBanner()
+  :Component(), m_elapsed_time(0.0f), m_duration(0.0f),
+   m_each_width(0.0f), m_count(0), m_now(0), m_moving_start_position() {
+  ;
+}
+
+TutorialBanner::~TutorialBanner() {
+  ;
+}
+
+void TutorialBanner::initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) {
+  Component::initWithJson(obj, allocator);
+
+  assert(obj.HasMember("duration"));
+  assert(obj.HasMember("count"));
+  assert(obj.HasMember("eachwidth"));
+  assert(obj["duration"].IsFloat());
+  assert(obj["count"].IsUint());
+  assert(obj["eachwidth"].IsFloat());
+
+  m_duration = obj["duration"].GetFloat();
+  m_count = obj["count"].GetUint();
+  m_each_width = obj["eachwidth"].GetFloat();
+}
+
+void TutorialBanner::start() {
+  Component::start();
+}
+
+void TutorialBanner::update() {
+  if(isMoving()) {
+    Time &t = Time::Get();
+    m_elapsed_time += t.getDeltatime();
+    glm::vec3 target_position = m_moving_start_position;
+    target_position.x += m_each_width;
+    if(m_elapsed_time > m_duration) {
+      setLocalPosition(target_position);
+      m_elapsed_time = 0.0f;
+      setMoving(false);
+    } else {
+      glm::vec3 position = glm::mix(m_moving_start_position, target_position, m_elapsed_time/m_duration);
+      setLocalPosition(position);
+    }
+  } else {
+    SDL::Input &input = SDL::Input::Get();
+    if(input.isAnyKeyPressed()) {
+      if(m_now < m_count) {
+        ++m_now;
+        m_moving_start_position = getLocalPosition();
+        m_elapsed_time = 0.0f;
+        setMoving(true);
+      } else {
+        auto *zoom_transition = getGameObject()->getComponent<ZoomTransition>();
+        if (!zoom_transition->isTransitioning())
+          zoom_transition->transition();
+      }
+    }
+  }
+}
+
+void TutorialBanner::release() {
+  ;
+}
+
+int32_t TutorialBanner::isMoving() {
+  return m_flags.getFlag(2);
+}
+
+void TutorialBanner::setMoving(int32_t val) {
+  m_flags.setFlag(2, val);
 }
 
 
@@ -248,7 +322,7 @@ void ZoomTransition::transition() {
   m_flags.setFlag(2, true);
 }
 
-int32 ZoomTransition::isTransitioning() const {
+int32_t ZoomTransition::isTransitioning() const {
   return m_flags.getFlag(2);
 }
 

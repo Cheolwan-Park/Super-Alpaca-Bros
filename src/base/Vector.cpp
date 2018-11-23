@@ -83,11 +83,11 @@ Vector2 &Vector2::operator/=(float32 scala) {
   return (*this);
 }
 
-int32 operator==(const Vector2 &lhs, const Vector2 &rhs) {
+int32_t operator==(const Vector2 &lhs, const Vector2 &rhs) {
   return (lhs.x == rhs.x && lhs.y == rhs.y);
 }
 
-int32 operator!=(const Vector2 &lhs, const Vector2 &rhs) {
+int32_t operator!=(const Vector2 &lhs, const Vector2 &rhs) {
   return (lhs.x != rhs.x || lhs.y != rhs.y);
 }
 

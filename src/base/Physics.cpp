@@ -25,16 +25,16 @@ void Physics::initWithJson(const rapidjson::Value::Object &obj, StackAllocator &
 
   m_colliders = allocator.alloc<Collider *>(m_max_collider_count);
   memset(m_colliders, 0, sizeof(Collider *) * m_max_collider_count);
-  m_collide_map = (byte *) allocator.alloc<byte>(m_max_collider_count * m_max_collider_count);
-  memset(m_collide_map, 0, sizeof(byte) * m_max_collider_count * m_max_collider_count);
+  m_collide_map = (int8_t *) allocator.alloc<int8_t>(m_max_collider_count * m_max_collider_count);
+  memset(m_collide_map, 0, sizeof(int8_t) * m_max_collider_count * m_max_collider_count);
 }
 
 void Physics::update() {
   Time &t = Time::Get();
   Rigidbody *rigidbody = nullptr;
 
-  byte *collide_map = m_collide_map;
-  for (Uint32 i = 0; i < m_max_collider_count; ++i) {
+  int8_t *collide_map = m_collide_map;
+  for (uint32_t i = 0; i < m_max_collider_count; ++i) {
     if (!m_colliders[i]
         || !m_colliders[i]->isAvailable()
         || !m_colliders[i]->getGameObject()->isAvailable()) {
@@ -48,7 +48,7 @@ void Physics::update() {
     }
 
     // check collide
-    for (Uint32 j = i + 1; j < m_max_collider_count; ++j) {
+    for (uint32_t j = i + 1; j < m_max_collider_count; ++j) {
       if (!m_colliders[j]
           || !m_colliders[j]->isAvailable()
           || !m_colliders[j]->getGameObject()->isAvailable()) {
@@ -89,13 +89,13 @@ void Physics::update() {
 }
 
 void Physics::checkDeleted() {
-  byte *iter_collide_map = nullptr;
-  byte *self_collide_map = m_collide_map;
-  for (Uint32 i = 0; i < m_max_collider_count; ++i) {
+  int8_t *iter_collide_map = nullptr;
+  int8_t *self_collide_map = m_collide_map;
+  for (uint32_t i = 0; i < m_max_collider_count; ++i) {
     if (m_colliders[i] && m_colliders[i]->getGameObject()->isDeleted()) {
       m_colliders[i] = nullptr;
       iter_collide_map = m_collide_map;
-      for (Uint32 j = 0; j < i; ++j) {
+      for (uint32_t j = 0; j < i; ++j) {
         if (iter_collide_map[i]) {
           m_colliders[i]->getGameObject()->onColliderExit(m_colliders[j]);
           m_colliders[j]->getGameObject()->onColliderExit(m_colliders[i]);
@@ -103,7 +103,7 @@ void Physics::checkDeleted() {
         }
         iter_collide_map += m_max_collider_count;
       }
-      for (Uint32 j = i + 1; j < m_max_collider_count; ++j) {
+      for (uint32_t j = i + 1; j < m_max_collider_count; ++j) {
         if (self_collide_map[j]) {
           m_colliders[i]->getGameObject()->onColliderExit(m_colliders[j]);
           m_colliders[j]->getGameObject()->onColliderExit(m_colliders[i]);
@@ -118,7 +118,7 @@ void Physics::checkDeleted() {
 }
 
 Collider *Physics::add(Collider *collider) {
-  for (Uint32 i = 0; i < m_max_collider_count; ++i) {
+  for (uint32_t i = 0; i < m_max_collider_count; ++i) {
     if (!m_colliders[i]) {
       m_colliders[i] = collider;
       ++m_collider_count;
@@ -136,11 +136,11 @@ void Physics::setGravity(float32 a) {
   m_gravity = a;
 }
 
-Uint32 Physics::getColliderCount() const {
+uint32_t Physics::getColliderCount() const {
   return m_collider_count;
 }
 
-Uint32 Physics::getMaxColliderCount() const {
+uint32_t Physics::getMaxColliderCount() const {
   return m_max_collider_count;
 }
 
@@ -245,11 +245,11 @@ const glm::vec3 &Rigidbody::getVelocity() const {
   return m_velocity;
 }
 
-int32 Rigidbody::isSimulated() const {
+int32_t Rigidbody::isSimulated() const {
   return m_flags.getFlag(2);
 }
 
-int32 Rigidbody::isGravityActive() const {
+int32_t Rigidbody::isGravityActive() const {
   return m_flags.getFlag(3);
 }
 
@@ -267,11 +267,11 @@ void Rigidbody::setVelocity(float32 x, float32 y, float32 z) {
   m_velocity.z = z;
 }
 
-void Rigidbody::setSimulated(int32 val) {
+void Rigidbody::setSimulated(int32_t val) {
   m_flags.setFlag(2, val);
 }
 
-void Rigidbody::setGravityActive(int32 val) {
+void Rigidbody::setGravityActive(int32_t val) {
   m_flags.setFlag(3, val);
 }
 }

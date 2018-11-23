@@ -1045,7 +1045,7 @@
       "available": true,
       "static": false,
       "position": {"x": 0.0, "y": 0.0, "z": 1.0},
-      "scale": {"x": 1.25, "y": 1.25},
+      "scale": {"x": 1.0, "y": 1.0},
       "rotation": 0.0,
       "components": [
         {
@@ -1064,7 +1064,7 @@
       "available": true,
       "static": false,
       "position": {"x": 0.0, "y": 0.0, "z": 1.0},
-      "scale": {"x": 1280.0, "y": 720.0},
+      "scale": {"x": 1600.0, "y": 900.0},
       "rotation": 0.0,
       "parent": {"storage": "ui", "id": "UI_Pause"},
       "components": [
@@ -1083,8 +1083,8 @@
       "tag": "UI",
       "available": true,
       "static": false,
-      "position": {"x": 0.0, "y": 100.0, "z": 1.0},
-      "scale": {"x": 450.0, "y": 90.0},
+      "position": {"x": 0.0, "y": 125.0, "z": 1.0},
+      "scale": {"x": 600.0, "y": 120.0},
       "rotation": 0.0,
       "parent": {"storage": "ui", "id": "UI_Pause"},
       "components": [
@@ -1108,8 +1108,8 @@
       "tag": "UI",
       "available": true,
       "static": false,
-      "position": {"x": 0.0, "y": -100.0, "z": 1.0},
-      "scale": {"x": 360.0, "y": 90.0},
+      "position": {"x": 0.0, "y": -125.0, "z": 1.0},
+      "scale": {"x": 480.0, "y": 120.0},
       "rotation": 0.0,
       "parent": {"storage": "ui", "id": "UI_Pause"},
       "components": [
@@ -1124,6 +1124,39 @@
           "type": "ResumeButton",
           "available": true,
           "presseduv": {"x": 512, "y": 768, "w": 512, "h": 128}
+        }
+      ]
+    },
+    {
+      "storage": "ui",
+      "id": "help_button",
+      "tag": "UI",
+      "available": true,
+      "static": false,
+      "position": {"x": 700.0, "y": 400.0, "z": 1.0},
+      "scale": {"x": 100.0, "y": 100.0},
+      "rotation": 0.0,
+      "parent": {"storage": "ui", "id": "UI_Pause"},
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "ui",
+          "uv": {"x": 896, "y": 384, "w": 128, "h": 128},
+          "texture": "ui.png"
+        },
+        {
+          "type": "SceneTransitionButton",
+          "available": true,
+          "presseduv": {"x": 896, "y": 512, "w": 128, "h": 128}
+        },
+        {
+          "type": "ZoomTransition",
+          "available": true,
+          "loadscene": "tutorial.json",
+          "duration": 0.5,
+          "target_ltn": {"x": -1.5, "y": 1.0, "z": 0.1},
+          "target_rbf": {"x": 1.5, "y": -1.0, "z": 8.0}
         }
       ]
     }

@@ -14,7 +14,7 @@ class StopWatch;
 class Time {
  public:
   typedef std::chrono::system_clock Clock;
-  typedef std::chrono::duration<Uint32, std::milli> milliseconds;
+  typedef std::chrono::duration<uint32_t, std::milli> milliseconds;
   typedef std::chrono::duration<float32, std::milli> fmilliseconds;
 
  private:
@@ -37,9 +37,9 @@ class Time {
 
   void update();
 
-  int32 addTimer(float64 time, std::function<int32()> &func);
+  int32_t addTimer(float64 time, std::function<int32_t()> &func);
 
-  void removeTimer(int32 index);
+  void removeTimer(int32_t index);
 
   void deleteAllTimer();
 
@@ -49,9 +49,9 @@ class Time {
 
   float32 getElapsedtime() const;
 
-  Uint32 getIDeltatime() const;
+  uint32_t getIDeltatime() const;
 
-  Uint32 getIElapsedtime() const;
+  uint32_t getIElapsedtime() const;
 
  public:
   static Time &Get();
@@ -62,7 +62,7 @@ class Time {
 
 class Timer {
  public:
-  typedef std::function<int32()> Function;
+  typedef std::function<int32_t()> Function;
 
  public:
   Timer() = delete;
@@ -77,13 +77,13 @@ class Timer {
 
   void update(float32 deltatime);
 
-  void setIndex(int32 index);
+  void setIndex(int32_t index);
 
  private:
   Function m_func;
   float32 m_time;
   float32 m_elapsed;
-  int32 m_index;
+  int32_t m_index;
 };
 
 class StopWatch {

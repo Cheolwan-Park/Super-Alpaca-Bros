@@ -16,7 +16,7 @@ namespace Base {
 class Application;
 
 typedef GLint(*GLSettingFun)(void);
-typedef int32(*AppSettingFun)(void);
+typedef int32_t(*AppSettingFun)(void);
 typedef void(*AppReleaseFun)(void);
 
 class Scene;
@@ -31,7 +31,7 @@ class Application {
  public:
   ~Application();
 
-  int32 create(SDL::Window window, GLSettingFun gl_setting);
+  int32_t create(SDL::Window window, GLSettingFun gl_setting);
 
   void run();
 
@@ -39,8 +39,8 @@ class Application {
 
   void release(AppReleaseFun fun);
 
-  int32 setScene(const FileIO &f);
-  int32 setScene(const char *filename);
+  int32_t setScene(const FileIO &f);
+  int32_t setScene(const char *filename);
 
   SDL::Window getWindow();
 
@@ -56,7 +56,9 @@ class Application {
 
   Storage<Mix_Chunk> &getChunkStorage();
 
-  int32 isQuit();
+  int32_t isQuit();
+
+  int32_t isSceneChanged();
 
   static Application &Get();
 
@@ -64,8 +66,8 @@ class Application {
   SDL::Window m_window;
   Scene *m_scene;
   StackAllocator::Marker m_release_marker;
-  int32 m_quit;
-  int32 m_scene_changed;
+  int32_t m_quit;
+  int32_t m_scene_changed;
   StackAllocator m_allocator;
   Storage<Texture> m_texture_storage;
   Storage<ShaderProgram> m_shader_storage;

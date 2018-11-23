@@ -28,13 +28,13 @@ class ShaderProgram {
 
   ShaderProgram &operator=(const ShaderProgram &other) = delete;
 
-  int32 init(const FileIO &vert, const FileIO &frag);
+  int32_t init(const FileIO &vert, const FileIO &frag);
 
-  int32 initWithJson(const rapidjson::Value::Object &obj);
+  int32_t initWithJson(const rapidjson::Value::Object &obj);
 
   void release();
 
-  Uint32 getID() const;
+  uint32_t getID() const;
 
   GLuint getProgram() const;
 
@@ -43,7 +43,7 @@ class ShaderProgram {
   GLint getTextureLocation() const;
 
  private:
-  Uint32 m_id;
+  uint32_t m_id;
   GLuint m_program;
   GLuint m_vertex;
   GLuint m_fragment;

@@ -26,7 +26,7 @@ class Camera {
                      float32 bottom, float32 top,
                      float32 n, float32 f);
 
-  Uint32 getID() const;
+  uint32_t getID() const;
 
   const glm::mat4 &getViewMatrix() const;
 
@@ -37,7 +37,7 @@ class Camera {
   const glm::vec3 &getRightBottomFar() const;
 
  private:
-  Uint32 m_id;
+  uint32_t m_id;
   glm::mat4 m_view;
   glm::mat4 m_projection;
   glm::vec3 m_left_top_near;

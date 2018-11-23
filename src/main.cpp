@@ -1,15 +1,21 @@
 #include "base.hpp"
 #include "game.hpp"
 #include "title.h"
-#include "Title/TitleBanner.h"
+
+#include <steam/steam_api.h>
 
 using namespace Base;
 
-int32 JsonAppInit(const char *filename);
+int32_t JsonAppInit(const char *filename);
 void AddFactoryFuncs();
 
 int main(int argc, char* argv[]) {
   SDL::InitSDL(nullptr);
+
+//  if(!SteamAPI_Init()) {
+//    fprintf(stderr, "failed to init steam api\n");
+//    return -1;
+//  }
 
   String128 path(Directories::res);
   path += "init.json";
@@ -23,6 +29,8 @@ int main(int argc, char* argv[]) {
   printf("%lu byte used\n", app.getAllocator().getTopMarker());
 #endif
 
+//  SteamAPI_Shutdown();
+
   app.release(nullptr);
 
   return 0;
@@ -35,7 +43,7 @@ GLint GLSetting() {
   return RET_SUCC;
 }
 
-int32 JsonAppInit(const char *filename) {
+int32_t JsonAppInit(const char *filename) {
   // Open JsonFile
   rapidjson::Document doc;
   OpenJsonFile(filename, &doc);
@@ -73,10 +81,10 @@ int32 JsonAppInit(const char *filename) {
   auto &textures = app.getTextureStorage();
   auto &animations = app.getAnimationStorage();
   auto &chunks = app.getChunkStorage();
-  Uint32 shaders_size = doc["shaderstorage_size"].GetUint();
-  Uint32 textures_size = doc["texturestorage_size"].GetUint();
-  Uint32 animations_size = doc["animationstorage_size"].GetUint();
-  Uint32 chunks_size = doc["chunkstorage_size"].GetUint();
+  uint32_t shaders_size = doc["shaderstorage_size"].GetUint();
+  uint32_t textures_size = doc["texturestorage_size"].GetUint();
+  uint32_t animations_size = doc["animationstorage_size"].GetUint();
+  uint32_t chunks_size = doc["chunkstorage_size"].GetUint();
 
   allocator.reallocBuffer(doc["allocator_size"].GetUint());
   shaders.assignMemory(allocator.alloc<Storage<ShaderProgram>::Type>(shaders_size), shaders_size);
@@ -125,9 +133,11 @@ void AddFactoryFuncs() {
   component_factory.addFunction<Game::Button>();
   component_factory.addFunction<Game::RestartButton>();
   component_factory.addFunction<Game::ResumeButton>();
+  component_factory.addFunction<Game::SceneTransitionButton>();
   component_factory.addFunction<Game::BannerMover>();
   component_factory.addFunction<Game::WinnerBanner>();
   component_factory.addFunction<Title::TitleBanner>();
+  component_factory.addFunction<Title::TutorialBanner>();
   component_factory.addFunction<Title::Rotator>();
   component_factory.addFunction<Title::ScaleRepeater>();
   component_factory.addFunction<Title::ZoomTransition>();

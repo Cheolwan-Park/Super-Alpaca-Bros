@@ -30,9 +30,9 @@ void ActionManager::initWithJson(const rapidjson::Value::Object &obj) {
   ActionFactory::Type factoryfunc = nullptr;
   Action *new_action = nullptr;
   const char *action_type = nullptr;
-  Uint32 action_type_id = 0;
+  uint32_t action_type_id = 0;
 
-  for (Uint32 i = 0; i < actions.Size(); ++i) {
+  for (uint32_t i = 0; i < actions.Size(); ++i) {
     assert(actions[i].IsObject());
     auto action = actions[i].GetObject();
 
@@ -51,7 +51,7 @@ void ActionManager::initWithJson(const rapidjson::Value::Object &obj) {
 
 void ActionManager::update() {
   auto &t = Time::Get();
-  for (Uint32 i = 0; i < NUM_ACTIONS; ++i) {
+  for (uint32_t i = 0; i < NUM_ACTIONS; ++i) {
     if (m_remain[i] > 0.0) {
       m_remain[i] -= t.getDeltatime();
       m_remain[i] = m_remain[i] < 0.0f ? 0.0f : m_remain[i];
@@ -69,40 +69,40 @@ void ActionManager::update() {
 }
 
 Action *ActionManager::getAction(ActionManager::ActionType type) {
-  for (Uint32 i = 0; i < NUM_ACTIONS; ++i) {
+  for (uint32_t i = 0; i < NUM_ACTIONS; ++i) {
     if (m_actions[i] && type == m_actions[i]->getType())
       return m_actions[i];
   }
   return nullptr;
 }
 
-Action *ActionManager::getAction(Uint32 idx) {
+Action *ActionManager::getAction(uint32_t idx) {
   assert(idx < NUM_ACTIONS);
   return m_actions[idx];
 }
 
-int32 ActionManager::isAbleToAction(ActionManager::ActionType type) {
-  for (Uint32 i = 0; i < NUM_ACTIONS; ++i) {
+int32_t ActionManager::isAbleToAction(ActionManager::ActionType type) {
+  for (uint32_t i = 0; i < NUM_ACTIONS; ++i) {
     if (m_actions[i] && type == m_actions[i]->getType())
       return (m_remain[i] < 0.0f);
   }
   return false;
 }
 
-int32 ActionManager::isAbleToAction(Uint32 idx) {
+int32_t ActionManager::isAbleToAction(uint32_t idx) {
   assert(idx < NUM_ACTIONS);
   return (m_remain[idx] < 0.0f);
 }
 
-int32 ActionManager::isActing(ActionManager::ActionType type) {
-  for (Uint32 i = 0; i < NUM_ACTIONS; ++i) {
+int32_t ActionManager::isActing(ActionManager::ActionType type) {
+  for (uint32_t i = 0; i < NUM_ACTIONS; ++i) {
     if (m_actions[i] && type == m_actions[i]->getType())
       return m_actions[i]->isActing();
   }
   return false;
 }
 
-int32 ActionManager::isActing(Uint32 idx) {
+int32_t ActionManager::isActing(uint32_t idx) {
   assert(idx < NUM_ACTIONS);
   if (m_actions[idx])
     return m_actions[idx]->isActing();
@@ -110,20 +110,20 @@ int32 ActionManager::isActing(Uint32 idx) {
 }
 
 float32 ActionManager::getRemainTime(ActionType type) {
-  for(Uint32 i = 0; i < NUM_ACTIONS; ++i) {
+  for(uint32_t i = 0; i < NUM_ACTIONS; ++i) {
     if(m_actions[i] && type == m_actions[i]->getType())
       return m_remain[i];
   }
   return 0.0f;
 }
 
-float32 ActionManager::getRemainTime(Uint32 idx) {
+float32 ActionManager::getRemainTime(uint32_t idx) {
   assert(idx < NUM_ACTIONS);
   return m_remain[idx];
 }
 
-int32 ActionManager::doingAnyAction() {
-  for (Uint32 i = 0; i < NUM_ACTIONS; ++i) {
+int32_t ActionManager::doingAnyAction() {
+  for (uint32_t i = 0; i < NUM_ACTIONS; ++i) {
     if (m_actions[i] && m_actions[i]->isActing())
       return true;
   }
@@ -131,12 +131,12 @@ int32 ActionManager::doingAnyAction() {
 }
 
 void ActionManager::resetRemainTimes() {
-  for(Uint32 i=0; i<NUM_ACTIONS; ++i)
+  for(uint32_t i=0; i<NUM_ACTIONS; ++i)
     m_remain[i] = 0.0f;
 }
 
 void ActionManager::doAction(ActionManager::ActionType type) {
-  for (Uint32 i = 0; i < NUM_ACTIONS; ++i) {
+  for (uint32_t i = 0; i < NUM_ACTIONS; ++i) {
     if (m_actions[i] && type == m_actions[i]->getType()) {
       if (m_remain[i] <= 0.0f) {
         m_actions[i]->act();
@@ -147,7 +147,7 @@ void ActionManager::doAction(ActionManager::ActionType type) {
   }
 }
 
-void ActionManager::doAction(Uint32 idx) {
+void ActionManager::doAction(uint32_t idx) {
   assert(idx < NUM_ACTIONS);
   if (m_actions[idx] && m_remain[idx] <= 0.0f) {
     m_actions[idx]->act();
@@ -291,11 +291,11 @@ Alpaca::Keymap Alpaca::getKeymap() const {
   return m_keymap;
 }
 
-int32 Alpaca::isMoving() const {
+int32_t Alpaca::isMoving() const {
   return m_flags.getFlag(13);
 }
 
-int32 Alpaca::isGrounded() const {
+int32_t Alpaca::isGrounded() const {
   return m_flags.getFlag(14);
 }
 
@@ -326,14 +326,14 @@ void Alpaca::setKeymap(Alpaca::Keymap keymap) {
 void Alpaca::controlledMove() {
   auto &input = SDL::Input::Get();
   auto &t = Time::Get();
-  const SDL_Scancode *keys = keymap[(int32) m_keymap];
+  const SDL_Scancode *keys = keymap[(int32_t) m_keymap];
   glm::vec3 delta = {0.0f, 0.0f, 0.0f};
 
-  int32 hasMoved = isMoving();
+  int32_t hasMoved = isMoving();
   setMoving(false);
   if (!m_action_manager.doingAnyAction()) {
     const glm::vec2 &scale = getScale();
-    if (input.isKeyPressed(keys[(int32) Key::UP])
+    if (input.isKeyPressed(keys[(int32_t) Key::UP])
         && isGrounded()
         && (m_rigidbody->getVelocity().y) <= 0.0f) {
       m_rigidbody->addForce(0.0f, m_jump_power, 0.0f);
@@ -343,17 +343,17 @@ void Alpaca::controlledMove() {
       auto &chunks = Application::Get().getChunkStorage();
       mixer.playChunk(chunks["jump.wav"_hash]);
     }
-    if (input.isKeyPressed(keys[(int32) Key::DOWN]) && isGrounded()
+    if (input.isKeyPressed(keys[(int32_t) Key::DOWN]) && isGrounded()
         && m_ground) {
       m_ground->pass(this->getGameObject());
       setGrounded(false);
     }
-    if (input.isKeyDown(keys[(int32) Key::LEFT])) {
+    if (input.isKeyDown(keys[(int32_t) Key::LEFT])) {
       setScale(abs(scale.x), scale.y);
       delta.x -= m_speed;
       setMoving(true);
     }
-    if (input.isKeyDown(keys[(int32) Key::RIGHT])) {
+    if (input.isKeyDown(keys[(int32_t) Key::RIGHT])) {
       setScale(-abs(scale.x), scale.y);
       delta.x += m_speed;
       setMoving(true);
@@ -376,23 +376,23 @@ void Alpaca::controlledMove() {
 
 void Alpaca::checkActions() {
   auto &input = SDL::Input::Get();
-  const SDL_Scancode *keys = keymap[(int32) m_keymap];
-  if (input.isKeyDown(keys[(int32) Key::ACTION1])) {
+  const SDL_Scancode *keys = keymap[(int32_t) m_keymap];
+  if (input.isKeyDown(keys[(int32_t) Key::ACTION1])) {
     m_action_manager.doAction(0);
   }
-  if (input.isKeyDown(keys[(int32) Key::ACTION2])) {
+  if (input.isKeyDown(keys[(int32_t) Key::ACTION2])) {
     m_action_manager.doAction(1);
   }
-  if (input.isKeyDown(keys[(int32) Key::ACTION3])) {
+  if (input.isKeyDown(keys[(int32_t) Key::ACTION3])) {
     m_action_manager.doAction(2);
   }
 }
 
-void Alpaca::setMoving(int32 val) {
+void Alpaca::setMoving(int32_t val) {
   m_flags.setFlag(13, val);
 }
 
-void Alpaca::setGrounded(int32 val) {
+void Alpaca::setGrounded(int32_t val) {
   m_flags.setFlag(14, val);
 }
 }

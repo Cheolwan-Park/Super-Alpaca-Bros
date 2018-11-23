@@ -128,7 +128,7 @@ void NumberViewer::initWithJson(const rapidjson::Value::Object &obj, StackAlloca
   StringID number_sheet_id(str_number_sheet);
   auto &animations = Application::Get().getAnimationStorage();
 
-  m_number_sheet = animations[(Uint32)number_sheet_id];
+  m_number_sheet = animations[(uint32_t)number_sheet_id];
   const Math::Size &sprite_count = m_number_sheet->getSpritesCount();
 }
 
@@ -145,12 +145,12 @@ void NumberViewer::release() {
   Sprite::release();
 }
 
-void NumberViewer::setNumber(Uint32 n) {
+void NumberViewer::setNumber(uint32_t n) {
   assert(n < 10);
 
   const Math::IRect &sprites_range = m_number_sheet->getSpritesRange();
   const Math::Size &sprites_count = m_number_sheet->getSpritesCount();
-  int32 x=0, y=0;
+  int32_t x=0, y=0;
   Math::IRect uv = {0, 0, 0, 0};
   y = n / sprites_count.w;
   x = n % sprites_count.w;
@@ -191,8 +191,8 @@ void HitGaugeViewer::initWithJson(const rapidjson::Value::Object &obj, StackAllo
   auto *scene = Application::Get().getScene();
   GameObject *new_gameobject = nullptr;
   glm::vec3 position(0.0f, 0.0f, 1.0f);
-  auto viewer_count = (int32)m_number_viewers.getMaxSize();
-  for(int32 i=0; i<viewer_count; ++i) {
+  auto viewer_count = (int32_t)m_number_viewers.getMaxSize();
+  for(int32_t i=0; i<viewer_count; ++i) {
     new_gameobject = scene->createGameObject(number_json_object);
     const glm::vec2 &scale = new_gameobject->getScale();
     position.x = scale.x*(i - viewer_count/2);
@@ -209,7 +209,7 @@ void HitGaugeViewer::start() {
   m_alpaca_hit_gauge = (alpaca->getGameObject())->getComponent<HitGauge>();
   assert(m_alpaca_hit_gauge);
 
-  for(Uint32 i=0; i<m_number_viewers.getMaxSize(); ++i) {
+  for(uint32_t i=0; i<m_number_viewers.getMaxSize(); ++i) {
     m_number_viewers[i]->setNumber(0);
   }
 
@@ -219,10 +219,10 @@ void HitGaugeViewer::start() {
 void HitGaugeViewer::update() {
   Component::update();
 
-  auto gauge = (Uint32)m_alpaca_hit_gauge->getGauge();
+  auto gauge = (uint32_t)m_alpaca_hit_gauge->getGauge();
   size_t viewer_count = m_number_viewers.getMaxSize();
-  Uint32 n=0, a=1;
-  for(Uint32 i=0; i<viewer_count; ++i) {
+  uint32_t n=0, a=1;
+  for(uint32_t i=0; i<viewer_count; ++i) {
     n = (gauge/a)%10;
     m_number_viewers[viewer_count-i-1]->setNumber(n);
     a *= 10;

@@ -13,6 +13,7 @@ Scene::Scene()
 
 Scene::~Scene() {
   for (size_t i = 0; i < m_object_storages.getCount(); ++i) {
+    m_object_storages[i]->clear();
     m_object_storages[i]->~ObjectStorage();
     m_object_storages[i] = nullptr;
   }
@@ -22,7 +23,7 @@ Scene::~Scene() {
   }
 }
 
-int32 Scene::init() {
+int32_t Scene::init() {
 #ifndef NDEBUG
   printf("==== loading scene ====\n");
 #endif
@@ -59,7 +60,7 @@ int32 Scene::init() {
   return RET_SUCC;
 }
 
-GameObject *Scene::getObject(Uint32 hash) {
+GameObject *Scene::getObject(uint32_t hash) {
   GameObject *obj = nullptr;
   for (size_t i = 0; i < m_object_storages.getCount(); ++i) {
     obj = m_object_storages[i]->get(hash);
@@ -69,7 +70,7 @@ GameObject *Scene::getObject(Uint32 hash) {
   return nullptr;
 }
 
-GameObject *Scene::getObject(Uint32 storage, Uint32 hash) {
+GameObject *Scene::getObject(uint32_t storage, uint32_t hash) {
   for (size_t i = 0; i < m_object_storages.getCount(); ++i) {
     if (m_object_storages[i]->getID() == storage) {
       return m_object_storages[i]->get(hash);
@@ -80,8 +81,11 @@ GameObject *Scene::getObject(Uint32 storage, Uint32 hash) {
 
 void Scene::update() {
   m_physics.update();
+  auto &app = Application::Get();
   for (size_t i = 0; i < m_object_storages.getCount(); ++i) {
     m_object_storages[i]->updateObjects();
+    if(app.isSceneChanged())
+      break;
   }
 }
 
@@ -123,7 +127,7 @@ void Scene::addDrawableStorage(DrawableStorage *storage) {
             });
 }
 
-ObjectStorage *Scene::getObjectStorage(Uint32 hash) {
+ObjectStorage *Scene::getObjectStorage(uint32_t hash) {
   for (size_t i = 0; i < m_object_storages.getCount(); ++i) {
     if (hash == m_object_storages[i]->getID())
       return m_object_storages[i];
@@ -131,7 +135,7 @@ ObjectStorage *Scene::getObjectStorage(Uint32 hash) {
   return nullptr;
 }
 
-DrawableStorage *Scene::getDrawableStorage(Uint32 hash) {
+DrawableStorage *Scene::getDrawableStorage(uint32_t hash) {
   for (size_t i = 0; i < m_drawable_storages.getCount(); ++i) {
     if (hash == m_drawable_storages[i]->getID())
       return m_drawable_storages[i];
@@ -139,7 +143,7 @@ DrawableStorage *Scene::getDrawableStorage(Uint32 hash) {
   return nullptr;
 }
 
-Camera *Scene::getCamera(Uint32 hash) {
+Camera *Scene::getCamera(uint32_t hash) {
   for (size_t i = 0; i < m_cameras.getCount(); ++i) {
     if (hash == m_cameras[i]->getID())
       return m_cameras[i];
@@ -151,7 +155,7 @@ Physics &Scene::getPhysics() {
   return m_physics;
 }
 
-GameObject *Scene::addGameObject(Uint32 storage, GameObject *gameobject) {
+GameObject *Scene::addGameObject(uint32_t storage, GameObject *gameobject) {
   assert(gameobject);
   for (size_t i = 0; i < m_object_storages.getCount(); ++i) {
     if (storage == m_object_storages[i]->getID()) {
@@ -162,7 +166,7 @@ GameObject *Scene::addGameObject(Uint32 storage, GameObject *gameobject) {
   return nullptr;
 }
 
-int32 Scene::addDrawable(Uint32 storage, Drawable *drawable) {
+int32_t Scene::addDrawable(uint32_t storage, Drawable *drawable) {
   assert(drawable);
   for (size_t i = 0; i < m_drawable_storages.getCount(); ++i) {
     if (storage == m_drawable_storages[i]->getID()) {

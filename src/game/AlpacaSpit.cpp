@@ -100,7 +100,7 @@ void Spit::shoot(const glm::vec3 &direction, Alpaca *owner) {
   m_flags.setFlag(2, true);
 }
 
-int32 Spit::isShot() const {
+int32_t Spit::isShot() const {
   return m_flags.getFlag(2);
 }
 }

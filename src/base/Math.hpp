@@ -15,20 +15,20 @@ struct Rect {
 };
 
 struct IRect {
-  int32 x;
-  int32 y;
-  int32 w;
-  int32 h;
+  int32_t x;
+  int32_t y;
+  int32_t w;
+  int32_t h;
 };
 
 struct Size {
-  int32 w;
-  int32 h;
+  int32_t w;
+  int32_t h;
 };
 
 struct Point {
-  int32 x;
-  int32 y;
+  int32_t x;
+  int32_t y;
 };
 
 namespace Constant {

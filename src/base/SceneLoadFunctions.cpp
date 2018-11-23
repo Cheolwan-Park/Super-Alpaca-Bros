@@ -6,7 +6,7 @@ void Scene::setJsonFile(const FileIO &f) {
   OpenJsonFile(f, &m_doc);
 }
 
-int32 Scene::setJsonFile(const char *filename) {
+int32_t Scene::setJsonFile(const char *filename) {
   String128 path(Directories::Scene);
   path += filename;
   return OpenJsonFile(path.c_str(), &m_doc);
@@ -48,7 +48,7 @@ GameObject *Scene::createGameObject(const rapidjson::Value::Object &obj) {
   return new_gameobject;
 }
 
-int32 Scene::loadPhysics() {
+int32_t Scene::loadPhysics() {
   assert(m_doc.HasMember("Physics"));
   assert(m_doc["Physics"].IsObject());
 
@@ -57,7 +57,7 @@ int32 Scene::loadPhysics() {
   return RET_SUCC;
 }
 
-int32 Scene::loadCameras() {
+int32_t Scene::loadCameras() {
   Application &app = Application::Get();
   auto &allocator = app.getAllocator();
 
@@ -84,7 +84,7 @@ int32 Scene::loadCameras() {
   return RET_SUCC;
 }
 
-int32 Scene::loadShaders() {
+int32_t Scene::loadShaders() {
   Application &app = Application::Get();
   auto &shaders = app.getShaderStorage();
   auto &allocator = app.getAllocator();
@@ -118,7 +118,7 @@ int32 Scene::loadShaders() {
   return RET_SUCC;
 }
 
-int32 Scene::loadTextures() {
+int32_t Scene::loadTextures() {
   Application &app = Application::Get();
   auto &textures = app.getTextureStorage();
   auto &allocator = app.getAllocator();
@@ -148,7 +148,7 @@ int32 Scene::loadTextures() {
   return RET_SUCC;
 }
 
-int32 Scene::loadAnimations() {
+int32_t Scene::loadAnimations() {
   Application &app = Application::Get();
   auto &allocator = app.getAllocator();
   auto &animations = app.getAnimationStorage();
@@ -178,7 +178,7 @@ int32 Scene::loadAnimations() {
   return RET_SUCC;
 }
 
-int32 Scene::loadSounds() {
+int32_t Scene::loadSounds() {
   Application &app = Application::Get();
   auto &chunks = app.getChunkStorage();
   auto &mixer = SDL::Mixer::Get();
@@ -204,19 +204,19 @@ int32 Scene::loadSounds() {
     const char *str_type = obj["type"].GetString();
     StringID type_id(str_type);
     const char *filename = obj["file"].GetString();
-    Uint32 volume = obj["volume"].GetUint();
+    uint32_t volume = obj["volume"].GetUint();
 
-    if("Music"_hash == (Uint32)type_id) {
+    if("Music"_hash == (uint32_t)type_id) {
       mixer.changeMusic(filename);
       mixer.setMusicVolume(volume);
 #ifndef NDEBUG
       printf("music : %s\n", filename);
 #endif
-    } else if("Chunk"_hash == (Uint32)type_id) {
+    } else if("Chunk"_hash == (uint32_t)type_id) {
       new_chunk = mixer.loadChunk(filename);
       mixer.setVolume(new_chunk, volume);
       StringID filename_id(filename);
-      chunks.add(new_chunk, (Uint32)filename_id);
+      chunks.add(new_chunk, (uint32_t)filename_id);
 #ifndef NDEBUG
       printf("chunk : %s\n", filename);
 #endif
@@ -230,7 +230,7 @@ int32 Scene::loadSounds() {
 }
 
 
-int32 Scene::loadObjectStorages() {
+int32_t Scene::loadObjectStorages() {
   Application &app = Application::Get();
   auto &allocator = app.getAllocator();
 
@@ -260,7 +260,7 @@ int32 Scene::loadObjectStorages() {
   return RET_SUCC;
 }
 
-int32 Scene::loadDrawableStorages() {
+int32_t Scene::loadDrawableStorages() {
   Application &app = Application::Get();
   StackAllocator &allocator = app.getAllocator();
 
@@ -291,7 +291,7 @@ int32 Scene::loadDrawableStorages() {
   return RET_SUCC;
 }
 
-int32 Scene::loadGameObjects() {
+int32_t Scene::loadGameObjects() {
   Application &app = Application::Get();
   auto &allocator = app.getAllocator();
 

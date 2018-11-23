@@ -19,11 +19,11 @@ FileIO::~FileIO() {
 void FileIO::open(void *memory, size_t size) {
   assert(nullptr != memory);
   assert(0 != size);
-  m_buffer = (byte *) memory;
+  m_buffer = (char*) memory;
   m_size = size;
 }
 
-int32 FileIO::open(FILE *file, void *memory, size_t size) {
+int32_t FileIO::open(FILE *file, void *memory, size_t size) {
   assert(file != nullptr);
 
   open(memory, size);
@@ -34,7 +34,7 @@ int32 FileIO::open(FILE *file, void *memory, size_t size) {
   return RET_SUCC;
 }
 
-int32 FileIO::write(FILE *file) const {
+int32_t FileIO::write(FILE *file) const {
   assert(nullptr != file);
   assert(isAvailable());
 
@@ -44,19 +44,19 @@ int32 FileIO::write(FILE *file) const {
   return RET_SUCC;
 }
 
-int32 FileIO::isAvailable() const {
+int32_t FileIO::isAvailable() const {
   return (nullptr != m_buffer && 0 != m_size);
 }
 
-byte *FileIO::getBuffer() {
+char *FileIO::getBuffer() {
   return m_buffer;
 }
 
-const byte *FileIO::getBuffer() const {
+const char *FileIO::getBuffer() const {
   return m_buffer;
 }
 
-const byte *const *FileIO::getBufferPointer() const {
+const char *const *FileIO::getBufferPointer() const {
   return &m_buffer;
 }
 
@@ -74,8 +74,8 @@ FILE *OpenFile(const char *filename, const char *mode) {
   return result;
 }
 
-int64 GetFileSize(FILE *file) {
-  int64 result = 0;
+int64_t GetFileSize(FILE *file) {
+  int64_t result = 0;
   fseek(file, 0, SEEK_END);
   result = ftell(file);
   rewind(file);

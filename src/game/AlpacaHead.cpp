@@ -124,7 +124,7 @@ void Head::setHeadPos(const glm::vec3 &pos) {
   setLocalPosition(pos);
 }
 
-GameObject &Head::getNeck(int32 i) {
+GameObject &Head::getNeck(int32_t i) {
   return m_necks[i];
 }
 

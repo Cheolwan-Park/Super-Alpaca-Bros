@@ -37,11 +37,11 @@ void Schedule::update(GameObject *object) {
   }
 }
 
-int32 Schedule::isDeleted() const {
+int32_t Schedule::isDeleted() const {
   return m_flags.getFlag(0);
 }
 
-int32 Schedule::isPaused() const {
+int32_t Schedule::isPaused() const {
   return m_flags.getFlag(1);
 }
 
@@ -65,7 +65,7 @@ ScheduleOnce::ScheduleOnce()
   ;
 }
 
-ScheduleOnce::ScheduleOnce(OBJECT_FUNCTION function, Uint32 wait_time)
+ScheduleOnce::ScheduleOnce(OBJECT_FUNCTION function, uint32_t wait_time)
     : Schedule(function), m_call_time(Time::Get().getIElapsedtime() + wait_time) {
   ;
 }
@@ -96,7 +96,7 @@ void ScheduleOnce::update(GameObject *object) {
   }
 }
 
-Uint32 ScheduleOnce::getRemainTime() const {
+uint32_t ScheduleOnce::getRemainTime() const {
   return (m_call_time - Time::Get().getIElapsedtime());
 }
 
@@ -108,7 +108,7 @@ ScheduleInterval::ScheduleInterval()
 }
 
 ScheduleInterval::ScheduleInterval(OBJECT_FUNCTION function,
-                                   Uint32 interval, Uint32 wait_time)
+                                   uint32_t interval, uint32_t wait_time)
     : Schedule(function), m_interval(interval),
       m_next_time(Time::Get().getIElapsedtime() + wait_time) {
   ;
@@ -142,11 +142,11 @@ void ScheduleInterval::update(GameObject *object) {
   }
 }
 
-Uint32 ScheduleInterval::getInterval() const {
+uint32_t ScheduleInterval::getInterval() const {
   return m_interval;
 }
 
-Uint32 ScheduleInterval::getRemainTime() const {
+uint32_t ScheduleInterval::getRemainTime() const {
   return (m_next_time - Time::Get().getIElapsedtime());
 }
 
@@ -211,7 +211,7 @@ class Schedule *Scheduler::schedule(OBJECT_FUNCTION function) {
   return schedule;
 }
 
-class ScheduleOnce *Scheduler::scheduleOnce(OBJECT_FUNCTION function, Uint32 wait_time) {
+class ScheduleOnce *Scheduler::scheduleOnce(OBJECT_FUNCTION function, uint32_t wait_time) {
   assert(function);
   assert(m_schedule_count <= m_schedules.getMaxSize());
 
@@ -224,7 +224,7 @@ class ScheduleOnce *Scheduler::scheduleOnce(OBJECT_FUNCTION function, Uint32 wai
 }
 
 class ScheduleInterval *Scheduler::scheduleInterval(OBJECT_FUNCTION function,
-                                                    Uint32 interval, Uint32 wait_time) {
+                                                    uint32_t interval, uint32_t wait_time) {
   assert(function);
   assert(m_schedule_count <= m_schedules.getMaxSize());
 
@@ -236,7 +236,7 @@ class ScheduleInterval *Scheduler::scheduleInterval(OBJECT_FUNCTION function,
   return schedule;
 }
 
-int32 Scheduler::getScheduleCount() const {
+int32_t Scheduler::getScheduleCount() const {
   return m_schedule_count;
 }
 

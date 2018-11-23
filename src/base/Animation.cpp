@@ -54,11 +54,11 @@ void Animation::initWithJson(const rapidjson::Value::Object &obj) {
   m_looping = obj["loop"].GetBool();
 
   StringID id(name), texture_id(texture_name);
-  m_id = (Uint32) id;
-  m_texture_id = (Uint32) texture_id;
+  m_id = (uint32_t) id;
+  m_texture_id = (uint32_t) texture_id;
 }
 
-Uint32 Animation::getID() const {
+uint32_t Animation::getID() const {
   return m_id;
 }
 
@@ -70,7 +70,7 @@ const Math::Size &Animation::getSpritesCount() const {
   return m_sprites_count;
 }
 
-Uint32 Animation::getTextureID() const {
+uint32_t Animation::getTextureID() const {
   return m_texture_id;
 }
 
@@ -78,7 +78,7 @@ float32 Animation::getEachTime() const {
   return m_each_time;
 }
 
-int32 Animation::isLooping() const {
+int32_t Animation::isLooping() const {
   return m_looping;
 }
 

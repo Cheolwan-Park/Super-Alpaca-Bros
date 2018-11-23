@@ -66,11 +66,11 @@ const Rigidbody *Collider::getRigidbody() const {
   return m_rigidbody;
 }
 
-int32 Collider::isTrigger() const {
+int32_t Collider::isTrigger() const {
   return m_flags.getFlag(2);
 }
 
-void Collider::setTrigger(int32 val) {
+void Collider::setTrigger(int32_t val) {
   m_flags.setFlag(2, val);
 }
 
@@ -105,7 +105,7 @@ void CircleCollider::initWithJson(const rapidjson::Value::Object &obj, StackAllo
   m_radius = obj["radius"].GetFloat();
 }
 
-int32 CircleCollider::isCollideWith(const Collider *other) const {
+int32_t CircleCollider::isCollideWith(const Collider *other) const {
   switch (other->getType()) {
     case Collider::Type::CIRCLE:
       return CollideCheckFunctions::isCollide(this, (CircleCollider *) other);
@@ -165,7 +165,7 @@ void BoxCollider::initWithJson(const rapidjson::Value::Object &obj, StackAllocat
   JsonParseMethods::ReadRect(obj["box"].GetObject(), &m_box);
 }
 
-int32 BoxCollider::isCollideWith(const Collider *other) const {
+int32_t BoxCollider::isCollideWith(const Collider *other) const {
   switch (other->getType()) {
     case Collider::Type::CIRCLE:
       return CollideCheckFunctions::isCollide(this, (CircleCollider *) other);
@@ -196,7 +196,7 @@ void BoxCollider::setBox(const Math::Rect &box) {
 
 // CollideCheckFunctions
 namespace CollideCheckFunctions {
-int32 isCollide(const CircleCollider *circle0, const CircleCollider *circle1) {
+int32_t isCollide(const CircleCollider *circle0, const CircleCollider *circle1) {
   assert(circle0);
   assert(circle1);
 
@@ -213,7 +213,7 @@ int32 isCollide(const CircleCollider *circle0, const CircleCollider *circle1) {
   }
 }
 
-int32 isCollide(const BoxCollider *box, const CircleCollider *circle) {
+int32_t isCollide(const BoxCollider *box, const CircleCollider *circle) {
   assert(box);
   assert(circle);
 
@@ -227,7 +227,7 @@ int32 isCollide(const BoxCollider *box, const CircleCollider *circle) {
   rect.x = boxpos.x + rect.x - rect.w / 2.0f;
   rect.y = boxpos.y + rect.y - rect.h / 2.0f;
 
-  byte in[4] = {0,};  // left right bottom top
+  int8_t in[4] = {0,};  // left right bottom top
 
   // check in l, r, b, t
   in[0] = circlepos.x > rect.x;
@@ -254,7 +254,7 @@ int32 isCollide(const BoxCollider *box, const CircleCollider *circle) {
   }
 }
 
-int32 isCollide(const BoxCollider *box0, const BoxCollider *box1) {
+int32_t isCollide(const BoxCollider *box0, const BoxCollider *box1) {
   assert(box0);
   assert(box1);
 
@@ -270,8 +270,8 @@ int32 isCollide(const BoxCollider *box0, const BoxCollider *box1) {
   r1.x = pos1.x + r1.x - r1.w / 2.0f;
   r1.y = pos1.y + r1.y - r1.h / 2.0f;
 
-  int32 inX = (r0.x > r1.x && r0.x < r1.x + r1.w) || (r1.x > r0.x && r1.x < r0.x + r0.w);
-  int32 inY = (r0.y > r1.y && r0.y < r1.y + r1.h) || (r1.y > r0.y && r1.y < r0.y + r0.h);
+  int32_t inX = (r0.x > r1.x && r0.x < r1.x + r1.w) || (r1.x > r0.x && r1.x < r0.x + r0.w);
+  int32_t inY = (r0.y > r1.y && r0.y < r1.y + r1.h) || (r1.y > r0.y && r1.y < r0.y + r0.h);
   if (inX && inY) {
     return true;
   } else {

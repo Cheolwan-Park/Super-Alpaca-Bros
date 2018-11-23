@@ -6,7 +6,7 @@
 namespace Base {
 class StackAllocator {
  public:
-  typedef Uint64 Marker;
+  typedef uint64_t Marker;
  public:
   StackAllocator();
 

@@ -15,8 +15,8 @@ class Alpaca;
 
 class ActionManager {
  public:
-  static constexpr Uint32 NUM_ACTIONS = 4;
-  enum class ActionType : Uint32 { NONE = 0, HEADING = 1, SPIT = 2, DASH = 3 };
+  static constexpr uint32_t NUM_ACTIONS = 4;
+  enum class ActionType : uint32_t { NONE = 0, HEADING = 1, SPIT = 2, DASH = 3 };
 
  public:
   ActionManager();
@@ -33,27 +33,27 @@ class ActionManager {
 
   Action *getAction(ActionType type);
 
-  Action *getAction(Uint32 idx);
+  Action *getAction(uint32_t idx);
 
-  int32 isAbleToAction(ActionType type);
+  int32_t isAbleToAction(ActionType type);
 
-  int32 isAbleToAction(Uint32 idx);
+  int32_t isAbleToAction(uint32_t idx);
 
-  int32 isActing(ActionType type);
+  int32_t isActing(ActionType type);
 
-  int32 isActing(Uint32 idx);
+  int32_t isActing(uint32_t idx);
 
   float32 getRemainTime(ActionType type);
 
-  float32 getRemainTime(Uint32 idx);
+  float32 getRemainTime(uint32_t idx);
 
-  int32 doingAnyAction();
+  int32_t doingAnyAction();
 
   void resetRemainTimes();
 
   void doAction(ActionType type);
 
-  void doAction(Uint32 idx);
+  void doAction(uint32_t idx);
 
   void countResetTime();
 
@@ -72,8 +72,8 @@ class ActionManager {
 class Alpaca : public Component {
  public:
   static const SDL_Scancode keymap[2][7];
-  enum class Keymap : int32 { NONE = -1, MAP1 = 0, MAP2 = 1 };
-  enum class Key : int32 {
+  enum class Keymap : int32_t { NONE = -1, MAP1 = 0, MAP2 = 1 };
+  enum class Key : int32_t {
     UP = 0, LEFT = 1, DOWN = 2, RIGHT = 3,
     ACTION1 = 4, ACTION2 = 5, ACTION3 = 6
   };
@@ -110,9 +110,9 @@ class Alpaca : public Component {
 
   Alpaca::Keymap getKeymap() const;
 
-  int32 isMoving() const;
+  int32_t isMoving() const;
 
-  int32 isGrounded() const;
+  int32_t isGrounded() const;
 
   Rigidbody *getRigidbody();
 
@@ -132,9 +132,9 @@ class Alpaca : public Component {
 
   void checkActions();
 
-  void setMoving(int32 val);
+  void setMoving(int32_t val);
 
-  void setGrounded(int32 val);
+  void setGrounded(int32_t val);
 
  private:
   Head *m_head;
@@ -143,7 +143,7 @@ class Alpaca : public Component {
   Rigidbody *m_rigidbody;
   HitGauge *m_hit_gauge;
   Ground *m_ground;
-  Uint32 m_animations[2];  // 0 : idle, 1 : walking
+  uint32_t m_animations[2];  // 0 : idle, 1 : walking
   float32 m_speed;
   float32 m_jump_power;
   Keymap m_keymap;

@@ -22,14 +22,14 @@ class GameObject {
   static GameObject *Factory(const ::rapidjson::Value::Object &obj,
                              ::Base::StackAllocator &allocator,
                              ::Base::ObjectStorage *storage,
-                             ::Base::Uint32 id);
+                             std::uint32_t id);
 
  public:
   GameObject();
 
-  explicit GameObject(Uint32 id, int32 isStatic = false);
+  explicit GameObject(uint32_t id, int32_t isStatic = false);
 
-  explicit GameObject(Uint32 id, const GameObject *parent, int32 isStatic = false);
+  explicit GameObject(uint32_t id, const GameObject *parent, int32_t isStatic = false);
 
   // not copying parent, id, isDeleted, isIdSet, isStarted, components
   GameObject(const GameObject &other);
@@ -60,9 +60,9 @@ class GameObject {
   void onTriggerExit(Collider *other);
 
   // get
-  Uint32 getID() const;
+  uint32_t getID() const;
 
-  Uint32 getTag() const;
+  uint32_t getTag() const;
 
   const glm::vec3 &getLocalPosition() const;
 
@@ -70,13 +70,13 @@ class GameObject {
 
   const GameObject *getParent() const;
 
-  int32 isDeleted() const;
+  int32_t isDeleted() const;
 
-  int32 isAvailable() const;
+  int32_t isAvailable() const;
 
-  int32 isStarted() const;
+  int32_t isStarted() const;
 
-  int32 isStatic() const;
+  int32_t isStatic() const;
 
   const glm::vec2 &getScale() const;
 
@@ -88,7 +88,7 @@ class GameObject {
 
   template<class T>
   T *getComponent() {
-    for (Uint32 i = 0; i < m_component_count; ++i) {
+    for (uint32_t i = 0; i < m_component_count; ++i) {
       if (T::ID == m_components[i]->getTypeID())
         return static_cast<T *>(m_components[i]);
     }
@@ -97,19 +97,19 @@ class GameObject {
 
   template<class T>
   const T *getComponent() const {
-    for (Uint32 i = 0; i < m_component_count; ++i) {
+    for (uint32_t i = 0; i < m_component_count; ++i) {
       if (T::ID == m_components[i]->getTypeID())
         return static_cast<T *>(m_components[i]);
     }
     return nullptr;
   }
 
-  Uint32 getComponentCount() const;
+  uint32_t getComponentCount() const;
 
   // set
-  void setID(Uint32 id);
+  void setID(uint32_t id);
 
-  void setTag(Uint32 tag);
+  void setTag(uint32_t tag);
 
   void setLocalPosition(const glm::vec3 &position);
 
@@ -145,12 +145,12 @@ class GameObject {
 
   void del();
 
-  void setAvailable(int32 value);
+  void setAvailable(int32_t value);
 
  private:
-  Uint32 m_id;
-  Uint32 m_tag;
-  Uint32 m_component_count;
+  uint32_t m_id;
+  uint32_t m_tag;
+  uint32_t m_component_count;
   float32 m_rotation;
   Component **m_components;
   const GameObject *m_parent;
@@ -185,7 +185,7 @@ class ObjectStorage {
 
   GameObject *add(GameObject *gameobject);
 
-  GameObject *get(Uint32 hash);
+  GameObject *get(uint32_t hash);
 
   void updateObjects();
 
@@ -194,14 +194,14 @@ class ObjectStorage {
   void clear();
 
   // get
-  Uint32 getID() const;
+  uint32_t getID() const;
 
-  Uint32 getOrder() const;
+  uint32_t getOrder() const;
 
  private:
-  Uint32 m_id;
-  Uint32 m_order;
-  Uint32 m_len;
+  uint32_t m_id;
+  uint32_t m_order;
+  uint32_t m_len;
   Type *m_gameobjects;
 };
 }

@@ -8,7 +8,7 @@ class Rigidbody;
 
 class Collider : public Component {
  public:
-  enum class Type : Uint32 { NONE = 0, CIRCLE = 1, BOX = 2 };
+  enum class Type : uint32_t { NONE = 0, CIRCLE = 1, BOX = 2 };
 
   static Component *Factory(const ::rapidjson::Value::Object &obj,
                             ::Base::StackAllocator &allocator,
@@ -33,7 +33,7 @@ class Collider : public Component {
 
   void release() override;
 
-  virtual int32 isCollideWith(const Collider *other) const = 0;
+  virtual int32_t isCollideWith(const Collider *other) const = 0;
 
   virtual Type getType() const = 0;
 
@@ -41,9 +41,9 @@ class Collider : public Component {
 
   const Rigidbody *getRigidbody() const;
 
-  int32 isTrigger() const;
+  int32_t isTrigger() const;
 
-  void setTrigger(int32 val);
+  void setTrigger(int32_t val);
 
  private:
   Rigidbody *m_rigidbody;
@@ -69,7 +69,7 @@ class CircleCollider : public Collider {
 
   void initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) override;
 
-  int32 isCollideWith(const Collider *other) const override;
+  int32_t isCollideWith(const Collider *other) const override;
 
   Collider::Type getType() const override;
 
@@ -97,7 +97,7 @@ class BoxCollider : public Collider {
 
   void initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) override;
 
-  int32 isCollideWith(const Collider *other) const override;
+  int32_t isCollideWith(const Collider *other) const override;
 
   Collider::Type getType() const override;
 
@@ -112,9 +112,9 @@ class BoxCollider : public Collider {
 };
 
 namespace CollideCheckFunctions {
-int32 isCollide(const CircleCollider *circle0, const CircleCollider *circle1);
-int32 isCollide(const BoxCollider *box, const CircleCollider *circle);
-int32 isCollide(const BoxCollider *box0, const BoxCollider *box1);
+int32_t isCollide(const CircleCollider *circle0, const CircleCollider *circle1);
+int32_t isCollide(const BoxCollider *box, const CircleCollider *circle);
+int32_t isCollide(const BoxCollider *box0, const BoxCollider *box1);
 }
 }
 

@@ -36,7 +36,7 @@ void CameraController::initWithJson(const rapidjson::Value::Object &obj, StackAl
 
   const char *str_camera_id = obj["camera"].GetString();
   StringID camera_id(str_camera_id);
-  m_camera_id = (Uint32)camera_id;
+  m_camera_id = (uint32_t)camera_id;
 
   setSmooth(obj["isSmooth"].GetBool());
   m_margin = obj["margin"].GetFloat();
@@ -118,11 +118,11 @@ void CameraController::release() {
   ;
 }
 
-int32 CameraController::isSmooth() const {
+int32_t CameraController::isSmooth() const {
   return m_flags.getFlag(2);
 }
 
-void CameraController::setSmooth(int32 val) {
+void CameraController::setSmooth(int32_t val) {
   m_flags.setFlag(2, val);
 }
 }

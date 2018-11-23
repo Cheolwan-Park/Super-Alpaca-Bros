@@ -47,7 +47,7 @@ void OutsidedEffect::initWithJson(const rapidjson::Value::Object &obj, StackAllo
   auto &textures = app.getTextureStorage();
   const char *str_texture_id = obj["texture"].GetString();
   StringID texture_id(str_texture_id);
-  Texture *tex = textures[(Uint32)texture_id];
+  Texture *tex = textures[(uint32_t)texture_id];
 
   m_max_particle_count = obj["max_particlecount"].GetUint();
   m_radius = obj["radius"].GetFloat();
@@ -81,10 +81,10 @@ void OutsidedEffect::initWithJson(const rapidjson::Value::Object &obj, StackAllo
     ++now;
   }
 
-  Uint32 uv_type = 0;
+  uint32_t uv_type = 0;
   GameObject *new_object = nullptr;
   auto *scene = Application::Get().getScene();
-  for(Uint32 i=0; i<m_max_particle_count; ++i) {
+  for(uint32_t i=0; i<m_max_particle_count; ++i) {
     new_object = scene->createGameObject(particle_json_object);
     new_object->setParent(getGameObject());
     m_particle_sprites[i] = new_object->getComponent<Sprite>();
@@ -106,7 +106,7 @@ void OutsidedEffect::update() {
   Time &t = Time::Get();
   float32 delta_time = t.getDeltatime();
   float32 scale = 0.0f;
-  for(Uint32 i=0; i<m_particle_count; ++i) {
+  for(uint32_t i=0; i<m_particle_count; ++i) {
     m_particle_sprites[i]->move(m_direction*(m_particles[i].velocity*delta_time));
     m_particle_sprites[i]->rotate(m_particles[i].velocity*delta_time);
     scale = m_scale*(m_particles[i].remain_time/m_life_time);
@@ -136,9 +136,9 @@ void OutsidedEffect::generate(const glm::vec2 &direction) {
 void OutsidedEffect::generate() {
   Time &t = Time::Get();
   srand(rand() + t.getIElapsedtime());
-  auto gen = (Uint32) (m_generate_speed * t.getDeltatime());
+  auto gen = (uint32_t) (m_generate_speed * t.getDeltatime());
   float32 theta = 0.0f;
-  for(Uint32 i=0; i<gen; ++i) {
+  for(uint32_t i=0; i<gen; ++i) {
     if(m_particle_count >= m_max_particle_count)
       break;
     theta = Math::Constant::PIf*2*(float32)rand()/RAND_MAX;
@@ -155,11 +155,11 @@ void OutsidedEffect::generate() {
   }
 }
 
-int32 OutsidedEffect::isGenerating() {
+int32_t OutsidedEffect::isGenerating() {
   return m_flags.getFlag(10);
 }
 
-void OutsidedEffect::setGenerating(int32 val) {
+void OutsidedEffect::setGenerating(int32_t val) {
   m_flags.setFlag(10, val);
 }
 

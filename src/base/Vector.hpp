@@ -33,9 +33,9 @@ class Vector2 {
 
   Vector2 &operator/=(float32 scala);
 
-  friend int32 operator==(const Vector2 &lhs, const Vector2 &rhs);
+  friend int32_t operator==(const Vector2 &lhs, const Vector2 &rhs);
 
-  friend int32 operator!=(const Vector2 &lhs, const Vector2 &rhs);
+  friend int32_t operator!=(const Vector2 &lhs, const Vector2 &rhs);
 
   friend Vector2 operator+(Vector2 lhs, const Vector2 &rhs);
 
@@ -52,9 +52,9 @@ class Vector2 {
   float32 y;
 };
 
-int32 operator==(const Vector2 &lhs, const Vector2 &rhs);
+int32_t operator==(const Vector2 &lhs, const Vector2 &rhs);
 
-int32 operator!=(const Vector2 &lhs, const Vector2 &rhs);
+int32_t operator!=(const Vector2 &lhs, const Vector2 &rhs);
 
 Vector2 operator+(Vector2 lhs, const Vector2 &rhs);
 

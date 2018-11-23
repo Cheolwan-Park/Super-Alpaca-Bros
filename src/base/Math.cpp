@@ -67,11 +67,11 @@ float64 Abs(float64 value) {
   return value >= 0 ? value : -1 * value;
 }
 
-int32 Abs(int32 value) {
+int32_t Abs(int32_t value) {
   return value >= 0 ? value : -1 * value;
 }
 
-int64 Abs(int64 value) {
+int64_t Abs(int64_t value) {
   return value >= 0 ? value : -1 * value;
 }
 

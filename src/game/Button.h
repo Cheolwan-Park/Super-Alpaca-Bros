@@ -29,9 +29,9 @@ class Button : public Component {
   virtual void onClicked();
 
  private:
-  int32 isButtonDowned();
+  int32_t isButtonDowned();
 
-  void setButtonDown(int32 val);
+  void setButtonDown(int32_t val);
 
  private:
   Sprite *m_sprite;
@@ -71,6 +71,21 @@ class ResumeButton : public Button {
   ~ResumeButton() override;
 
   ResumeButton &operator=(const ResumeButton &other) = delete;
+
+  void onClicked() override;
+};
+
+class SceneTransitionButton : public Button {
+ public:
+  COMPONENT(SceneTransitionButton);
+
+  SceneTransitionButton();
+
+  SceneTransitionButton(const SceneTransitionButton &other) = delete;
+
+  ~SceneTransitionButton() override;
+
+  SceneTransitionButton &operator=(const SceneTransitionButton &other) = delete;
 
   void onClicked() override;
 };

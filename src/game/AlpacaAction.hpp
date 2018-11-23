@@ -33,9 +33,9 @@ class Action {
 
   virtual Type getType() const = 0;
 
-  virtual int32 isActing() const = 0;
+  virtual int32_t isActing() const = 0;
 
-  virtual Uint32 getTypeID() const = 0;
+  virtual uint32_t getTypeID() const = 0;
 
   void setAlpaca(Alpaca *alpaca);
 
@@ -78,7 +78,7 @@ class Heading : public Action {
 
   Action::Type getType() const override;
 
-  int32 isActing() const override;
+  int32_t isActing() const override;
 
   void stopHeading();
 
@@ -87,14 +87,14 @@ class Heading : public Action {
   void stopHooking();
 
   // get
-  int32 isHeading() const;
+  int32_t isHeading() const;
 
-  int32 isHeadHooking() const;
+  int32_t isHeadHooking() const;
 
  private:
-  void SetHeading(int32 val);
+  void SetHeading(int32_t val);
 
-  void SetHooking(int32 val);
+  void SetHooking(int32_t val);
 
  private:
   float32 m_time;
@@ -132,7 +132,7 @@ class Dash : public Action {
 
   Action::Type getType() const override;
 
-  int32 isActing() const override;
+  int32_t isActing() const override;
 
  private:
   float32 m_force;
@@ -161,14 +161,14 @@ class Spitting : public Action {
 
   Action::Type getType() const override;
 
-  int32 isActing() const override;
+  int32_t isActing() const override;
 
  private:
   Spit *GetSpit();
 
  private:
-  Uint32 m_circular_spits;
-  Uint32 m_max_spits;
+  uint32_t m_circular_spits;
+  uint32_t m_max_spits;
   GameObject **m_spit_objects;
   Spit **m_spits;
 };
@@ -194,7 +194,7 @@ class ActionFactory : public Storage<Action::FactoryFunc> {
     return (get(T::ID));
   }
 
-  Action::FactoryFunc *getFunction(Uint32 id) {
+  Action::FactoryFunc *getFunction(uint32_t id) {
     return (get(id));
   }
 

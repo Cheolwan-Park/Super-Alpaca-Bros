@@ -11,7 +11,7 @@ class Alpaca;
 
 class Head : public Sprite {
  public:
-  static constexpr Uint32 NECK_COUNT = 18;
+  static constexpr uint32_t NECK_COUNT = 18;
 
  public:
   COMPONENT(Head);
@@ -44,7 +44,7 @@ class Head : public Sprite {
   void setHeadPos(const glm::vec3 &pos);
 
   // get
-  GameObject &getNeck(int32 i);
+  GameObject &getNeck(int32_t i);
 
   size_t getNeckCount() const;
 

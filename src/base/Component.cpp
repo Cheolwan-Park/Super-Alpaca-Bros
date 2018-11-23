@@ -78,11 +78,11 @@ const GameObject *Component::getGameObject() const {
   return m_gameobject;
 }
 
-int32 Component::isAvailable() const {
+int32_t Component::isAvailable() const {
   return m_flags.getFlag(0);
 }
 
-int32 Component::isStarted() const {
+int32_t Component::isStarted() const {
   return m_flags.getFlag(1);
 }
 
@@ -90,11 +90,11 @@ void Component::setGameObject(GameObject *gameobject) {
   m_gameobject = gameobject;
 }
 
-void Component::setAvailable(int32 val) {
+void Component::setAvailable(int32_t val) {
   m_flags.setFlag(0, val);
 }
 
-Uint32 Component::getTag() const {
+uint32_t Component::getTag() const {
   assert(m_gameobject);
   return m_gameobject->getTag();
 }
@@ -134,7 +134,7 @@ void Component::getModel(glm::mat3x3 *mat) const {
   m_gameobject->getModel(mat);
 }
 
-void Component::setTag(Uint32 tag) {
+void Component::setTag(uint32_t tag) {
   assert(m_gameobject);
   m_gameobject->setTag(tag);
 }

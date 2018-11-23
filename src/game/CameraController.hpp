@@ -28,13 +28,13 @@ class CameraController : public Component {
 
   void release() override;
 
-  int32 isSmooth() const;
+  int32_t isSmooth() const;
 
-  void setSmooth(int32 val);
+  void setSmooth(int32_t val);
 
  private:
   GameManager *m_game_manager;
-  Uint32 m_camera_id;
+  uint32_t m_camera_id;
   float32 m_margin;
   float32 m_camera_speed;
   float32 m_expand_speed;

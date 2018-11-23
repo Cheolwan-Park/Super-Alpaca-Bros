@@ -32,14 +32,14 @@ class BannerMover : public Component {
 
   float32 getDuration() const;
 
-  int32 isMoving() const;
+  int32_t isMoving() const;
 
-  int32 isShowed() const;
+  int32_t isShowed() const;
 
  private:
-  void setMoving(int32 val);
+  void setMoving(int32_t val);
 
-  void setShowed(int32 val);
+  void setShowed(int32_t val);
 
  private:
   float32 m_elapsed_time;
@@ -77,7 +77,7 @@ class WinnerBanner : public Component {
 
   void release() override;
 
-  void show(Uint32 winner);
+  void show(uint32_t winner);
 
   void hide();
 

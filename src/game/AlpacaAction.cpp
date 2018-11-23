@@ -137,7 +137,7 @@ Action::Type Heading::getType() const {
   return Action::Type::HEADING;
 }
 
-int32 Heading::isActing() const {
+int32_t Heading::isActing() const {
   return isHeading();
 }
 
@@ -182,19 +182,19 @@ void Heading::stopHooking() {
   alpaca->getActionManager().countResetTime();
 }
 
-int32 Heading::isHeading() const {
+int32_t Heading::isHeading() const {
   return m_flags.getFlag(0);
 }
 
-int32 Heading::isHeadHooking() const {
+int32_t Heading::isHeadHooking() const {
   return m_flags.getFlag(1);
 }
 
-void Heading::SetHeading(int32 val) {
+void Heading::SetHeading(int32_t val) {
   m_flags.setFlag(0, val);
 }
 
-void Heading::SetHooking(int32 val) {
+void Heading::SetHooking(int32_t val) {
   m_flags.setFlag(1, val);
 }
 
@@ -261,7 +261,7 @@ Action::Type Dash::getType() const {
   return Action::Type::DASH;
 }
 
-int32 Dash::isActing() const {
+int32_t Dash::isActing() const {
   return false;
 }
 
@@ -296,7 +296,7 @@ void Spitting::initWithJson(const rapidjson::Value::Object &obj, StackAllocator 
   memset(m_spits, 0, sizeof(Spit *) * m_max_spits);
 
   auto *scene = Application::Get().getScene();
-  for (Uint32 i = 0; i < m_max_spits; ++i) {
+  for (uint32_t i = 0; i < m_max_spits; ++i) {
     m_spit_objects[i] = scene->createGameObject(spit_json_object);
     m_spits[i] = m_spit_objects[i]->getComponent<Spit>();
     m_spit_objects[i]->setAvailable(false);
@@ -322,7 +322,7 @@ void Spitting::act() {
     float32 angle = 0.0f;
     float32 delta = 2.0f * Math::Constant::PIf / (float32) m_circular_spits;
     glm::vec3 dir(0.0f);
-    for (Uint32 i = 0; i < m_circular_spits; ++i) {
+    for (uint32_t i = 0; i < m_circular_spits; ++i) {
       dir.x = cosf(angle);
       dir.y = sinf(angle);
 
@@ -338,7 +338,7 @@ void Spitting::act() {
     newspit = GetSpit();
     newspit->setWorldPosition(pos);
 
-    auto alpaca_num = (Uint32)alpaca->getKeymap();
+    auto alpaca_num = (uint32_t)alpaca->getKeymap();
     alpaca_num = alpaca_num ? 0 : 1;
     GameManager *game_manager = GameManager::GetGlobal();
     glm::vec3 opponent_position(0.0f);
@@ -358,12 +358,12 @@ Action::Type Spitting::getType() const {
   return Action::Type::SPIT;
 }
 
-int32 Spitting::isActing() const {
+int32_t Spitting::isActing() const {
   return false;
 }
 
 Spit *Spitting::GetSpit() {
-  for (Uint32 i = 0; i < m_max_spits; ++i) {
+  for (uint32_t i = 0; i < m_max_spits; ++i) {
     if (!(m_spit_objects[i]->isAvailable())) {
       m_spit_objects[i]->setAvailable(true);
       return m_spits[i];

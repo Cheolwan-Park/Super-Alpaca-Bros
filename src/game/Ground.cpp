@@ -40,7 +40,7 @@ void Ground::onTriggerStay(Collider *other) {
     return;
   }
 
-  for (Uint32 i = 0; i < m_ignore_list_size; ++i) {
+  for (uint32_t i = 0; i < m_ignore_list_size; ++i) {
     if (other == m_ignore_list[i])
       return;
   }
@@ -85,7 +85,7 @@ void Ground::onTriggerStay(Collider *other) {
 }
 
 void Ground::onTriggerExit(Collider *other) {
-  for (Uint32 i = 0; i < m_ignore_list_size; ++i) {
+  for (uint32_t i = 0; i < m_ignore_list_size; ++i) {
     if (m_ignore_list[i] == other) {
       m_ignore_list[i] = nullptr;
       break;
@@ -102,7 +102,7 @@ void Ground::pass(GameObject *obj) {
       collider = obj->getComponent<CircleCollider>();
     if (!collider)
       return;
-    for (Uint32 i = 0; i < m_ignore_list_size; ++i) {
+    for (uint32_t i = 0; i < m_ignore_list_size; ++i) {
       if (!m_ignore_list[i]) {
         m_ignore_list[i] = collider;
         break;
@@ -111,11 +111,11 @@ void Ground::pass(GameObject *obj) {
   }
 }
 
-int32 Ground::isPassable() const {
+int32_t Ground::isPassable() const {
   return m_flags.getFlag(3);
 }
 
-void Ground::setPassable(int32 val) {
+void Ground::setPassable(int32_t val) {
   m_flags.setFlag(3, val);
 }
 }

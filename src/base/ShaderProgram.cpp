@@ -12,17 +12,17 @@ ShaderProgram::~ShaderProgram() {
   release();
 }
 
-int32 ShaderProgram::init(const FileIO &vert, const FileIO &frag) {
+int32_t ShaderProgram::init(const FileIO &vert, const FileIO &frag) {
   assert(0 == m_program);
   assert(vert.isAvailable());
   assert(frag.isAvailable());
 
-  int32 status_vertex = GL_TRUE, status_fragment = GL_TRUE, status_link = GL_TRUE;
-  int32 log_len = 0;
+  int32_t status_vertex = GL_TRUE, status_fragment = GL_TRUE, status_link = GL_TRUE;
+  int32_t log_len = 0;
 
   // compile vertex shader
   m_vertex = glCreateShader(GL_VERTEX_SHADER);
-  glShaderSource(m_vertex, 1, vert.getBufferPointer(), 0);
+  glShaderSource(m_vertex, 1, (GLchar**)vert.getBufferPointer(), 0);
   glCompileShader(m_vertex);
 
   glGetShaderiv(m_vertex, GL_COMPILE_STATUS, &status_vertex);
@@ -37,7 +37,7 @@ int32 ShaderProgram::init(const FileIO &vert, const FileIO &frag) {
 
   // compile fragment shader
   m_fragment = glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(m_fragment, 1, frag.getBufferPointer(), 0);
+  glShaderSource(m_fragment, 1, (GLchar**)frag.getBufferPointer(), 0);
   glCompileShader(m_fragment);
 
   glGetShaderiv(m_fragment, GL_COMPILE_STATUS, &status_fragment);
@@ -77,7 +77,7 @@ int32 ShaderProgram::init(const FileIO &vert, const FileIO &frag) {
   return RET_SUCC;
 }
 
-int32 ShaderProgram::initWithJson(const rapidjson::Value::Object &obj) {
+int32_t ShaderProgram::initWithJson(const rapidjson::Value::Object &obj) {
   assert(obj.HasMember("name"));
   assert(obj.HasMember("vert"));
   assert(obj.HasMember("frag"));
@@ -87,13 +87,13 @@ int32 ShaderProgram::initWithJson(const rapidjson::Value::Object &obj) {
 
   const char *shader_name = obj["name"].GetString();
   StringID id(shader_name);
-  m_id = (Uint32) id;
+  m_id = (uint32_t) id;
 
   // open shader files
   const char *vert_filename = obj["vert"].GetString();
   const char *frag_filename = obj["frag"].GetString();
   FILE *vert = nullptr, *frag = nullptr;
-  int64 size_vert = 0, size_frag = 0;
+  int64_t size_vert = 0, size_frag = 0;
   FileIO vert_io, frag_io;
 
   String128 path(Directories::Shader);
@@ -146,7 +146,7 @@ void ShaderProgram::release() {
   }
 }
 
-Uint32 ShaderProgram::getID() const {
+uint32_t ShaderProgram::getID() const {
   return m_id;
 }
 

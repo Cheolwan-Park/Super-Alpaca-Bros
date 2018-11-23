@@ -67,7 +67,7 @@ class NumberViewer : public Sprite {
 
   void release() override;
 
-  void setNumber(Uint32 n);
+  void setNumber(uint32_t n);
 
   void setNumberSheet(Animation *sheet);
 
@@ -96,7 +96,7 @@ class HitGaugeViewer : public Component {
   void release() override;
 
  private:
-  Uint32 m_alpaca_index;
+  uint32_t m_alpaca_index;
   HitGauge *m_alpaca_hit_gauge;
   FixedArray<NumberViewer*, 3> m_number_viewers;
 };

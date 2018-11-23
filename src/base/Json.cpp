@@ -96,13 +96,13 @@ void OpenJsonFile(const FileIO &f, rapidjson::Document *doc) {
   assert(doc->IsObject());
 }
 
-int32 OpenJsonFile(const char *filename, rapidjson::Document *doc) {
+int32_t OpenJsonFile(const char *filename, rapidjson::Document *doc) {
   assert(doc);
 
   FILE *f = OpenFile(filename, "rb");
   assert(f);
 
-  int64 len_json = GetFileSize(f);
+  int64_t len_json = GetFileSize(f);
   void *mem_json = nullptr;
 
   FileIO json_io;

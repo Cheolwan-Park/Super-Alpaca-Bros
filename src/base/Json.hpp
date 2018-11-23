@@ -14,5 +14,5 @@ void ReadPoint(const rapidjson::Value::Object &obj, Math::Point *point);
 }
 
 void OpenJsonFile(const FileIO &f, rapidjson::Document *doc);
-int32 OpenJsonFile(const char *filename, rapidjson::Document *doc);
+int32_t OpenJsonFile(const char *filename, rapidjson::Document *doc);
 }

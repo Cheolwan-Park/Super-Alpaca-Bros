@@ -12,7 +12,7 @@ void LoadTexture(Texture *texture, const rapidjson::Value::Object &obj) {
 
   const char *filename = obj["file"].GetString();
   StringID hash_id(filename);
-  texture->hash_id = (Uint32) hash_id;
+  texture->hash_id = (uint32_t) hash_id;
 
   String128 path(Directories::Texture);
   path += filename;

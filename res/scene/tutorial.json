@@ -1,0 +1,202 @@
+{
+  "Physics": {
+    "collider_count": 0,
+    "gravity": 0.0
+  },
+
+  "Cameras": [
+    {
+      "name": "main",
+      "left_top_near": {
+        "x": -48.0,
+        "y": 27.0,
+        "z": 0.1
+      },
+      "right_bottom_far": {
+        "x": 48.0,
+        "y": -27.0,
+        "z": 8.0
+      }
+    }
+  ],
+
+  "Shaders": [
+    {
+      "name": "default",
+      "vert": "default_vert.glsl",
+      "frag": "default_frag.glsl"
+    }
+  ],
+
+  "Textures": [
+    { "file": "tutorial.png" }
+  ],
+
+  "Animations": [
+
+  ],
+
+  "Sounds": [
+
+  ],
+
+  "ObjectStorages": [
+    {
+      "name": "global",
+      "order": 512,
+      "size": 1024
+    }
+  ],
+
+  "DrawableStorages": [
+    {
+      "name": "background",
+      "shader": "default",
+      "camera": "main",
+      "order": 1024,
+      "size": 64
+    },
+    {
+      "name": "banner",
+      "shader": "default",
+      "camera": "main",
+      "order": 512,
+      "size": 64
+    }
+  ],
+
+  "GameObjects": [
+    {
+      "storage": "global",
+      "id": "Tutorial",
+      "tag": "default",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+      "scale": {"x": 1.0, "y": 1.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "TutorialBanner",
+          "available": true,
+          "duration": 0.5,
+          "count": 1,
+          "eachwidth": -96.0
+        },
+        {
+          "type": "ZoomTransition",
+          "available": true,
+          "loadscene": "game.json",
+          "duration": 0.5,
+          "target_ltn": {"x": -1.5, "y": 1.0, "z": 0.1},
+          "target_rbf": {"x": 1.5, "y": -1.0, "z": 8.0}
+        }
+      ]
+    },
+    {
+      "storage": "global",
+      "id": "tutorial0",
+      "tag": "default",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+      "scale": {"x": 96.0, "y": 54.0},
+      "rotation": 0.0,
+      "parent": {"storage": "global", "id": "Tutorial"},
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "banner",
+          "uv": {"x": 0, "y": 1085, "w": 1920, "h": 1080},
+          "texture": "tutorial.png"
+        }
+      ]
+    },
+    {
+      "storage": "global",
+      "id": "tutorial1",
+      "tag": "default",
+      "available": true,
+      "static": false,
+      "position": {"x": 96.0, "y": 0.0, "z": 1.0},
+      "scale": {"x": 96.0, "y": 54.0},
+      "rotation": 0.0,
+      "parent": {"storage": "global", "id": "Tutorial"},
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "banner",
+          "uv": {"x": 0, "y": 2160, "w": 1920, "h": 1080},
+          "texture": "tutorial.png"
+        }
+      ]
+    },
+
+    {
+      "storage": "global",
+      "id": "tutorial_background",
+      "tag": "default",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+      "scale": {"x": 96.0, "y": 54.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "background",
+          "uv": {"x": 0, "y": 0, "w": 1920, "h": 1080},
+          "texture": "tutorial.png"
+        }
+      ]
+    },
+    {
+      "storage": "global",
+      "id": "tutorial_border",
+      "tag": "default",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": 0.0, "z": 1.0},
+      "scale": {"x": 96.0, "y": 54.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "banner",
+          "uv": {"x": 1920, "y": 0, "w": 1920, "h": 1080},
+          "texture": "tutorial.png"
+        }
+      ]
+    },
+
+    {
+      "storage": "global",
+      "id": "press_anykey",
+      "tag": "default",
+      "available": true,
+      "static": false,
+      "position": {"x": 0.0, "y": -20.0, "z": 1.0},
+      "scale": {"x": 49.0, "y": 7.0},
+      "rotation": 0.0,
+      "components": [
+        {
+          "type": "Sprite",
+          "available": true,
+          "storage": "banner",
+          "uv": {"x": 2048, "y": 2048, "w": 2048, "h": 256},
+          "texture": "tutorial.png"
+        },
+        {
+          "type": "ScaleRepeater",
+          "available": true,
+          "duration": 1.0,
+          "scale": 0.08
+        }
+      ]
+    }
+  ]
+}

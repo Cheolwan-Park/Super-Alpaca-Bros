@@ -74,19 +74,19 @@ float32 BannerMover::getDuration() const {
   return m_duration;
 }
 
-int32 BannerMover::isMoving() const {
+int32_t BannerMover::isMoving() const {
   return m_flags.getFlag(2);
 }
 
-int32 BannerMover::isShowed() const {
+int32_t BannerMover::isShowed() const {
   return m_flags.getFlag(3);
 }
 
-void BannerMover::setMoving(int32 val) {
+void BannerMover::setMoving(int32_t val) {
   m_flags.setFlag(2, val);
 }
 
-void BannerMover::setShowed(int32 val) {
+void BannerMover::setShowed(int32_t val) {
   m_flags.setFlag(3, val);
 }
 
@@ -132,7 +132,6 @@ void WinnerBanner::initWithJson(const rapidjson::Value::Object &obj, StackAlloca
   JsonParseMethods::ReadIRect(load_list[0].GetObject(), &m_win_banner_uvs[0]);
   JsonParseMethods::ReadIRect(load_list[1].GetObject(), &m_win_banner_uvs[1]);
 
-  assert(!global);
   global = this;
 }
 
@@ -187,7 +186,7 @@ void WinnerBanner::release() {
   ;
 }
 
-void WinnerBanner::show(Uint32 winner) {
+void WinnerBanner::show(uint32_t winner) {
   assert(winner < 2);
   m_sprite->setUV(m_win_banner_uvs[winner]);
   setRotation(m_default_rotation);

@@ -27,12 +27,12 @@ class AnimatedSprite : public Sprite {
   void release() override;
 
   // get
-  int32 isPlaying() const;
+  int32_t isPlaying() const;
 
   const Animation *getAnimation() const;
 
   // set
-  void setPlaying(int32 val);
+  void setPlaying(int32_t val);
 
   void setAnimation(Animation *anim);
 
@@ -42,7 +42,7 @@ class AnimatedSprite : public Sprite {
 
  private:
   float32 m_change_remain_time;
-  int32 m_now_idx;
+  int32_t m_now_idx;
   const Animation *m_animation;
   /* flags
    * Sprite's flags

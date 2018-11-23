@@ -35,6 +35,46 @@ class TitleBanner : public Component {
   glm::vec2 m_default_scale;
 };
 
+class TutorialBanner : public Component {
+ public:
+  COMPONENT(TutorialBanner);
+
+  TutorialBanner();
+
+  TutorialBanner(const TutorialBanner &other) = delete;
+
+  ~TutorialBanner() override;
+
+  TutorialBanner &operator=(const TutorialBanner &other) = delete;
+
+  void initWithJson(const rapidjson::Value::Object &obj, StackAllocator &allocator) override;
+
+  void start() override;
+
+  void update() override;
+
+  void release() override;
+
+  int32_t isMoving();
+
+ private:
+  void setMoving(int32_t val);
+
+ private:
+  float32 m_elapsed_time;
+  float32 m_duration;
+  uint32_t m_count;
+  uint32_t m_now;
+  float32 m_each_width;
+  glm::vec3 m_moving_start_position;
+
+  /*
+   * flags
+   * Component's flag
+   * 2 : isMoving
+   */
+};
+
 class Rotator : public Component {
  public:
   COMPONENT(Rotator);
@@ -120,7 +160,7 @@ class ZoomTransition : public Component {
 
   void transition();
 
-  int32 isTransitioning() const;
+  int32_t isTransitioning() const;
 
  private:
   String128 m_load_scene;

@@ -28,14 +28,14 @@ class OutsidedEffect : public Component {
 
   void generate(const glm::vec2 &direction);
 
-  void setAlpacaIndex(Uint32 index);
+  void setAlpacaIndex(uint32_t index);
 
  private:
   void generate();
 
-  int32 isGenerating();
+  int32_t isGenerating();
 
-  void setGenerating(int32 val);
+  void setGenerating(int32_t val);
 
  private:
   struct Particle {
@@ -44,10 +44,10 @@ class OutsidedEffect : public Component {
   };
 
  private:
-  Uint32 m_alpaca_index;
-  Uint32 m_particle_count;
-  Uint32 m_max_particle_count;
-  Uint32 m_uv_count;
+  uint32_t m_alpaca_index;
+  uint32_t m_particle_count;
+  uint32_t m_max_particle_count;
+  uint32_t m_uv_count;
 
   float32 m_radius;
   float32 m_generate_speed;

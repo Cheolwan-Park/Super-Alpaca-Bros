@@ -23,11 +23,11 @@ class Scene {
 
   Scene &operator=(const Scene &other) = delete;
 
-  virtual int32 init();
+  virtual int32_t init();
 
-  virtual GameObject *getObject(Uint32 hash);
+  virtual GameObject *getObject(uint32_t hash);
 
-  virtual GameObject *getObject(Uint32 storage, Uint32 hash);
+  virtual GameObject *getObject(uint32_t storage, uint32_t hash);
 
   virtual void update();
 
@@ -39,34 +39,34 @@ class Scene {
 
   void addDrawableStorage(DrawableStorage *storage);
 
-  ObjectStorage *getObjectStorage(Uint32 hash);
+  ObjectStorage *getObjectStorage(uint32_t hash);
 
-  DrawableStorage *getDrawableStorage(Uint32 hash);
+  DrawableStorage *getDrawableStorage(uint32_t hash);
 
-  Camera *getCamera(Uint32 hash);
+  Camera *getCamera(uint32_t hash);
 
   Physics &getPhysics();
 
-  GameObject *addGameObject(Uint32 storagehash, GameObject *gameobject);
+  GameObject *addGameObject(uint32_t storagehash, GameObject *gameobject);
 
-  int32 addDrawable(Uint32 storagehash, Drawable *drawable);
+  int32_t addDrawable(uint32_t storagehash, Drawable *drawable);
 
   void setJsonFile(const FileIO &f);
 
-  int32 setJsonFile(const char *filename);
+  int32_t setJsonFile(const char *filename);
 
   GameObject *createGameObject(const rapidjson::Value::Object &obj);
 
  protected:
-  virtual int32 loadPhysics();
-  virtual int32 loadCameras();
-  virtual int32 loadShaders();
-  virtual int32 loadTextures();
-  virtual int32 loadAnimations();
-  virtual int32 loadSounds();
-  virtual int32 loadObjectStorages();
-  virtual int32 loadDrawableStorages();
-  virtual int32 loadGameObjects();
+  virtual int32_t loadPhysics();
+  virtual int32_t loadCameras();
+  virtual int32_t loadShaders();
+  virtual int32_t loadTextures();
+  virtual int32_t loadAnimations();
+  virtual int32_t loadSounds();
+  virtual int32_t loadObjectStorages();
+  virtual int32_t loadDrawableStorages();
+  virtual int32_t loadGameObjects();
 
  private:
   Array<ObjectStorage *> m_object_storages;
