@@ -6,14 +6,23 @@
 
 namespace Base {
 namespace Directories {
-constexpr char root[] = "../";
-constexpr char res[] = "../res/";
-constexpr char Shader[] = "../res/shader/";
-constexpr char Scene[] = "../res/scene/";
-constexpr char GameObject[] = "../res/gameobject/";
-constexpr char Texture[] = "../res/texture/";
-constexpr char Sound[] = "../res/sound/";
+constexpr char root[] = "./";
+constexpr char res[] = "./res/";
+constexpr char Shader[] = "./res/shader/";
+constexpr char Scene[] = "./res/scene/";
+constexpr char GameObject[] = "./res/gameobject/";
+constexpr char Texture[] = "./res/texture/";
+constexpr char Sound[] = "./res/sound/";
 }
+//namespace Directories {
+//constexpr char root[] = "/Users/cheolwanpark/Documents/Projects/Super-Alpaca-Bros";
+//constexpr char res[] = "/Users/cheolwanpark/Documents/Projects/Super-Alpaca-Bros/res/";
+//constexpr char Shader[] = "/Users/cheolwanpark/Documents/Projects/Super-Alpaca-Bros/res/shader/";
+//constexpr char Scene[] = "/Users/cheolwanpark/Documents/Projects/Super-Alpaca-Bros/res/scene/";
+//constexpr char GameObject[] = "/Users/cheolwanpark/Documents/Projects/Super-Alpaca-Bros/res/gameobject/";
+//constexpr char Texture[] = "/Users/cheolwanpark/Documents/Projects/Super-Alpaca-Bros/res/texture/";
+//constexpr char Sound[] = "/Users/cheolwanpark/Documents/Projects/Super-Alpaca-Bros/res/sound/";
+//}
 
 typedef float float32;
 typedef double float64;
